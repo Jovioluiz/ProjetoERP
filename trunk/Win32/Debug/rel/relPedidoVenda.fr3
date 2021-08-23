@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<TfrxReport Version="6.2.1" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="167935" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="44149,8325576389" ReportOptions.Description.Text="" ReportOptions.LastChange="44149,8921938657" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSet="frxdsPedido" DataSetName="dsPedido"/>
+  </Datasets>
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" Frame.Typ="0" HGuides.Text="" VGuides.Text="">
+    <TfrxReportTitle Name="ReportTitle1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="22,67718" Left="0" Top="18,89765" Width="718,1107">
+      <TfrxMemoView Name="Memo6" AllowVectorExport="True" Left="83,14966" Top="0" Width="230,55133" Height="18,89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="Impressão do Pedido de Venda Nr. "/>
+      <TfrxMemoView Name="dsPedidonr_pedido1" IndexTag="1" AllowVectorExport="True" Left="321,26005" Top="0" Width="90,70872" Height="18,89765" DataField="nr_pedido" DataSet="frxdsPedido" DataSetName="dsPedido" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="[dsPedido.&#34;nr_pedido&#34;]"/>
+    </TfrxReportTitle>
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="120,94496" Left="0" Top="102,04731" Width="718,1107" ColumnWidth="0" ColumnGap="0" DataSet="frxdsPedido" DataSetName="dsPedido" RowCount="0">
+      <TfrxMemoView Name="Memo3" AllowVectorExport="True" Left="18,89765" Top="45,35436" Width="139,84261" Height="18,89765" Frame.Typ="0" Text="Forma Pagamento:"/>
+      <TfrxMemoView Name="dsPedidonm_forma_pag" IndexTag="1" AllowVectorExport="True" Left="170,07885" Top="45,35436" Width="188,9765" Height="18,89765" DataField="nm_forma_pag" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;nm_forma_pag&#34;]"/>
+      <TfrxMemoView Name="Memo4" AllowVectorExport="True" Left="3,77953" Top="86,92919" Width="151,1812" Height="18,89765" Frame.Typ="0" Text="Condição Pagamento:"/>
+      <TfrxMemoView Name="dsPedidonm_cond_pag" IndexTag="1" AllowVectorExport="True" Left="170,07885" Top="86,92919" Width="192,75603" Height="18,89765" DataField="nm_cond_pag" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;nm_cond_pag&#34;]"/>
+      <TfrxMemoView Name="Memo2" AllowVectorExport="True" Left="86,92919" Top="11,33859" Width="68,03154" Height="18,89765" Frame.Typ="0" Text="Cliente:"/>
+      <TfrxMemoView Name="dsPedidonome" IndexTag="1" AllowVectorExport="True" Left="170,07885" Top="11,33859" Width="188,9765" Height="18,89765" DataField="nome" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;nome&#34;]"/>
+      <TfrxMemoView Name="Memo5" AllowVectorExport="True" Left="404,40971" Top="11,33859" Width="71,81107" Height="18,89765" Frame.Typ="0" Text="Situação:"/>
+      <TfrxMemoView Name="dsPedidocancelado" IndexTag="1" AllowVectorExport="True" Left="495,11843" Top="11,33859" Width="143,62214" Height="18,89765" DataField="cancelado" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;cancelado&#34;]"/>
+    </TfrxMasterData>
+    <TfrxMemoView Name="dsPedidocd_produto" IndexTag="1" AllowVectorExport="True" Left="15,11812" Top="351,49629" Width="79,37013" Height="18,89765" DataField="cd_produto" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;cd_produto&#34;]"/>
+    <TfrxMemoView Name="dsPedidodesc_produto" IndexTag="1" AllowVectorExport="True" Left="128,50402" Top="351,49629" Width="139,84261" Height="18,89765" DataField="desc_produto" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;desc_produto&#34;]"/>
+    <TfrxMemoView Name="dsPedidoqtd_venda" IndexTag="1" AllowVectorExport="True" Left="283,46475" Top="347,71676" Width="79,37013" Height="18,89765" DataField="qtd_venda" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;qtd_venda&#34;]"/>
+    <TfrxMemoView Name="dsPedidoun_medida" IndexTag="1" AllowVectorExport="True" Left="377,953" Top="347,71676" Width="79,37013" Height="18,89765" DataField="un_medida" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;un_medida&#34;]"/>
+    <TfrxMemoView Name="dsPedidovl_unitario" IndexTag="1" AllowVectorExport="True" Left="483,77984" Top="347,71676" Width="79,37013" Height="18,89765" DataField="vl_unitario" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;vl_unitario&#34;]"/>
+    <TfrxMemoView Name="dsPedidototal_item" IndexTag="1" AllowVectorExport="True" Left="578,26809" Top="351,49629" Width="79,37013" Height="18,89765" DataField="total_item" DataSet="frxdsPedido" DataSetName="dsPedido" Frame.Typ="0" Text="[dsPedido.&#34;total_item&#34;]"/>
+    <TfrxMemoView Name="Memo12" AllowVectorExport="True" Left="582,04762" Top="430,86642" Width="86,92919" Height="18,89765" Frame.Typ="0" Text="Valor Total"/>
+    <TfrxMemoView Name="Memo10" AllowVectorExport="True" Left="487,55937" Top="430,86642" Width="86,92919" Height="18,89765" Frame.Typ="0" Text="Valor Unitário"/>
+    <TfrxMemoView Name="Memo11" AllowVectorExport="True" Left="381,73253" Top="430,86642" Width="86,92919" Height="18,89765" Frame.Typ="0" Text="UN Medida"/>
+    <TfrxMemoView Name="Memo9" AllowVectorExport="True" Left="287,24428" Top="430,86642" Width="86,92919" Height="18,89765" Frame.Typ="0" Text="Quantidade"/>
+    <TfrxMemoView Name="Memo8" AllowVectorExport="True" Left="128,50402" Top="430,86642" Width="139,84261" Height="18,89765" Frame.Typ="0" Text="Descrição"/>
+    <TfrxMemoView Name="Memo7" AllowVectorExport="True" Left="15,11812" Top="430,86642" Width="102,04731" Height="18,89765" Frame.Typ="0" Text="Cód. Produto"/>
+  </TfrxReportPage>
+</TfrxReport>
