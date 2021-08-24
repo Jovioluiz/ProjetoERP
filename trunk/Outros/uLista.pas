@@ -8,7 +8,7 @@ uses
   Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, FireDAC.Stan.StorageBin, System.Generics.Collections;
+  FireDAC.Comp.Client, FireDAC.Stan.StorageBin, System.Generics.Collections, uSet;
 
 
 
@@ -52,6 +52,8 @@ type
     cdstablenr_pedido: TIntegerField;
     Memo3: TMemo;
     Button6: TButton;
+    Button7: TButton;
+    Memo4: TMemo;
     procedure btnAddClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -61,6 +63,7 @@ type
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -391,6 +394,42 @@ begin
   finally
     dicio.Free;
     query.Free;
+  end;
+end;
+
+procedure TfrmLista.Button7Click(Sender: TObject);
+const
+  SQL = 'SELECT cd_cliente, nome, email FROM cliente';
+var
+  dicio: TSet<Integer, String>;
+  query: TFDQuery;
+begin
+  dicio := TSet<Integer, String>.Create;
+  query := TFDQuery.Create(Self);
+  query.Connection := dm.conexaoBanco;
+
+  try
+    query.SQL.Add(SQL);
+    query.Open(SQL);
+
+    query.Loop(
+    procedure
+    begin
+      if not dicio.ContainsKey(query.FieldByName('cd_cliente').AsInteger) then
+        dicio.Add(query.FieldByName('cd_cliente').AsInteger, query.FieldByName('nome').AsString);
+    end
+    );
+
+    Memo4.Lines.Clear;
+    for var teste in dicio.Keys do
+    begin
+      Memo4.Lines.Add(teste.ToString + ' - ' + dicio.Items[teste]);
+    end;
+
+
+  finally
+    query.Free;
+    dicio.Free;
   end;
 end;
 

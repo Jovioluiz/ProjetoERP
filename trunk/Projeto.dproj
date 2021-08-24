@@ -291,6 +291,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Pedido Venda\uclPedidoVendaItem.pas"/>
+        <DCCReference Include="Outros\uSet.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

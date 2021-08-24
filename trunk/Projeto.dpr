@@ -69,7 +69,8 @@ uses
   dNotaEntrada in 'Entrada\dNotaEntrada.pas' {dmNotaEntrada: TDataModule},
   uMovimentacaoEstoque in 'Estoque\uMovimentacaoEstoque.pas',
   fCadastroPadrao in 'Outros\fCadastroPadrao.pas' {frmCadastroPadrao},
-  uclPedidoVendaItem in 'Pedido Venda\uclPedidoVendaItem.pas';
+  uclPedidoVendaItem in 'Pedido Venda\uclPedidoVendaItem.pas',
+  uSet in 'Outros\uSet.pas';
 
 {$R *.res}
 

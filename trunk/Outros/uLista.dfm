@@ -41,7 +41,7 @@ object frmLista: TfrmLista
   object DBGrid1: TDBGrid
     Left = 32
     Top = 143
-    Width = 577
+    Width = 441
     Height = 201
     DataSource = ds
     TabOrder = 3
@@ -69,7 +69,7 @@ object frmLista: TfrmLista
     Text = '0'
   end
   object Button2: TButton
-    Left = 632
+    Left = 504
     Top = 112
     Width = 75
     Height = 25
@@ -78,7 +78,7 @@ object frmLista: TfrmLista
     OnClick = Button2Click
   end
   object Memo1: TMemo
-    Left = 632
+    Left = 504
     Top = 143
     Width = 273
     Height = 201
@@ -87,7 +87,7 @@ object frmLista: TfrmLista
   object DBGrid2: TDBGrid
     Left = 32
     Top = 424
-    Width = 577
+    Width = 202
     Height = 225
     TabOrder = 8
     TitleFont.Charset = DEFAULT_CHARSET
@@ -114,7 +114,7 @@ object frmLista: TfrmLista
     OnChange = edtBuscarChange
   end
   object Memo2: TMemo
-    Left = 632
+    Left = 248
     Top = 424
     Width = 273
     Height = 225
@@ -123,7 +123,7 @@ object frmLista: TfrmLista
     TabOrder = 11
   end
   object Button4: TButton
-    Left = 632
+    Left = 248
     Top = 393
     Width = 75
     Height = 25
@@ -132,7 +132,7 @@ object frmLista: TfrmLista
     OnClick = Button4Click
   end
   object dbgridtable: TDBGrid
-    Left = 928
+    Left = 784
     Top = 143
     Width = 473
     Height = 201
@@ -145,7 +145,7 @@ object frmLista: TfrmLista
     TitleFont.Style = []
   end
   object Button5: TButton
-    Left = 928
+    Left = 784
     Top = 112
     Width = 75
     Height = 25
@@ -154,16 +154,16 @@ object frmLista: TfrmLista
     OnClick = Button5Click
   end
   object Memo3: TMemo
-    Left = 928
+    Left = 544
     Top = 424
-    Width = 473
+    Width = 233
     Height = 225
     Lines.Strings = (
       '')
     TabOrder = 15
   end
   object Button6: TButton
-    Left = 928
+    Left = 544
     Top = 393
     Width = 75
     Height = 25
@@ -171,10 +171,28 @@ object frmLista: TfrmLista
     TabOrder = 16
     OnClick = Button6Click
   end
+  object Button7: TButton
+    Left = 783
+    Top = 391
+    Width = 106
+    Height = 25
+    Caption = 'Listar THashSet'
+    TabOrder = 17
+    OnClick = Button7Click
+  end
+  object Memo4: TMemo
+    Left = 783
+    Top = 422
+    Width = 330
+    Height = 227
+    Lines.Strings = (
+      '')
+    TabOrder = 18
+  end
   object ds: TDataSource
     DataSet = cds
-    Left = 408
-    Top = 232
+    Left = 168
+    Top = 224
   end
   object cds: TClientDataSet
     PersistDataPacket.Data = {
@@ -188,8 +206,8 @@ object frmLista: TfrmLista
     Active = True
     Aggregates = <>
     Params = <>
-    Left = 496
-    Top = 232
+    Left = 216
+    Top = 224
     object cdscd_cliente: TIntegerField
       DisplayWidth = 9
       FieldName = 'cd_cliente'
@@ -221,8 +239,8 @@ object frmLista: TfrmLista
   end
   object dsPedido: TDataSource
     DataSet = cdsPedido
-    Left = 272
-    Top = 472
+    Left = 112
+    Top = 480
   end
   object cdsPedido: TClientDataSet
     PersistDataPacket.Data = {
@@ -249,8 +267,8 @@ object frmLista: TfrmLista
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 328
-    Top = 472
+    Left = 176
+    Top = 480
   end
   object cdstable: TFDMemTable
     Active = True
