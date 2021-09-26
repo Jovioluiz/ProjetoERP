@@ -1349,3 +1349,5 @@ ALTER TABLE public.nfc ADD valor_total numeric(12,4) NULL DEFAULT 0;
 
 ALTER TABLE public.wms_estoque ADD CONSTRAINT wms_estoque_un UNIQUE (id_wms_endereco_produto,id_item);
 ALTER TABLE public.wms_endereco_produto ADD CONSTRAINT wms_endereco_produto_un UNIQUE (id_endereco,id_item);
+
+ALTER TABLE public.pedido_venda_item ADD CONSTRAINT pedido_venda_item_pk PRIMARY KEY (id_geral);
