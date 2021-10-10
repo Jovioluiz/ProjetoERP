@@ -361,12 +361,14 @@ procedure TfrmLista.Button6Click(Sender: TObject);
 const
   SQL = 'SELECT cd_cliente, nome, email FROM cliente';
 var
-  dicio: TObjectDictionary<Integer, TTipo>;
+  dicio: TObjectDictionary<Integer, TList<TTipo>>;
   query: TFDQuery;
   tipos: TTipo;
+  lista: TList<TTipo>;
 begin
-  dicio := TObjectDictionary<Integer, TTipo>.Create;
+  dicio := TObjectDictionary<Integer, TList<TTipo>>.Create;
   query := TFDQuery.Create(Self);
+  lista := TList<TTipo>.Create;
 
   try
     query.Connection := dm.conexaoBanco;
@@ -374,6 +376,7 @@ begin
     query.Open();
 
     query.First;
+    TList<TTipo>.Create;
     for var I := 0 to Pred(query.RecordCount) do
     begin
       tipos.Nome := query.FieldByName('nome').AsString;
@@ -381,19 +384,25 @@ begin
       tipos.Email := query.FieldByName('email').AsString;
 
       if not dicio.ContainsKey(query.FieldByName('cd_cliente').AsInteger) then
-        dicio.Add(query.FieldByName('cd_cliente').AsInteger, tipos);
+        lista.Add(tipos);
+      dicio.Add(I, lista);
       query.Next;
     end;
 
     for var teste in dicio.Keys do
     begin
-      var testes := dicio.Items[teste];
-      Memo3.Lines.Add(testes.Nome + ' / ' + testes.Email);
+      for var t in dicio.Items[teste] do
+      begin
+        Memo3.Lines.Add(t.Nome);
+      end;
+//      var testes := dicio.Items[teste];
+//      Memo3.Lines.Add(testes.Items[teste].Nome);
     end;
 
   finally
     dicio.Free;
     query.Free;
+    lista.Free;
   end;
 end;
 

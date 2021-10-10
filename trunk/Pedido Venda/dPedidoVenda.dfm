@@ -219,7 +219,7 @@ object dmPedidoVenda: TdmPedidoVenda
   end
   object cdsPedidoVenda: TClientDataSet
     PersistDataPacket.Data = {
-      3F0100009619E0BD01000000180000000B0000000000030000003F010869645F
+      BC0100009619E0BD01000000180000000F000000000003000000BC010869645F
       676572616C0800010000000000096E725F70656469646F04000100000000000A
       63645F636C69656E746504000100000000000C63645F666F726D615F70616704
       000100000000000B63645F636F6E645F706167040001000000000012766C5F64
@@ -229,7 +229,10 @@ object dmPedidoVenda: TdmPedidoVenda
       0000010007535542545950450200490006004D6F6E6579000C666C5F6F726361
       6D656E746F02000300000000000A64745F656D697373616F0400060000000000
       0C666C5F63616E63656C61646F01004900000001000557494454480200020001
-      000000}
+      000A6E6D5F636C69656E74650100490000000100055749445448020002006400
+      0D6E6D5F666F726D615F7067746F010049000000010005574944544802000200
+      64000C6E6D5F636F6E645F7067746F0100490000000100055749445448020002
+      0064000663696461646501004900000001000557494454480200020032000000}
     Active = True
     Aggregates = <>
     FieldDefs = <
@@ -277,6 +280,26 @@ object dmPedidoVenda: TdmPedidoVenda
         Name = 'fl_cancelado'
         DataType = ftString
         Size = 1
+      end
+      item
+        Name = 'nm_cliente'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'nm_forma_pgto'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'nm_cond_pgto'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'cidade'
+        DataType = ftString
+        Size = 50
       end>
     IndexDefs = <>
     Params = <>
@@ -316,6 +339,20 @@ object dmPedidoVenda: TdmPedidoVenda
     object cdsPedidoVendafl_cancelado: TStringField
       FieldName = 'fl_cancelado'
       Size = 1
+    end
+    object cdsPedidoVendanm_cliente: TStringField
+      FieldName = 'nm_cliente'
+      Size = 100
+    end
+    object cdsPedidoVendanm_forma_pgto: TStringField
+      FieldName = 'nm_forma_pgto'
+    end
+    object cdsPedidoVendanm_cond_pgto: TStringField
+      FieldName = 'nm_cond_pgto'
+    end
+    object cdsPedidoVendacidade: TStringField
+      FieldName = 'cidade'
+      Size = 50
     end
   end
 end

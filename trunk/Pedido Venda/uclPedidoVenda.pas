@@ -40,12 +40,13 @@ type TPedidoVenda = class
     function ValidaTabelaPreco(CodTabela: Integer; CodProduto: String): Boolean;
     function BuscaFormaPgto(CodForma: Integer): string;
     function BuscaCondicaoPgto(CodCond, CodForma: Integer): string;
-    function isCodBarrasProduto(Cod: String): Boolean;
+    function IsCodBarrasProduto(Cod: String): Boolean;
     function GetIdItem(CdItem: string): Int64;
     function GetCdItem(IdItem: Integer): TInfProdutosCodBarras;
     procedure PreencheDataSet(Info: TArray<TInfProdutosCodBarras>);
     function CarregaPedidoVenda(NroPedido: Integer): Boolean;
     function CalculaImposto(ValorBase, Aliquota: Currency): Currency;
+    procedure EditarPedido(NrPedido: Integer);
 
     property Dados: TdmPedidoVenda read FDados write SetDados;
 
@@ -54,6 +55,9 @@ type TPedidoVenda = class
 end;
 
 implementation
+
+uses
+  uPedidoVenda;
 
 
 { TPedidoVenda }
@@ -420,13 +424,17 @@ begin
       FDados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := qry.FieldByName('nr_pedido').AsInteger;
       FDados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean := qry.FieldByName('fl_orcamento').AsBoolean;
       FDados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := qry.FieldByName('cd_cliente').AsInteger;
+      FDados.cdsPedidoVenda.FieldByName('nm_cliente').AsString := qry.FieldByName('nome').AsString;
       FDados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := qry.FieldByName('cd_forma_pag').AsInteger;
+      FDados.cdsPedidoVenda.FieldByName('nm_forma_pgto').AsString := qry.FieldByName('nm_forma_pag').AsString;
       FDados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger := qry.FieldByName('cd_cond_pag').AsInteger;
+      FDados.cdsPedidoVenda.FieldByName('nm_cond_pgto').AsString := qry.FieldByName('nm_cond_pag').AsString;
       FDados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := qry.FieldByName('vl_desconto_pedido').AsCurrency;
       FDados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := qry.FieldByName('vl_acrescimo').AsCurrency;
       FDados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := qry.FieldByName('vl_total').AsCurrency;
       FDados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime := qry.FieldByName('dt_emissao').AsDateTime;
       FDados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString := qry.FieldByName('fl_cancelado').AsString;
+      FDados.cdsPedidoVenda.FieldByName('cidade').AsString := qry.FieldByName('cidade').AsString + '/' + qry.FieldByName('uf').AsString;
       FDados.cdsPedidoVenda.Post;
 
       qry.Loop(
@@ -477,6 +485,40 @@ begin
   inherited;
 end;
 
+procedure TPedidoVenda.EditarPedido(NrPedido: Integer);
+const
+  SQL = 'select fl_cancelado from pedido_venda where nr_pedido = :nr_pedido';
+var
+  qry: TFDQuery;
+  frmPedidoVenda: TfrmPedidoVenda;
+begin
+  qry := TFDQuery.Create(nil);
+  qry.Connection := dm.conexaoBanco;
+
+  try
+    qry.Open(SQL, [NrPedido]);
+
+    if qry.FieldByName('fl_cancelado').AsString.Equals('S') then
+    begin
+      MessageDlg('O pedido não pode ser editado, pois está cancelado.', mtWarning, [mbOK],0);
+      Exit;
+    end;
+
+    if not qry.IsEmpty then
+    begin
+      frmPedidoVenda := TfrmPedidoVenda.Create(nil);
+      frmPedidoVenda.edtNrPedido.Text := NrPedido.ToString;
+      frmPedidoVenda.EdicaoPedido := True;
+      frmPedidoVenda.Visible := False;
+      frmPedidoVenda.ShowModal;
+
+    end;
+  finally
+    qry.Free;
+    frmPedidoVenda.Free;
+  end;
+end;
+
 function TPedidoVenda.GetCdItem(IdItem: Integer): TInfProdutosCodBarras;
 const
   SQL = 'select ' +
@@ -524,11 +566,11 @@ begin
   end;
 end;
 
-function TPedidoVenda.isCodBarrasProduto(Cod: String): Boolean;
+function TPedidoVenda.IsCodBarrasProduto(Cod: String): Boolean;
 const
   SQL =
     'select ' +
-    '    * ' +
+    '    1 ' +
     'from ' +
     '    produto_cod_barras pcb ' +
     'where ' +

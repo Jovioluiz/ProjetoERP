@@ -583,7 +583,7 @@ begin
     end;
 
     //preenche os dados da lista nos campos
-    if FRegras.isCodBarrasProduto(edtCdProduto.Text) then
+    if FRegras.IsCodBarrasProduto(edtCdProduto.Text) then
     begin
       pvItem.BuscaProdutoCodBarras(edtCdProduto.Text);
 
@@ -1343,51 +1343,32 @@ begin
       if not EhEdicao then
       begin
         qry.SQL.Add(SQL_INSERT);
-        qry.ParamByName('id_geral').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt;
         qry.ParamByName('id_pedido_venda').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt;
-        qry.ParamByName('id_item').AsLargeInt := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt;
-        qry.ParamByName('vl_unitario').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
-        qry.ParamByName('vl_total_item').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
-        qry.ParamByName('qtd_venda').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsInteger;
-        qry.ParamByName('vl_desconto').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
-        qry.ParamByName('cd_tabela_preco').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger;
-        qry.ParamByName('icms_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency;
-        qry.ParamByName('icms_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency;
-        qry.ParamByName('icms_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency;
-        qry.ParamByName('ipi_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency;
-        qry.ParamByName('ipi_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency;
-        qry.ParamByName('ipi_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency;
-        qry.ParamByName('pis_cofins_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency;
-        qry.ParamByName('pis_cofins_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency;
-        qry.ParamByName('pis_cofins_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency;
-        qry.ParamByName('un_medida').AsString := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
-        qry.ParamByName('seq_item').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger;
-        qry.ExecSQL;
       end
       else
       begin
         qry.SQL.Clear;
         qry.SQL.Add(SQL_UPDATE);
-        qry.ParamByName('id_geral').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt;
-        qry.ParamByName('id_item').AsLargeInt := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt;
-        qry.ParamByName('vl_unitario').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
-        qry.ParamByName('vl_total_item').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
-        qry.ParamByName('qtd_venda').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsInteger;
-        qry.ParamByName('vl_desconto').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
-        qry.ParamByName('cd_tabela_preco').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger;
-        qry.ParamByName('icms_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency;
-        qry.ParamByName('icms_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency;
-        qry.ParamByName('icms_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency;
-        qry.ParamByName('ipi_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency;
-        qry.ParamByName('ipi_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency;
-        qry.ParamByName('ipi_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency;
-        qry.ParamByName('pis_cofins_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency;
-        qry.ParamByName('pis_cofins_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency;
-        qry.ParamByName('pis_cofins_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency;
-        qry.ParamByName('un_medida').AsString := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
-        qry.ParamByName('seq_item').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger;
-        qry.ExecSQL;
       end;
+      qry.ParamByName('id_geral').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt;
+      qry.ParamByName('id_item').AsLargeInt := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt;
+      qry.ParamByName('vl_unitario').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
+      qry.ParamByName('vl_total_item').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
+      qry.ParamByName('qtd_venda').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsInteger;
+      qry.ParamByName('vl_desconto').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
+      qry.ParamByName('cd_tabela_preco').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger;
+      qry.ParamByName('icms_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency;
+      qry.ParamByName('icms_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency;
+      qry.ParamByName('icms_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency;
+      qry.ParamByName('ipi_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency;
+      qry.ParamByName('ipi_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency;
+      qry.ParamByName('ipi_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency;
+      qry.ParamByName('pis_cofins_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency;
+      qry.ParamByName('pis_cofins_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency;
+      qry.ParamByName('pis_cofins_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency;
+      qry.ParamByName('un_medida').AsString := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
+      qry.ParamByName('seq_item').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger;
+      qry.ExecSQL;
       qry.Connection.Commit;
 
     except

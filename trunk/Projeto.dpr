@@ -70,7 +70,8 @@ uses
   uMovimentacaoEstoque in 'Estoque\uMovimentacaoEstoque.pas',
   fCadastroPadrao in 'Outros\fCadastroPadrao.pas' {frmCadastroPadrao},
   uclPedidoVendaItem in 'Pedido Venda\uclPedidoVendaItem.pas',
-  uSet in 'Outros\uSet.pas';
+  uSet in 'Outros\uSet.pas' {$R *.res},
+  uclLogin in 'Login\uclLogin.pas';
 
 {$R *.res}
 

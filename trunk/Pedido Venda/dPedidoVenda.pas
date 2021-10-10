@@ -43,6 +43,10 @@ type
     cdsPedidoVendafl_orcamento: TBooleanField;
     cdsPedidoVendadt_emissao: TDateField;
     cdsPedidoVendafl_cancelado: TStringField;
+    cdsPedidoVendanm_cliente: TStringField;
+    cdsPedidoVendanm_forma_pgto: TStringField;
+    cdsPedidoVendanm_cond_pgto: TStringField;
+    cdsPedidoVendacidade: TStringField;
   private
     { Private declarations }
   public

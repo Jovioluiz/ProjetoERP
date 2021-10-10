@@ -294,6 +294,7 @@
         <DCCReference Include="Outros\uSet.pas">
             <Form>$R *.res</Form>
         </DCCReference>
+        <DCCReference Include="Login\uclLogin.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

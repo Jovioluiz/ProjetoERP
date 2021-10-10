@@ -46,17 +46,17 @@ type
     procedure dbGridProdutosDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure btnCancelarClick(Sender: TObject);
-    procedure edtNrPedidoExit(Sender: TObject);
     procedure btnEditarPedidoClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure btnImprimirClick(Sender: TObject);
-    procedure btnSalvarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure edtCdCondPgtoChange(Sender: TObject);
+    procedure edtNrPedidoExit(Sender: TObject);
   private
     FPedidoVenda: TPedidoVenda;
     procedure SetPedidoVenda(const Value: TPedidoVenda);
+    procedure CarregaPedidoVenda;
     { Private declarations }
   public
     { Public declarations }
@@ -81,31 +81,14 @@ end;
 
 
 procedure TfrmVisualizaPedidoVenda.btnEditarPedidoClick(Sender: TObject);
-const
-  SQL = 'select fl_cancelado from pedido_venda where nr_pedido = :nr_pedido';
-var
-  qry: TFDQuery;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-
-  try
-    qry.Open(SQL, [StrToInt(edtNrPedido.Text)]);
-
-    if (not edtFl_orcamento.Checked) or (qry.FieldByName('fl_cancelado').AsString = 'S') then
-      MessageDlg('O pedido não pode ser editado', mtWarning, [mbOK],0)
-    else
-    begin
-      frmPedidoVenda := TfrmPedidoVenda.Create(Self);
-      frmPedidoVenda.edtNrPedido.Text := edtNrPedido.Text;
-      frmPedidoVenda.EdicaoPedido := True;
-      frmPedidoVenda.Visible := False;
-      frmPedidoVenda.ShowModal;
-
-    end;
-  finally
-    qry.Free;
+  if not edtFl_orcamento.Checked then
+  begin
+    MessageDlg('O pedido não pode ser editado', mtWarning, [mbOK],0);
+    Exit;
   end;
+
+  PedidoVenda.EditarPedido(StrToInt(edtNrPedido.Text));
 end;
 
 
@@ -118,9 +101,35 @@ begin
   //frxRelatorio.ShowReport();
 end;
 
-procedure TfrmVisualizaPedidoVenda.btnSalvarClick(Sender: TObject);
+procedure TfrmVisualizaPedidoVenda.CarregaPedidoVenda;
 begin
-
+  if FPedidoVenda.CarregaPedidoVenda(StrToInt(edtNrPedido.Text)) then
+  begin
+    edtFl_orcamento.Checked := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean;
+    edtCdCliente.Text := IntToStr(FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger);
+    edtNomeCliente.Text := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('nm_cliente').AsString;
+    edtCdFormaPgto.Text := IntToStr(FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger);
+    edtNomeFormaPgto.Text := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('nm_forma_pgto').AsString;
+    edtCdCondPgto.Text := IntToStr(FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger);
+    edtNomeCondPgto.Text := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('nm_cond_pgto').AsString;
+    edtVlDescTotalPedido.ValueCurrency := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency;
+    edtVlAcrescimoTotalPedido.ValueCurrency := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency;
+    edtVlTotalPedido.ValueCurrency := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
+    edtCidadeCliente.Text := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cidade').AsString;
+    lblStatus.Visible := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString = 'S';
+  end
+  else
+  begin
+    ShowMessage('Pedido não Encontrado! Verifique');
+    edtCdCliente.Clear;
+    edtCidadeCliente.Clear;
+    edtCdFormaPgto.Clear;
+    edtCdCondPgto.Clear;
+    edtNomeCliente.Clear;
+    edtNomeFormaPgto.Clear;
+    edtNomeCondPgto.Clear;
+    edtNrPedido.SetFocus;
+  end;
 end;
 
 //Faz a linha zebrada no grid dos itens
@@ -149,31 +158,7 @@ end;
 
 procedure TfrmVisualizaPedidoVenda.edtNrPedidoExit(Sender: TObject);
 begin
-
-  if FPedidoVenda.CarregaPedidoVenda(StrToInt(edtNrPedido.Text)) then
-  begin
-    edtFl_orcamento.Checked := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean;
-    edtCdCliente.Text := IntToStr(FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger);
-    edtCdFormaPgto.Text := IntToStr(FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger);
-    edtCdCondPgto.Text := IntToStr(FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger);
-    edtVlDescTotalPedido.ValueCurrency := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency;
-    edtVlAcrescimoTotalPedido.ValueCurrency := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency;
-    edtVlTotalPedido.ValueCurrency := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
-    lblStatus.Visible := FPedidoVenda.Dados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString = 'S';
-  end
-  else
-  begin
-    ShowMessage('Pedido não Encontrado! Verifique');
-    edtCdCliente.Clear;
-    edtCidadeCliente.Clear;
-    edtCdFormaPgto.Clear;
-    edtCdCondPgto.Clear;
-    edtNomeCliente.Clear;
-    edtNomeFormaPgto.Clear;
-    edtNomeCondPgto.Clear;
-    edtNrPedido.SetFocus;
-    Exit;
-  end;
+  CarregaPedidoVenda;
 end;
 
 procedure TfrmVisualizaPedidoVenda.FormClose(Sender: TObject; var Action: TCloseAction);

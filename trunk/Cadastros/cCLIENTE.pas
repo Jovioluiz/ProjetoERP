@@ -56,7 +56,10 @@ type
       Shift: TShiftState);
     procedure FormActivate(Sender: TObject);
   private
-
+    FCamposDesabilitados,
+    FTemCep: Boolean;
+    FCep,
+    FChamada: string;
   public
     { Public declarations }
     procedure Salvar;
@@ -67,9 +70,6 @@ type
 
 var
   frmCadCliente: TfrmCadCliente;
-  temCep, camposDesabilitados: Boolean;
-  cep, chamada: String;
-  lista: TList<string>;
   CodCliente: Integer;
 
 implementation
@@ -181,7 +181,7 @@ begin
   edtEstado.Enabled := False;
   edtCep.Enabled := False;
   edtCLIENTEFONE.Enabled := False;
-  camposDesabilitados := True;
+  FCamposDesabilitados := True;
 end;
 
 procedure TfrmCadCliente.edtCepExit(Sender: TObject);
@@ -213,9 +213,9 @@ begin
 
     //se o cep do cadastro for diferente do que foi digitado
     //executa o sql acima
-    if cep <> edtCep.Text then
-      temCep := False;
-    if temCep = True then
+    if FCep <> edtCep.Text then
+      FTemCep := False;
+    if FTemCep = True then
       Exit;
 
     if not qry.IsEmpty then
@@ -240,12 +240,11 @@ end;
 
 procedure TfrmCadCliente.edtCLIENTEcd_clienteExit(Sender: TObject);
 var
-  temPermissaEdicao: Boolean;
   edicao: TValidaDados;
   persistencia: TCliente;
   enderecoPersistencia: TClienteEndereco;
 begin
-  temCep := False;
+  FTemCep := False;
   edicao := TValidaDados.Create;
 
   persistencia := TCliente.Create;
@@ -254,7 +253,7 @@ begin
   try
     if edtCLIENTEcd_cliente.Text = '' then
     begin
-      if not temPermissaEdicao then
+      if edicao.ValidaEdicaoAcao(IdUsuario, 1).Equals('N') then
       begin
         MessageDlg('Usuário não possui Permissão para realizar Cadastro', mtInformation, [mbOK], 0);
         edtCLIENTEcd_cliente.SetFocus;
@@ -268,7 +267,7 @@ begin
     end
     else
     begin
-      temCep := True;
+      FTemCep := True;
       persistencia.Buscar(StrToInt(edtCLIENTEcd_cliente.Text));
       enderecoPersistencia.Buscar(StrToInt(edtCLIENTEcd_cliente.Text));
 
@@ -300,7 +299,7 @@ begin
       edtCLIENTEENDERECO_CIDADE.Text := enderecoPersistencia.cidade;
       edtEstado.Text := enderecoPersistencia.uf;
       edtCep.Text := enderecoPersistencia.cep;
-      cep := edtCep.Text;
+      FCep := edtCep.Text;
 
     end;
 
@@ -325,7 +324,7 @@ begin
   if key = VK_F9 then
   begin
     try
-      chamada := 'cntCliente';
+      FChamada := 'cntCliente';
       consulta.MontaDataset(sql);
       consulta.ShowModal;
       edtCLIENTEcd_cliente.Text := CodCliente.ToString;
@@ -365,7 +364,7 @@ end;
 
 procedure TfrmCadCliente.FormActivate(Sender: TObject);
 begin
-  if chamada = 'cntCliente' then
+  if FChamada = 'cntCliente' then
     edtCLIENTEcd_cliente.Text := CodCliente.ToString;
 end;
 
@@ -401,7 +400,7 @@ end;
 
 procedure TfrmCadCliente.LimpaCampos;
 begin
-  if camposDesabilitados then
+  if FCamposDesabilitados then
   begin
     edtCLIENTENM_CLIENTE.Enabled := True;
     edtCLIENTEENDERECO_BAIRRO.Enabled := True;
@@ -420,7 +419,7 @@ begin
     edtEstado.Enabled := True;
     edtCep.Enabled := True;
     edtCLIENTEFONE.Enabled := True;
-    camposDesabilitados := False;
+    FCamposDesabilitados := False;
   end;
 
   //limpa os campos

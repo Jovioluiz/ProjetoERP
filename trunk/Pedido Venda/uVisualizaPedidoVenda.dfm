@@ -115,7 +115,7 @@ object frmVisualizaPedidoVenda: TfrmVisualizaPedidoVenda
       ParentFont = False
     end
     object edtCdFormaPgto: TEdit
-      Left = 138
+      Left = 131
       Top = 155
       Width = 87
       Height = 21
@@ -167,7 +167,7 @@ object frmVisualizaPedidoVenda: TfrmVisualizaPedidoVenda
     end
     object btnImprimir: TButton
       Left = 22
-      Top = 85
+      Top = 129
       Width = 81
       Height = 36
       Caption = 'Imprimir'
@@ -176,12 +176,11 @@ object frmVisualizaPedidoVenda: TfrmVisualizaPedidoVenda
     end
     object btnSalvar: TButton
       Left = 22
-      Top = 127
+      Top = 171
       Width = 81
       Height = 34
       Caption = 'Salvar'
       TabOrder = 6
-      OnClick = btnSalvarClick
     end
     object edtVlTotalPedido: TNumberBox
       Left = 301
@@ -220,7 +219,7 @@ object frmVisualizaPedidoVenda: TfrmVisualizaPedidoVenda
     OnExit = edtNrPedidoExit
   end
   object edtCdCliente: TEdit
-    Left = 140
+    Left = 133
     Top = 87
     Width = 87
     Height = 21
@@ -266,7 +265,7 @@ object frmVisualizaPedidoVenda: TfrmVisualizaPedidoVenda
   end
   object btnEditarPedido: TButton
     Left = 24
-    Top = 48
+    Top = 33
     Width = 81
     Height = 36
     Caption = 'Editar Pedido'

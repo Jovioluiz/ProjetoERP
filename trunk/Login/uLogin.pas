@@ -32,6 +32,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
+    procedure Entrar;
   public
     { Public declarations }
   end;
@@ -45,7 +46,7 @@ implementation
 {$R *.dfm}
 
 uses uTelaInicial, uDataModule, uVersao, uUtil, Vcl.Dialogs,
-  uCadastrarSenha, fConexao;
+  uCadastrarSenha, fConexao, uclLogin;
 
 procedure TfrmLogin.btnCancelarClick(Sender: TObject);
 begin
@@ -63,33 +64,37 @@ begin
 end;
 
 procedure TfrmLogin.btnEntrarClick(Sender: TObject);
-const
-  SQL_LOGIN = 'select '+
-              '  id_usuario, '+
-              '  login, '+
-              '  senha '+
-              'from '+
-              '  login_usuario '+
-              'where '+
-              '  login = :login';
+begin
+  Entrar;
+end;
 
+procedure TfrmLogin.edtUsuarioExit(Sender: TObject);
 var
-  usuario, senha: String;
-  qry: TFDQuery;
+  login: TLogin;
+begin
+  if edtUsuario.Text = '' then
+    Exit;
+
+  login := TLogin.Create;
+
+  try
+    login.VerificaSeUsuarioEstaCadastrado(edtUsuario.Text);
+  finally
+    login.Free;
+  end;
+end;
+
+procedure TfrmLogin.Entrar;
+var
+  dados: TDadosLogin;
+  login: TLogin;
   verificaSenha: TValidaDados;
 begin
-  verificaSenha := TValidaDados.Create();
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  try
-    qry.SQL.Add(SQL_LOGIN);
-    qry.ParamByName('login').AsString := edtUsuario.Text;
-    qry.Prepare;
-    qry.Open(SQL_LOGIN);
+  verificaSenha := TValidaDados.Create;
+  login := TLogin.Create;
 
-    idUsuario := qry.FieldByName('id_usuario').AsInteger;
-    usuario := qry.FieldByName('login').Text;
-    senha := qry.FieldByName('senha').Text;
+  try
+    dados := login.Login(edtUsuario.Text);
 
     if (Trim(edtUsuario.Text) = EmptyStr) or (Trim(edtSenha.Text) = EmptyStr) then
     begin
@@ -101,8 +106,8 @@ begin
       Exit;
     end;
 
-    if (Trim(edtUsuario.Text) = usuario)
-        and (Trim(senha) = verificaSenha.GetSenhaMD5(edtSenha.Text)) then
+    if (Trim(edtUsuario.Text) = dados.usuario)
+        and (Trim(dados.senha) = verificaSenha.GetSenhaMD5(edtSenha.Text)) then
       ModalResult := mrOk
     else
     begin
@@ -113,47 +118,11 @@ begin
       edtUsuario.SetFocus;
       Exit;
     end;
+
+    idUsuario := dados.idUsuario;
   finally
-    FreeAndNil(qry);
-    FreeAndNil(verificaSenha);
-  end;
-end;
-
-procedure TfrmLogin.edtUsuarioExit(Sender: TObject);
-const
-  SQL_LOGIN = 'select '+
-              '  senha '+
-              'from '+
-              '  login_usuario '+
-              'where '+
-              '  login = :login';
-var
-  qry: TFDQuery;
-begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  frmCadastraSenha := TfrmCadastraSenha.Create(Self);
-
-  try
-    if edtUsuario.Text <> '' then
-    begin
-      qry.SQL.Add(SQL_LOGIN);
-      qry.ParamByName('login').AsString := edtUsuario.Text;
-      qry.Open(SQL_LOGIN);
-
-      if qry.FieldByName('senha').Text = '' then
-      begin
-        ShowMessage('Usuário sem senha cadastrada');
-        try
-          frmCadastraSenha.ShowModal;
-        finally
-          FreeAndNil(frmCadastraSenha);
-        end;
-      end;
-    end;
-  finally
-    qry.Free;
-    FreeAndNil(frmCadastraSenha);
+    login.Free;
+    verificaSenha.Free;
   end;
 end;
 

@@ -47,12 +47,12 @@ uses
 
 procedure TfrmConsulta.dbgrd1DblClick(Sender: TObject);
 begin
-  if chamada = 'cntCliente' then
-  begin
-    CodCliente := cds.FieldByName('cd_cliente').AsInteger;
-    Close;
-    chamada := '';
-  end;
+//  if FChamada = 'cntCliente' then
+//  begin
+//    CodCliente := cds.FieldByName('cd_cliente').AsInteger;
+//    Close;
+//    FChamada := '';
+//  end;
 end;
 
 procedure TfrmConsulta.edtBuscaKeyDown(Sender: TObject; var Key: Word;
