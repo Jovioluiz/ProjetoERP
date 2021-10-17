@@ -8,7 +8,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, uConexao;
+  FireDAC.Comp.Client, uConexao, uclUsuario;
 
 type
   TfrmUsuario = class(TForm)
@@ -24,8 +24,12 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure edtIdUsuarioExit(Sender: TObject);
     procedure edtIdUsuarioChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
-    { Private declarations }
+    FUsuario: TUsuario;
+    procedure SetUsuario(const Value: TUsuario);
+    procedure BuscarUsuario;
 
   public
     { Public declarations }
@@ -33,6 +37,8 @@ type
     procedure ValidaCampos;
     procedure Salvar;
     procedure Excluir;
+
+    property Usuario: TUsuario read FUsuario write SetUsuario;
 
   end;
 
@@ -45,6 +51,30 @@ implementation
 
 uses uDataModule, uUtil;
 
+procedure TfrmUsuario.BuscarUsuario;
+var
+  cripto: TValidaDados;
+begin
+  if edtIdUsuario.Text = EmptyStr then
+  begin
+    ValidaCampos;
+    Exit;
+  end;
+
+
+  cripto := TValidaDados.Create;
+
+  try
+    FUsuario.CarregaUsuario(StrToInt(edtIdUsuario.Text));
+
+    edtNomeUsuario.Text := FUsuario.Dados.cdsUsuario.FieldByName('login').AsString;
+    edtSenhaUsuario.Text := cripto.GetSenhaMD5(FUsuario.Dados.cdsUsuario.FieldByName('senha').AsString);
+    edtNomeUsuario.SetFocus;
+  finally
+    cripto.Free;
+  end;
+end;
+
 procedure TfrmUsuario.edtIdUsuarioChange(Sender: TObject);
 begin
   if edtIdUsuario.Text = '' then
@@ -52,75 +82,29 @@ begin
 end;
 
 procedure TfrmUsuario.edtIdUsuarioExit(Sender: TObject);
-const
-  SQL_SELECT = 'select ' +
-              '   login, ' +
-              '   senha  ' +
-              'from login_usuario ' +
-              'where ' +
-                  'id_usuario = :id_usuario';
-var
-  qry: TFDQuery;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  try
-    try
-      if edtIdUsuario.Text = EmptyStr then
-      begin
-        ValidaCampos;
-        Exit;
-      end;
-
-      qry.SQL.Add(SQL_SELECT);
-      qry.ParamByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
-      qry.Open();
-
-      if not qry.IsEmpty then
-      begin
-        edtNomeUsuario.Text := qry.FieldByName('login').AsString;
-        edtSenhaUsuario.Text := qry.FieldByName('senha').AsString;
-      end
-      else
-        edtNomeUsuario.SetFocus;
-    except
-      on E: Exception do
-      ShowMessage(
-        'Ocorreu um erro.' + #13 +
-        'Mensagem de erro: ' + E.Message);
-    end;
-  finally
-    qry.Free;
-  end;
+  BuscarUsuario;
 end;
 
 procedure TfrmUsuario.Excluir;
 begin
   if (Application.MessageBox('Deseja Excluir o Usuário?','Atenção', MB_YESNO) = IDYES) then
   begin
-    try
-      //dm.FDConnection1.StartTransaction;
-      sql.Close;
-      sql.SQL.Text := 'delete                   '+
-                          'from                    '+
-                      'login_usuario            '+
-                          'where                   '+
-                      'id_usuario = :id_usuario';
-      sql.ParamByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
-
-      sql.ExecSQL;
-      ShowMessage('Usuário excluído com sucesso!');
-      //dm.FDConnection1.Commit;
-      LimpaCampos;
-      //sql.Free;
-    except
-      on E:exception do
-        begin
-          //dm.FDConnection1.Rollback;
-          ShowMessage('Erro ao excluir os dados do usuário ' +edtIdUsuario.Text + E.Message);
-        end;
-    end;
+    FUsuario.Dados.cdsUsuario.FieldByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
+    FUsuario.Excluir;
+    ShowMessage('Usuário excluído com sucesso!');
+    LimpaCampos;
   end;
+end;
+
+procedure TfrmUsuario.FormCreate(Sender: TObject);
+begin
+  FUsuario := TUsuario.Create;
+end;
+
+procedure TfrmUsuario.FormDestroy(Sender: TObject);
+begin
+  FUsuario.Free;
 end;
 
 procedure TfrmUsuario.FormKeyDown(Sender: TObject; var Key: Word;
@@ -158,92 +142,37 @@ begin
 end;
 
 procedure TfrmUsuario.Salvar;
-const
-  SQL_UPDATE =  'update '+
-                '   login_usuario set '+
-                '   id_usuario = :id_usuario, '+
-                '   login = :login, '+
-                '   senha = :senha ' +
-                'where '+
-                '   id_usuario = :id_usuario';
-
-  SQL_SELECT =  'select             '+
-                    '*              '+
-                'from               '+
-                    'login_usuario  '+
-                'where              '+
-                    'id_usuario = :id_usuario';
-
-  SQL_INSERT ='insert '+
-                'into '+
-              'login_usuario (id_usuario, '+
-                'login,                   '+
-                'senha) '+
-              'values '+
-                '(:id_usuario, '+
-                ':login, '+
-                ':senha)';
 var
   cripto: TValidaDados;
-  qry, qrySelect: TFDQuery;
-  conexao: TConexao;
+  novo: Boolean;
 begin
   cripto := TValidaDados.Create;
-  conexao := TConexao.Create;
-  qry := TFDQuery.Create(Self);
-  qry.Connection := conexao.getConexao;
-  qrySelect := TFDQuery.Create(Self);
-  qrySelect.Connection := conexao.getConexao;
 
   try
     ValidaCampos;
 
-    qrySelect.SQL.Add(SQL_SELECT);
-    qrySelect.ParamByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
+    novo := FUsuario.Pesquisar(StrToInt(edtIdUsuario.Text));
 
-    qrySelect.Open;
+    FUsuario.Dados.cdsUsuario.Append;
+    FUsuario.Dados.cdsUsuario.FieldByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
+    FUsuario.Dados.cdsUsuario.FieldByName('login').AsString := edtNomeUsuario.Text;
+    FUsuario.Dados.cdsUsuario.FieldByName('senha').AsString := cripto.GetSenhaMD5(edtSenhaUsuario.Text);
+    FUsuario.Dados.cdsUsuario.Post;
 
-    if not qrySelect.IsEmpty then
-    begin
-      try
-        qry.SQL.Add(SQL_UPDATE);
-        qry.ParamByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
-        qry.ParamByName('login').AsString := edtNomeUsuario.Text;
-        qry.ParamByName('senha').AsString := cripto.GetSenhaMD5(edtSenhaUsuario.Text);
-        qry.ExecSQL;
-      except
-        on E:exception do
-        begin
-          qry.Connection.Rollback;
-          ShowMessage('Erro ' + E.Message);
-        end;
-      end;
-    end
+    if novo then
+      FUsuario.Atualizar
     else
-    begin
-      try
-        qry.SQL.Add(SQL_INSERT);
-        qry.ParamByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
-        qry.ParamByName('login').AsString := edtNomeUsuario.Text;
-        qry.ParamByName('senha').AsString := cripto.GetSenhaMD5(edtSenhaUsuario.Text);
-        qry.ExecSQL;
-      except
-        on E:exception do
-        begin
-          qry.Connection.Rollback;
-          ShowMessage('Erro ' + E.Message);
-        end;
-      end;
-    end;
+      FUsuario.Inserir;
 
-    qry.Connection.Commit;
-  finally
-    qry.Connection.Rollback;
     LimpaCampos;
-    FreeAndNil(cripto);
-    qry.Free;
-    qrySelect.Free;
+  finally
+    cripto.Free;
   end;
+end;
+
+procedure TfrmUsuario.SetUsuario(const Value: TUsuario);
+begin
+  FUsuario := Value;
 end;
 
 procedure TfrmUsuario.ValidaCampos;

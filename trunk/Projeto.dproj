@@ -295,6 +295,12 @@
             <Form>$R *.res</Form>
         </DCCReference>
         <DCCReference Include="Login\uclLogin.pas"/>
+        <DCCReference Include="Usuario\uclUsuario.pas"/>
+        <DCCReference Include="Usuario\dUsuario.pas">
+            <Form>dmUsuario</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

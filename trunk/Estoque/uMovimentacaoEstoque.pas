@@ -58,7 +58,7 @@ begin
 
       qry.Open(SQL, [IdItem]);
       id := qry.FieldByName('id_wms_endereco_produto').AsLargeInt;
-      qtEstoque := qry.FieldByName('qt_estoque').AsFloat;//quantidade no banco
+      qtEstoque := qry.FieldByName('qt_estoque').AsFloat;
 
       if EntradaSaida.Equals('E') then
         qttotal := qtEstoque + Qtdade

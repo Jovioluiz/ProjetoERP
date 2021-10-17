@@ -71,12 +71,15 @@ uses
   fCadastroPadrao in 'Outros\fCadastroPadrao.pas' {frmCadastroPadrao},
   uclPedidoVendaItem in 'Pedido Venda\uclPedidoVendaItem.pas',
   uSet in 'Outros\uSet.pas' {$R *.res},
-  uclLogin in 'Login\uclLogin.pas';
+  uclLogin in 'Login\uclLogin.pas',
+  uclUsuario in 'Usuario\uclUsuario.pas',
+  dUsuario in 'Usuario\dUsuario.pas' {dmUsuario: TDataModule};
 
 {$R *.res}
 
 begin
   Application.CreateForm(Tdm, dm);
+  Application.CreateForm(TdmUsuario, dmUsuario);
   frmLogin := TfrmLogin.Create(nil);
 
   if frmLogin.ShowModal = mrOK then

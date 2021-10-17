@@ -18,8 +18,6 @@ implementation
 
 { TVersao }
 
-
-//exibe a versão do aplicativo
 function TVersao.GetBuildInfo(Prog: string): string;
 var
  VerInfoSize: DWORD;
