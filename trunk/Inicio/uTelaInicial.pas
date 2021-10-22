@@ -53,6 +53,7 @@ type
     ApplicationEvents1: TApplicationEvents;
     Outros1: TMenuItem;
     hreads1: TMenuItem;
+    FiredacETL1: TMenuItem;
     procedure Cliente1Click(Sender: TObject);
     procedure Produto1Click(Sender: TObject);
     procedure FormaPagamento1Click(Sender: TObject);
@@ -79,6 +80,7 @@ type
     procedure ApplicationEvents1Minimize(Sender: TObject);
     procedure TrayIcon1DblClick(Sender: TObject);
     procedure hreads1Click(Sender: TObject);
+    procedure FiredacETL1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -115,7 +117,7 @@ implementation
 {$R *.dfm}
 
 uses uUsuario, fControleAcesso, uDataModule, uGravaArquivo, fCadastroEnderecos,
-  uSplash, fImportaDados, fGridsThread;
+  uSplash, fImportaDados, fGridsThread, fFiredacETL;
 
 
 procedure TfrmPrincipal.ApplicationEvents1Minimize(Sender: TObject);
@@ -242,6 +244,19 @@ begin
     frmLista.ShowModal;
   finally
     frmlista.Free;
+  end;
+end;
+
+procedure TfrmPrincipal.FiredacETL1Click(Sender: TObject);
+var
+  firedac: TfrmFiredacETL;
+begin
+  firedac := TfrmFiredacETL.Create(Self);
+
+  try
+    firedac.ShowModal;
+  finally
+    firedac.Free;
   end;
 end;
 

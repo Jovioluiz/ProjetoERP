@@ -133,7 +133,6 @@ begin
     qry.Free;
     qrySeq.Free;
     FreeAndNil(criptoSenha);
-    frmCadastraSenha.Close;
   end;
 end;
 

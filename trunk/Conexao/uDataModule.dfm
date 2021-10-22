@@ -6,16 +6,19 @@ object dm: Tdm
   Width = 317
   object conexaoBanco: TFDConnection
     Params.Strings = (
-      'Server='
-      'Port='
+      'Server=localhost'
+      'User_Name=postgres'
+      'Password=postgres'
+      'Database=projeto'
       'DriverID=PG')
+    Connected = True
     Left = 32
     Top = 16
   end
   object driver: TFDPhysPgDriverLink
     VendorLib = 
-      'C:\Users\jovio\Desktop\codigos_fontes\Delphi\AProjeto\trunk\lib\' +
-      'libpq.dll'
+      'C:\Users\jovio\Documents\GitHub\ProjetoERP\trunk\Win32\Debug\lib' +
+      'pq.dll'
     Left = 104
     Top = 16
   end

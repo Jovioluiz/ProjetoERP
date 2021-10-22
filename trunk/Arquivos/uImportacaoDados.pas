@@ -109,7 +109,7 @@ end;
 procedure TImportacaoDados.ListaProdutos(Caminho: String);
 var
   linhas, temp: TStringList;
-  i, j: integer;
+  I: integer;
   delimiter: TArray<string>;
 begin
   linhas := TStringList.Create;
@@ -117,23 +117,23 @@ begin
   linhas.LoadFromFile(Caminho);
   Dados.cdsProdutos.EmptyDataSet;
   Dados.cdsProdutos.DisableControls;
-  j := 0;
+
   try
 
     CarregaProdutos;
 
-    for i := 0 to Pred(linhas.Count) do
+    for I := 0 to Pred(linhas.Count) do
     begin
-      ParseDelimited(temp, linhas[i], ';');
+      ParseDelimited(temp, linhas[I], ';');
 
-      delimiter := linhas.Strings[i].Split([';']);
+      delimiter := linhas.Strings[I].Split([';']);
 
       //se o código do produto já está no banco, não mostra no grid
       if FListaProdutos.Contains(temp[0]) then
         Continue;
 
       Dados.cdsProdutos.Append;
-      Dados.cdsProdutos.FieldByName('seq').AsInteger := j + 1;
+      Dados.cdsProdutos.FieldByName('seq').AsInteger := I + 1;
       Dados.cdsProdutos.FieldByName('cd_produto').AsInteger := StrToInt(delimiter[0]);
       Dados.cdsProdutos.FieldByName('desc_produto').AsString := delimiter[1];
       Dados.cdsProdutos.FieldByName('un_medida').AsString := delimiter[2];
@@ -270,6 +270,7 @@ const
 var
   qry: TFDquery;
   produto: TProduto;
+  inicio: TDateTime;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
@@ -279,24 +280,40 @@ begin
   try
     try
       qry.SQL.Add(SQL_INSERT);
-
-      FDados.cdsProdutos.Loop(
-      procedure
+      inicio := Now;
+        //se FDados.cdsProdutos.RecordCount * 8(numero de parametros) > 65535 da erro (postgres), mas mesmo assim insere os registros
+      qry.Params.ArraySize := FDados.cdsProdutos.RecordCount;
+      for var I := 0 to Pred(FDados.cdsProdutos.RecordCount) do
       begin
-        qry.ParamByName('cd_produto').AsString := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
-        qry.ParamByName('fl_ativo').AsBoolean := True;
-        qry.ParamByName('desc_produto').AsString := FDados.cdsProdutos.FieldByName('desc_produto').AsString;
-        qry.ParamByName('un_medida').AsString := FDados.cdsProdutos.FieldByName('un_medida').AsString;
-        qry.ParamByName('fator_conversao').AsInteger := FDados.cdsProdutos.FieldByName('fator_conversao').AsInteger;
-        qry.ParamByName('peso_liquido').AsFloat := FDados.cdsProdutos.FieldByName('peso_liquido').AsFloat;
-        qry.ParamByName('peso_bruto').AsFloat := FDados.cdsProdutos.FieldByName('peso_bruto').AsFloat;
-        qry.ParamByName('id_item').AsLargeInt := produto.GeraIdItem;
-        qry.ExecSQL;
-      end
-      );
+        qry.ParamByName('cd_produto').AsStrings[I] := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
+        qry.ParamByName('fl_ativo').AsBooleans[I] := True;
+        qry.ParamByName('desc_produto').AsStrings[I] := FDados.cdsProdutos.FieldByName('desc_produto').AsString;
+        qry.ParamByName('un_medida').AsStrings[I] := FDados.cdsProdutos.FieldByName('un_medida').AsString;
+        qry.ParamByName('fator_conversao').AsIntegers[I] := FDados.cdsProdutos.FieldByName('fator_conversao').AsInteger;
+        qry.ParamByName('peso_liquido').AsFloats[I] := FDados.cdsProdutos.FieldByName('peso_liquido').AsFloat;
+        qry.ParamByName('peso_bruto').AsFloats[I] := FDados.cdsProdutos.FieldByName('peso_bruto').AsFloat;
+        qry.ParamByName('id_item').AsLargeInts[I] := produto.GeraIdItem;
+      end;
+      qry.Execute(qry.Params.ArraySize, 0);
+
+
+//      FDados.cdsProdutos.Loop(
+//      procedure
+//      begin
+//        qry.ParamByName('cd_produto').AsString := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
+//        qry.ParamByName('fl_ativo').AsBoolean := True;
+//        qry.ParamByName('desc_produto').AsString := FDados.cdsProdutos.FieldByName('desc_produto').AsString;
+//        qry.ParamByName('un_medida').AsString := FDados.cdsProdutos.FieldByName('un_medida').AsString;
+//        qry.ParamByName('fator_conversao').AsInteger := FDados.cdsProdutos.FieldByName('fator_conversao').AsInteger;
+//        qry.ParamByName('peso_liquido').AsFloat := FDados.cdsProdutos.FieldByName('peso_liquido').AsFloat;
+//        qry.ParamByName('peso_bruto').AsFloat := FDados.cdsProdutos.FieldByName('peso_bruto').AsFloat;
+//        qry.ParamByName('id_item').AsLargeInt := produto.GeraIdItem;
+//        qry.ExecSQL;
+//      end
+//      );
 
       qry.Connection.Commit;
-      ShowMessage('Dados gravados com Sucesso');
+      ShowMessage('Dados gravados com Sucesso - ' + FormatDateTime('hh:mm:ss:zzz', Now - inicio));
       Result := True;
 
     except

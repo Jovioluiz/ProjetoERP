@@ -1,4 +1,4 @@
-create database trabalho_engenharia;
+create database projeto;
 
 
 CREATE OR REPLACE FUNCTION public.func_grava_dt_atz()
@@ -925,7 +925,6 @@ delete
 update
     on
     public.nfi for each row execute procedure func_estoque_nota();
-
 ---------------------------------------------------------------------
 
 CREATE TABLE public.acoes_sistema (
@@ -1351,3 +1350,11 @@ ALTER TABLE public.wms_estoque ADD CONSTRAINT wms_estoque_un UNIQUE (id_wms_ende
 ALTER TABLE public.wms_endereco_produto ADD CONSTRAINT wms_endereco_produto_un UNIQUE (id_endereco,id_item);
 
 ALTER TABLE public.pedido_venda_item ADD CONSTRAINT pedido_venda_item_pk PRIMARY KEY (id_geral);
+
+CREATE SEQUENCE public.usuario_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;

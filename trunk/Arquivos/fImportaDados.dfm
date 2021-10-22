@@ -29,7 +29,7 @@ object frmImportaDados: TfrmImportaDados
       Top = 1
       Width = 633
       Height = 502
-      ActivePage = tbProdutos
+      ActivePage = tbFCI
       Align = alClient
       TabOrder = 0
       object tbProdutos: TTabSheet
@@ -153,7 +153,7 @@ object frmImportaDados: TfrmImportaDados
           OnClick = btnVisualizarClienteClick
         end
         object btnGravarCliente: TButton
-          Left = 516
+          Left = 524
           Top = 96
           Width = 98
           Height = 25
@@ -180,41 +180,14 @@ object frmImportaDados: TfrmImportaDados
       object tbFCI: TTabSheet
         Caption = 'Importa'#231#227'o FCI'
         ImageIndex = 2
-        object btnselecionar: TSpeedButton
-          Left = 303
-          Top = 47
-          Width = 23
-          Height = 22
-          Caption = '...'
-          OnClick = btnselecionarClick
-        end
-        object edtDiretorio: TLabeledEdit
+        object btnGravarTeste: TButton
           Left = 16
-          Top = 48
-          Width = 281
-          Height = 21
-          EditLabel.Width = 37
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Arquivo'
-          TabOrder = 0
-        end
-        object btnVisualizar: TButton
-          Left = 352
-          Top = 46
+          Top = 32
           Width = 75
           Height = 25
-          Caption = 'Visualizar'
-          TabOrder = 1
-          OnClick = btnVisualizarClick
-        end
-        object memo: TMemo
-          Left = 16
-          Top = 88
-          Width = 411
-          Height = 337
-          Lines.Strings = (
-            '')
-          TabOrder = 2
+          Caption = 'Gravar'
+          TabOrder = 0
+          OnClick = btnGravarTesteClick
         end
       end
     end

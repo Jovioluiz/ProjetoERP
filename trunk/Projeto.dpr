@@ -73,7 +73,8 @@ uses
   uSet in 'Outros\uSet.pas' {$R *.res},
   uclLogin in 'Login\uclLogin.pas',
   uclUsuario in 'Usuario\uclUsuario.pas',
-  dUsuario in 'Usuario\dUsuario.pas' {dmUsuario: TDataModule};
+  dUsuario in 'Usuario\dUsuario.pas' {dmUsuario: TDataModule},
+  fFiredacETL in 'Outros\fFiredacETL.pas' {frmFiredacETL};
 
 {$R *.res}
 

@@ -11719,6 +11719,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Threads'
         OnClick = hreads1Click
       end
+      object FiredacETL1: TMenuItem
+        Caption = 'Firedac ETL'
+        OnClick = FiredacETL1Click
+      end
     end
   end
   object Timer1: TTimer
