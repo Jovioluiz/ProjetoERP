@@ -64,7 +64,6 @@ type
     procedure SalvarEndereco;
     procedure LimpaCampos;
     procedure LimpaDados;
-    function Pesquisar(IdEndereco: Int64): Boolean; overload;
     function Pesquisar(CdDeposito: Integer; Ala, Rua: string): Boolean; overload;
     function ValidaCampos: Boolean;
 
@@ -218,7 +217,7 @@ begin
   qryEnderecos.Connection := dm.conexaoBanco;
 
   try
-    FRegras.Dados.cdsEndereco.EmptyDataSet;
+    FRegras.Dados.cdsEnderecoProduto.EmptyDataSet;
     try
       if not edtCodBarrasProduto.isEmpty then
       begin
@@ -349,74 +348,17 @@ begin
   end;
 end;
 
-function TfrmCadastroEnderecos.Pesquisar(IdEndereco: Int64): Boolean;
-const
-  SQL = 'select nm_endereco from wms_endereco_produto ' +
-        'where id_endereco = :id_endereco';
-var
-  qry: TFDQuery;
-begin
-  Result := False;
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-
-  try
-    qry.SQL.Add(SQL);
-    qry.ParamByName('id_endereco').AsInteger := IdEndereco;
-    qry.Open(SQL);
-
-    if qry.FieldByName('nm_endereco').AsString = edtCodDepositoProdEndereco.Text + '-'
-                                                 + edtAlaProdEndereco.Text + '-'+
-                                                 edtRuaProdEndereco.Text then
-      Result := True;
-  finally
-    qry.Free;
-  end;
-
-end;
-
 procedure TfrmCadastroEnderecos.SalvaEnderecoProduto;
-const
-  SQL_INSERT = 'insert into wms_endereco_produto (id_geral, id_endereco, nm_endereco, id_item, ordem) ' +
-               'values(:id_geral, :id_endereco, :nm_endereco, :id_item, :ordem)';
 var
-  qry: TFDQuery;
-  idGeral: TGerador;
+  endereco: string;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  idGeral := TGerador.Create;
+
   try
-    qry.SQL.Add(SQL_INSERT);
-
-    try
-      FRegras.Dados.cdsEnderecoProduto.Loop(
-        procedure
-        begin  //verifica se já possui um endereço cadastrado para o produto
-          if not Pesquisar(FRegras.GetIdEndereco(FRegras.Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString)) then
-          begin
-            qry.ParamByName('id_geral').AsInteger := idGeral.GeraIdGeral;
-            qry.ParamByName('id_endereco').AsInteger := FRegras.GetIdEndereco(FRegras.Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString);
-            qry.ParamByName('nm_endereco').AsString := FRegras.Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString;
-            qry.ParamByName('id_item').AsLargeInt := FRegras.GetIdItem(FRegras.Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString);
-            qry.ParamByName('ordem').AsInteger := FRegras.Dados.cdsEnderecoProduto.FieldByName('ordem').AsInteger;
-            qry.ExecSQL;
-            qry.Connection.Commit;
-          end;
-        end
-      );
-
-    except
-      on E: Exception do
-      begin
-        qry.Connection.Rollback;
-        ShowMessage('Erro ao gravar o endereço ' + FRegras.Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString + E.Message);
-        Exit;
-      end;
-    end;
-  finally
-    FreeAndNil(idGeral);
-    qry.Free;
+    endereco := edtCodDepositoProdEndereco.Text + '-' + edtAlaProdEndereco.Text + '-'+ edtRuaProdEndereco.Text;
+    FRegras.SalvaEnderecoProduto(endereco);
+  except
+    on E: Exception do
+      raise Exception.Create('Erro ao gravar o endereço ' + FRegras.Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString + E.Message);
   end;
 end;
 

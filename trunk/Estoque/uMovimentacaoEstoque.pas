@@ -3,7 +3,7 @@ unit uMovimentacaoEstoque;
 interface
 
 uses
-  FireDAC.Stan.Param;
+  FireDAC.Stan.Param, FireDAC.Comp.Client;
 
 type TMovimentacaoEstoque = class
 
@@ -14,17 +14,20 @@ type TMovimentacaoEstoque = class
       EntradaSaida: string;
       QtEstoque: Double;
     end;
-
+  private
+    FConexao: TFDConnection;
 
   public
     procedure InsereWmsMvto(IdItem: Integer; UnMedida: string; Qtdade: Double; EntSai: string);
     procedure AtualizaEstoque(IdItem: Integer; Qtdade: Double; EntradaSaida: string);
+
+  property Conexao: TFDConnection read FConexao write FConexao;
 end;
 
 implementation
 
 uses
-  FireDAC.Comp.Client, uGerador, uDataModule, System.SysUtils, Vcl.Dialogs,
+  uGerador, uDataModule, System.SysUtils, Vcl.Dialogs,
   System.StrUtils;
 
 { TMovimentacaoEstoque }
@@ -50,39 +53,26 @@ var
   id: Int64;
 begin
   qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
+  qry.Connection := FConexao;
 
   try
-    try
+    qry.Open(SQL, [IdItem]);
+    id := qry.FieldByName('id_wms_endereco_produto').AsLargeInt;
+    qtEstoque := qry.FieldByName('qt_estoque').AsFloat;
 
-      qry.Open(SQL, [IdItem]);
-      id := qry.FieldByName('id_wms_endereco_produto').AsLargeInt;
-      qtEstoque := qry.FieldByName('qt_estoque').AsFloat;
+    if EntradaSaida.Equals('E') then
+      qttotal := qtEstoque + Qtdade
+    else
+      qttotal := qtEstoque - Qtdade;
 
-      if EntradaSaida.Equals('E') then
-        qttotal := qtEstoque + Qtdade
-      else
-        qttotal := qtEstoque - Qtdade;
+    qry.SQL.Clear;
 
-      qry.SQL.Clear;
+    qry.SQL.Add(SQL_UPDATE);
+    qry.ParamByName('id').AsInteger := id;
+    qry.ParamByName('qt_estoque').AsFloat := qttotal;
 
-      qry.SQL.Add(SQL_UPDATE);
-      qry.ParamByName('id').AsInteger := id;
-      qry.ParamByName('qt_estoque').AsFloat := qttotal;
-
-      qry.ExecSQL;
-
-      qry.Connection.Commit;
-    except
-      on E : exception do
-      begin
-        qry.Connection.Rollback;
-        raise Exception.Create('Erro ao atualizar o estoque dos produtos ' + E.Message);
-      end;
-    end;
+    qry.ExecSQL;
   finally
-    qry.Connection.Rollback;
     qry.Free;
   end;
 end;
@@ -121,37 +111,25 @@ var
   IdGeral: TGerador;
 begin
   qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
+  qry.Connection := FConexao;
   qrySelect := TFDQuery.Create(nil);
-  qrySelect.Connection := dm.conexaoBanco;
+  qrySelect.Connection := FConexao;
   IdGeral := TGerador.Create;
 
   try
-    try
-      qrySelect.Open(SQL_SELECT, [IdItem]);
+    qrySelect.Open(SQL_SELECT, [IdItem]);
 
-      qry.SQL.Add(SQL_INSERT);
-      qry.ParamByName('id_geral').AsFloat := IdGeral.GeraIdGeral;
-      qry.ParamByName('id_endereco_produto').AsInteger := qrySelect.FieldByName('id_geral').AsInteger;
-      qry.ParamByName('id_item').AsLargeInt := IdItem;
-      qry.ParamByName('qt_estoque').AsFloat := Qtdade;
-      qry.ParamByName('un_estoque').AsString := UnMedida;
-      qry.ParamByName('fl_entrada_saida').AsString := EntSai;
+    qry.SQL.Add(SQL_INSERT);
+    qry.ParamByName('id_geral').AsFloat := IdGeral.GeraIdGeral;
+    qry.ParamByName('id_endereco_produto').AsInteger := qrySelect.FieldByName('id_geral').AsInteger;
+    qry.ParamByName('id_item').AsLargeInt := IdItem;
+    qry.ParamByName('qt_estoque').AsFloat := Qtdade;
+    qry.ParamByName('un_estoque').AsString := UnMedida;
+    qry.ParamByName('fl_entrada_saida').AsString := EntSai;
 
-      qry.ExecSQL;
-      qry.Connection.Commit;
-
-    except
-      on e:Exception do
-      begin
-        qry.Connection.Rollback;
-        raise Exception.Create('Erro: ' + e.Message);
-      end;
-    end;
+    qry.ExecSQL;
 
   finally
-    qry.Connection.Rollback;
     qry.Free;
     qrySelect.Free;
     FreeAndNil(IdGeral);

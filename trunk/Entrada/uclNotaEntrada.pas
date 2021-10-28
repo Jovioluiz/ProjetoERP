@@ -17,6 +17,8 @@ type TNotaEntrada = class
     function Pesquisar(CodItem: string): Boolean;
     function GravaCabecalho(Conexao: TFDConnection): Boolean;
     function GravaItens(Conexao: TFDConnection): Boolean;
+    function PossuiNotaLancada(Numero, CodFornecedor: Integer; Serie: string): Boolean;
+    function GetSerieNfc(Serie: string): string;
 
     constructor Create;
     destructor Destroy; override;
@@ -27,7 +29,7 @@ end;
 implementation
 
 uses
-  System.SysUtils, Vcl.Dialogs, uUtil;
+  System.SysUtils, Vcl.Dialogs, uUtil, uConexao;
 
 { TValidacoesEntrada }
 
@@ -37,7 +39,7 @@ const
           'cd_cliente,                '+
           'nome                       '+
         'from                         '+
-           'cliente c2                '+
+           'cliente                   '+
         'where                        '+
             'cd_cliente = :cd_cliente';
 var
@@ -47,11 +49,9 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(sql);
-    qry.ParamByName('cd_cliente').AsInteger := CodCliente;
-    qry.Open(sql);
+    qry.Open(sql, [CodCliente]);
 
-    Result := qry.IsEmpty;
+    Result := not qry.IsEmpty;
   finally
     qry.Free;
   end;
@@ -86,6 +86,27 @@ begin
 
   finally
     qry.Free;
+  end;
+end;
+
+function TNotaEntrada.GetSerieNfc(Serie: string): string;
+const
+  SQL = 'select nr_serie from serie_nf where nr_serie = :nr_serie';
+var
+  query: TFDQuery;
+begin
+  query := TFDQuery.Create(nil);
+  query.Connection := dm.conexaoBanco;
+
+  try
+    query.Open(SQL, [Serie]);
+
+    if query.IsEmpty then
+      Exit('');
+
+    Result := query.FieldByName('nr_serie').AsString;
+  finally
+    query.Free;
   end;
 end;
 
@@ -305,6 +326,33 @@ begin
   try
     query.Open(SQL, [CodItem]);
     Result := not query.IsEmpty;
+  finally
+    query.Free;
+  end;
+end;
+
+function TNotaEntrada.PossuiNotaLancada(Numero, CodFornecedor: Integer; Serie: string): Boolean;
+const
+  SQL = 'select          '+
+        ' dcto_numero,   '+
+        ' cd_fornecedor, '+
+        ' serie          '+
+        'from            '+
+        ' nfc            '+
+        'where           '+
+        ' dcto_numero = :dcto_numero '+
+        ' and cd_fornecedor = :cd_fornecedor '+
+        ' and serie = :serie';
+var
+  query: TFDQuery;
+begin
+  query := TFDQuery.Create(nil);
+  query.Connection := dm.conexaoBanco;
+
+  try
+    query.Open(SQL, [Numero, CodFornecedor, Serie]);
+    Result := not query.IsEmpty;
+
   finally
     query.Free;
   end;

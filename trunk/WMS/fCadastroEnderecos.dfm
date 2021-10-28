@@ -31,7 +31,7 @@ object frmCadastroEnderecos: TfrmCadastroEnderecos
       Top = 1
       Width = 698
       Height = 489
-      ActivePage = tbsEndereco
+      ActivePage = tbsProdutoEndereco
       Align = alClient
       TabOrder = 0
       object tbsEndereco: TTabSheet
@@ -230,7 +230,7 @@ object frmCadastroEnderecos: TfrmCadastroEnderecos
           TabOrder = 2
         end
         object btnAdd: TButton
-          Left = 609
+          Left = 612
           Top = 140
           Width = 75
           Height = 25

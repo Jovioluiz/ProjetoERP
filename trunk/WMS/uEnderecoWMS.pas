@@ -9,11 +9,14 @@ type TEnderecoWMS = class
   private
     FDados: TdmWMS;
     procedure SetDados(const Value: TdmWMS);
-
+    function Pesquisar(IdEndereco: Int64; Endereco: string): Boolean;
+    function GetUnMedidaItem(IdItem: Integer): String;
   public
     function GetIdItem(CdItem: string): Int64;
     function GetIdEndereco(NomeEndereco: String): Int64;
 
+    procedure SalvaEnderecoProduto(Endereco: string);
+    procedure SalvarWmsEstoque(IdEndereco: Int64; IdItem: integer);
     constructor Create;
     destructor Destroy; override;
 
@@ -23,7 +26,7 @@ end;
 implementation
 
 uses
-  FireDAC.Comp.Client, uDataModule;
+  FireDAC.Comp.Client, uDataModule, uGerador, uUtil;
 
 constructor TEnderecoWMS.Create;
 begin
@@ -44,7 +47,7 @@ const
         'from            ' +
         '   wms_endereco we ' +
         'where               ' +
-        '   concat(cd_deposito, ''-'', ala, ''-'', rua, ''-'', complemento) = :nm_endereco ' +
+        '   concat(cd_deposito, ''-'', ala, ''-'', rua) = :nm_endereco ' +
         'limit 1';
 var
   qry: TFDQuery;
@@ -81,6 +84,115 @@ begin
 
   finally
     qry.Free;
+  end;
+end;
+
+function TEnderecoWMS.GetUnMedidaItem(IdItem: Integer): String;
+const
+  SQL = 'select un_medida from produto where id_item = :id_item';
+var
+  qry: TFDQuery;
+begin
+  qry := TFDQuery.Create(nil);
+  qry.Connection := dm.conexaoBanco;
+
+  try
+    qry.Open(SQL, [IdItem]);
+
+    Result := qry.FieldByName('un_medida').AsString;
+
+  finally
+    qry.Free;
+  end;
+end;
+
+function TEnderecoWMS.Pesquisar(IdEndereco: Int64; Endereco: string): Boolean;
+const
+  SQL = 'select nm_endereco from wms_endereco_produto ' +
+        'where id_endereco = :id_endereco';
+var
+  qry: TFDQuery;
+begin
+  qry := TFDQuery.Create(nil);
+  qry.Connection := dm.conexaoBanco;
+
+  try
+    qry.Open(SQL, [IdEndereco]);
+
+    Result := qry.FieldByName('nm_endereco').AsString = Endereco;
+  finally
+    qry.Free;
+  end;
+end;
+
+procedure TEnderecoWMS.SalvaEnderecoProduto(Endereco: string);
+const
+  SQL_INSERT = 'insert into wms_endereco_produto (id_geral, id_endereco, nm_endereco, id_item, ordem) ' +
+               'values(:id_geral, :id_endereco, :nm_endereco, :id_item, :ordem)';
+var
+  qry: TFDQuery;
+  idGeral: TGerador;
+  idEndereco: Int64;
+begin
+  qry := TFDQuery.Create(nil);
+  qry.Connection := dm.conexaoBanco;
+  idGeral := TGerador.Create;
+  idEndereco := 0;
+
+  try
+    qry.SQL.Add(SQL_INSERT);
+     //verifica se já possui um endereço cadastrado para o produto
+    if not Pesquisar(GetIdEndereco(Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString), endereco) then
+    begin
+      idEndereco := idGeral.GeraIdGeral;
+      qry.ParamByName('id_geral').AsInteger := idEndereco;
+      qry.ParamByName('id_endereco').AsInteger := GetIdEndereco(Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString);
+      qry.ParamByName('nm_endereco').AsString := Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString;
+      qry.ParamByName('id_item').AsLargeInt := GetIdItem(Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString);
+      qry.ParamByName('ordem').AsInteger := Dados.cdsEnderecoProduto.FieldByName('ordem').AsInteger;
+      qry.ExecSQL;
+      qry.Connection.Commit;
+    end;
+
+    SalvarWmsEstoque(idEndereco, GetIdItem(Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString));
+  finally
+    idGeral.Free;
+    qry.Free;
+  end;
+end;
+
+procedure TEnderecoWMS.SalvarWmsEstoque(IdEndereco: Int64; IdItem: Integer);
+const
+  SQL_ITEM = 'select	1 from wms_estoque where id_item = :id_item';
+  SQL_INSERT = ' INSERT INTO wms_estoque ' +
+               ' (id_geral, id_wms_endereco_produto, id_item, qt_estoque, un_estoque) ' +
+               ' VALUES(:id_geral, :id_wms_endereco_produto, :id_item, :qt_estoque, :un_estoque)';
+var
+  query: TFDQuery;
+  idGeral: TGerador;
+begin
+  query := TFDQuery.Create(nil);
+  query.Connection := dm.conexaoBanco;
+  idGeral := TGerador.Create;
+
+  try
+    query.Open(SQL_ITEM, [IdItem]);
+
+    if query.IsEmpty then
+    begin
+      query.SQL.Clear;
+      query.SQL.Add(SQL_INSERT);
+      query.ParamByName('id_geral').AsLargeInt := idGeral.GeraIdGeral;
+      query.ParamByName('id_wms_endereco_produto').AsLargeInt := IdEndereco;
+      query.ParamByName('id_item').AsInteger := IdItem;
+      query.ParamByName('qt_estoque').AsFloat := 0;
+      query.ParamByName('un_estoque').AsString := GetUnMedidaItem(IdItem);
+      query.ExecSQL;
+    end;
+    
+  finally
+    query.Free;
+    idGeral.Free;
   end;
 end;
 

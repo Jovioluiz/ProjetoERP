@@ -197,14 +197,14 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Caption = 'Fator'
     end
     object Label25: TLabel
-      Left = 656
+      Left = 644
       Top = 312
       Width = 64
       Height = 13
       Caption = 'Valor Unit'#225'rio'
     end
     object Label26: TLabel
-      Left = 726
+      Left = 720
       Top = 312
       Width = 51
       Height = 13
@@ -218,7 +218,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Caption = 'X'
     end
     object Label28: TLabel
-      Left = 596
+      Left = 575
       Top = 312
       Width = 49
       Height = 13
@@ -280,7 +280,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 245
       Height = 21
       Enabled = False
-      TabOrder = 27
+      TabOrder = 28
     end
     object edtNomeFornecedor: TEdit
       Left = 144
@@ -288,7 +288,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 245
       Height = 21
       Enabled = False
-      TabOrder = 28
+      TabOrder = 29
     end
     object edtNomeModelo: TEdit
       Left = 560
@@ -296,7 +296,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 249
       Height = 21
       Enabled = False
-      TabOrder = 29
+      TabOrder = 30
     end
     object edtDataEmissao: TDateTimePicker
       Left = 510
@@ -332,7 +332,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 269
       Height = 21
       Enabled = False
-      TabOrder = 30
+      TabOrder = 31
     end
     object edtUnMedida: TEdit
       Left = 395
@@ -340,46 +340,6 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 51
       Height = 21
       TabOrder = 19
-    end
-    object edtQuantidade: TEdit
-      Left = 456
-      Top = 339
-      Width = 56
-      Height = 21
-      TabOrder = 20
-      OnChange = edtQuantidadeChange
-      OnExit = edtQuantidadeExit
-    end
-    object edtFatorConversao: TEdit
-      Left = 532
-      Top = 339
-      Width = 51
-      Height = 21
-      Enabled = False
-      TabOrder = 31
-    end
-    object edtValorUnitario: TEdit
-      Left = 656
-      Top = 339
-      Width = 64
-      Height = 21
-      TabOrder = 22
-      OnChange = edtValorUnitarioChange
-    end
-    object edtValorTotalProduto: TEdit
-      Left = 726
-      Top = 339
-      Width = 67
-      Height = 21
-      TabOrder = 23
-    end
-    object edtQuantidadeTotalProduto: TEdit
-      Left = 596
-      Top = 339
-      Width = 51
-      Height = 21
-      Enabled = False
-      TabOrder = 21
     end
     object edtDataLancamento: TDateTimePicker
       Left = 709
@@ -396,7 +356,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 42
       Height = 26
       Caption = '+'
-      TabOrder = 24
+      TabOrder = 25
       OnClick = btnAddItensClick
     end
     object DBGridProdutos: TDBGrid
@@ -420,7 +380,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 75
       Height = 25
       Caption = 'Confirmar'
-      TabOrder = 25
+      TabOrder = 26
       OnClick = btnConfirmarClick
     end
     object btnCancelar: TButton
@@ -429,7 +389,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 75
       Height = 25
       Caption = 'Cancelar'
-      TabOrder = 26
+      TabOrder = 27
       OnClick = btnCancelarClick
     end
     object edtVlServico: TNumberBox
@@ -527,6 +487,48 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Enabled = False
       Mode = nbmCurrency
       TabOrder = 33
+    end
+    object edtQuantidade: TNumberBox
+      Left = 452
+      Top = 339
+      Width = 62
+      Height = 21
+      Mode = nbmFloat
+      TabOrder = 20
+      OnChange = edtQuantidadeChange
+      OnExit = edtQuantidadeExit
+    end
+    object edtFatorConversao: TNumberBox
+      Left = 529
+      Top = 339
+      Width = 40
+      Height = 21
+      TabOrder = 21
+    end
+    object edtQuantidadeTotalProduto: TNumberBox
+      Left = 579
+      Top = 339
+      Width = 50
+      Height = 21
+      Mode = nbmFloat
+      TabOrder = 22
+    end
+    object edtValorUnitario: TNumberBox
+      Left = 644
+      Top = 339
+      Width = 59
+      Height = 21
+      Mode = nbmCurrency
+      TabOrder = 23
+      OnChange = edtValorUnitarioChange
+    end
+    object edtValorTotalProduto: TNumberBox
+      Left = 720
+      Top = 339
+      Width = 51
+      Height = 21
+      Mode = nbmCurrency
+      TabOrder = 24
     end
   end
   object sqlCabecalho: TFDQuery

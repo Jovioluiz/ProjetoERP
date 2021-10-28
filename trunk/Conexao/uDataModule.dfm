@@ -11,7 +11,6 @@ object dm: Tdm
       'Password=postgres'
       'Database=projeto'
       'DriverID=PG')
-    Connected = True
     Left = 32
     Top = 16
   end
