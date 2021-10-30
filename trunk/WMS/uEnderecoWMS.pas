@@ -3,7 +3,7 @@ unit uEnderecoWMS;
 interface
 
 uses
-  FireDAC.Stan.Param, dWMS;
+  FireDAC.Stan.Param, dWMS, Data.DB;
 
 type TEnderecoWMS = class
   private
@@ -17,6 +17,7 @@ type TEnderecoWMS = class
 
     procedure SalvaEnderecoProduto(Endereco: string);
     procedure SalvarWmsEstoque(IdEndereco: Int64; IdItem: integer);
+    procedure CarregaEndereco(CodProduto: string);
     constructor Create;
     destructor Destroy; override;
 
@@ -26,7 +27,88 @@ end;
 implementation
 
 uses
-  FireDAC.Comp.Client, uDataModule, uGerador, uUtil;
+  FireDAC.Comp.Client, uDataModule, uGerador, uUtil, System.SysUtils,
+  Vcl.Dialogs;
+
+procedure TEnderecoWMS.CarregaEndereco(CodProduto: string);
+const
+  SQL_PROD = ' select ' +
+             ' 	p.desc_produto ' +
+             ' from ' +
+             ' 	produto p ' +
+             ' left join produto_cod_barras pcb on ' +
+             ' 	pcb.id_item = p.id_item ' +
+             ' where ' +
+             ' 	pcb.codigo_barras = :codigo ' +
+             ' 	or p.cd_produto = :codigo ';
+
+  SQL_ENDERECO = ' select ' +
+                 '    p.cd_produto, ' +
+                 '    p.desc_produto, ' +
+                 '    we.cd_deposito, ' +
+                 '    we.ala, ' +
+                 '    we.rua, ' +
+                 '    we.complemento, ' +
+                 '    wep.nm_endereco,  ' +
+                 '    wep.ordem ' +
+                 ' from wms_endereco we ' +
+                 ' join wms_endereco_produto wep on ' +
+                 '    wep.id_endereco = we.id_geral  ' +
+                 ' join produto p on  ' +
+                 '    p.id_item = wep.id_item  ' +
+                 ' where wep.id_item = :id_item  ';
+var
+  qryProduto,
+  qryEnderecos: TFDQuery;
+  nmProduto: string;
+begin
+  qryProduto := TFDQuery.Create(nil);
+  qryProduto.Connection := dm.conexaoBanco;
+  qryEnderecos := TFDQuery.Create(nil);
+  qryEnderecos.Connection := dm.conexaoBanco;
+
+  try
+    qryProduto.Open(SQL_PROD, [CodProduto]);
+
+    if qryProduto.IsEmpty then
+    begin
+      ShowMessage('Produto não encontrado!');
+      Exit;
+    end;
+
+    if not qryProduto.IsEmpty then
+      nmProduto := qryProduto.FieldByName('desc_produto').AsString;
+
+    qryEnderecos.Open(SQL_ENDERECO, [GetIdItem(CodProduto)]);
+
+    qryEnderecos.Loop(
+    procedure
+    begin
+      Dados.cdsEnderecoProduto.Append;
+      Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString := qryEnderecos.FieldByName('cd_produto').AsString;
+      Dados.cdsEnderecoProduto.FieldByName('nm_produto').AsString := qryEnderecos.FieldByName('desc_produto').AsString;
+      Dados.cdsEnderecoProduto.FieldByName('cd_deposito').AsInteger := qryEnderecos.FieldByName('cd_deposito').AsInteger;
+      Dados.cdsEnderecoProduto.FieldByName('ala').AsString := qryEnderecos.FieldByName('ala').AsString;
+      Dados.cdsEnderecoProduto.FieldByName('rua').AsString := qryEnderecos.FieldByName('rua').AsString;
+      Dados.cdsEnderecoProduto.FieldByName('complemento').AsString := qryEnderecos.FieldByName('complemento').AsString;
+      Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString := qryEnderecos.FieldByName('nm_endereco').AsString;
+      Dados.cdsEnderecoProduto.FieldByName('ordem').AsString := qryEnderecos.FieldByName('ordem').AsString;
+      Dados.cdsEnderecoProduto.Post;
+    end
+    );
+
+    if qryEnderecos.IsEmpty then
+    begin
+      Dados.cdsEnderecoProduto.Append;
+      Dados.cdsEnderecoProduto.FieldByName('nm_produto').AsString := nmProduto;
+      Dados.cdsEnderecoProduto.Post;
+    end;
+
+  finally
+    qryProduto.Free;
+    qryEnderecos.Free;
+  end;
+end;
 
 constructor TEnderecoWMS.Create;
 begin

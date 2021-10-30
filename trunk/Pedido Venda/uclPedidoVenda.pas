@@ -494,6 +494,7 @@ var
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
+  frmPedidoVenda := nil;
 
   try
     qry.Open(SQL, [NrPedido]);

@@ -31,7 +31,7 @@ object frmCadastroEnderecos: TfrmCadastroEnderecos
       Top = 1
       Width = 698
       Height = 489
-      ActivePage = tbsProdutoEndereco
+      ActivePage = tbsEndereco
       Align = alClient
       TabOrder = 0
       object tbsEndereco: TTabSheet
@@ -257,6 +257,15 @@ object frmCadastroEnderecos: TfrmCadastroEnderecos
           Width = 58
           Height = 21
           TabOrder = 6
+          OnExit = edtOrdemExit
+        end
+        object edtNomeEndereco: TEdit
+          Left = 485
+          Top = 142
+          Width = 121
+          Height = 21
+          Enabled = False
+          TabOrder = 10
         end
       end
     end

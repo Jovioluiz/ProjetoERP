@@ -91,7 +91,7 @@ type
     procedure edtVlServicoExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure edtValorFreteExit(Sender: TObject);
-    procedure valorTotalNota;
+    procedure ValorTotalNota;
     procedure CalculaQuantidadeTotalItem();
     procedure edtValorIPIExit(Sender: TObject);
     procedure edtValorDescontoExit(Sender: TObject);
@@ -204,7 +204,6 @@ end;
 procedure TfrmLancamentoNotaEntrada.edtCdFornecedorExit(Sender: TObject);
 var
   cliente: TNotaEntrada;
-  resposta : Boolean;
 begin
   if edtCdFornecedor.Text = EmptyStr then
   begin
@@ -449,12 +448,12 @@ begin
     edtVlServico.SetFocus;
   end
   else
-    valorTotalNota;
+    ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtVlServicoExit(Sender: TObject);
 begin
-  valorTotalNota;
+  ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.FormClose(Sender: TObject;
@@ -687,16 +686,13 @@ const
         '   :dt_pgto)';
 var
   qry: TFDQuery;
-  msg: string;
   idGeral: TGerador;
 begin
   qry := TFDQuery.Create(Self);
   qry.Connection := Conexao;
-//  qry.Connection.StartTransaction;
   idGeral := TGerador.Create;
 
   try
-//    try
       qry.SQL.Add(SQL);
       qry.ParamByName('id_geral').AsInteger := idGeral.GeraIdGeral;
       qry.ParamByName('id_nota_entrada').AsInteger := FRegras.DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
@@ -707,20 +703,8 @@ begin
       qry.ParamByName('fl_entrada_saida').AsString := 'E';
       qry.ParamByName('dt_pgto').AsDateTime := Now;
       qry.ExecSQL;
-//      qry.Connection.Commit;
 
-//    except
-//      on E : exception do
-//      begin
-//        Conexao.Rollback;
-//        msg := 'Erro ao gravar o financeiro da nota fiscal '
-//               + edtNroNota.Text + E.Message;
-//        ShowMessage(msg);
-//        Exit;
-//      end;
-//    end;
   finally
-//    qry.Connection.Rollback;
     qry.Free;
     idGeral.Free;
   end;
@@ -840,7 +824,6 @@ begin
         begin
           if FRegras.GravaItens(dm.conexaoBanco) then
           begin
-//            dm.conexaoBanco.Commit;
 
             //insere na wms_mvto e atualiza a quantidade em estoque
             estoque.InsereWmsMvto(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
@@ -902,27 +885,27 @@ end;
 
 procedure TfrmLancamentoNotaEntrada.edtValorAcrescimoExit(Sender: TObject);
 begin
-  valorTotalNota;
+  ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtValorDescontoExit(Sender: TObject);
 begin
-  valorTotalNota;
+  ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtValorFreteExit(Sender: TObject);
 begin
-  valorTotalNota;
+  ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtValorIPIExit(Sender: TObject);
 begin
-  valorTotalNota;
+  ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtValorOutrasDespesasExit(Sender: TObject);
 begin
-  valorTotalNota;
+  ValorTotalNota;
   PreencheDatasetNFC;
 end;
 
@@ -948,8 +931,7 @@ begin
     raise Exception.Create(' O valor total dos itens não fecha com o valor total da nota! Verifique');
 end;
 
-procedure TfrmLancamentoNotaEntrada.valorTotalNota;
-//calcula o valor total da nota
+procedure TfrmLancamentoNotaEntrada.ValorTotalNota;
 var
   vlTotal: Currency;
 begin
