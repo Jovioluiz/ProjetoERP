@@ -116,7 +116,7 @@ begin
   cadTabelaPrecoProduto.edtCodProduto.Text := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
   cadTabelaPrecoProduto.edtUNMedida.Text := FDados.cdsProdutos.FieldByName('un_medida').AsString;
   cadTabelaPrecoProduto.edtValor.Text := CurrToStr(FDados.cdsProdutos.FieldByName('valor').AsCurrency);
-  cadTabelaPrecoProduto.Show;
+  cadTabelaPrecoProduto.ShowModal;
 end;
 
 procedure TfrmcadTabelaPreco.DBGridProdutoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
