@@ -7,13 +7,15 @@ uses
 
 type TConexao = class
   private
-    conn: TFDConnection;
+    Conexao: TFDConnection;
+    Query: TFDQuery;
   public
     // construtor da classe
     constructor Create;
 
     //função que retorna a conexão com o banco de dados
-    function getConexao: TFDConnection;
+    function GetConexao: TFDConnection;
+    function TipoFQuery: TFDQuery;
 end;
 
 implementation
@@ -28,30 +30,35 @@ var
   conexaoIni: TIniFile;
 begin
   conexaoIni := TIniFile.Create(GetCurrentDir + '\conexao\conexao.ini');
-  conn := TFDConnection.Create(nil);
+  Conexao := TFDConnection.Create(nil);
 
-  conn.DriverName := 'PG';
+  Conexao.DriverName := 'PG';
 
-  conn.Params.Values['Server'] := conexaoIni.ReadString('configuracoes', 'servidor', conn.Params.Values['Server']);
-  conn.Params.Database := conexaoIni.ReadString('configuracoes', 'banco', conn.Params.Database);
-  conn.Params.UserName := conexaoIni.ReadString('configuracoes', 'usuario', conn.Params.UserName);
-  conn.Params.Password := conexaoIni.ReadString('configuracoes', 'senha', conn.Params.Password);
-  conn.Params.Values['Port'] := conexaoIni.ReadString('configuracoes', 'porta', conn.Params.Values['Port']);
+  Conexao.Params.Values['Server'] := conexaoIni.ReadString('configuracoes', 'servidor', Conexao.Params.Values['Server']);
+  Conexao.Params.Database := conexaoIni.ReadString('configuracoes', 'banco', Conexao.Params.Database);
+  Conexao.Params.UserName := conexaoIni.ReadString('configuracoes', 'usuario', Conexao.Params.UserName);
+  Conexao.Params.Password := conexaoIni.ReadString('configuracoes', 'senha', Conexao.Params.Password);
+  Conexao.Params.Values['Port'] := conexaoIni.ReadString('configuracoes', 'porta', Conexao.Params.Values['Port']);
 
   try
-    conn.Open();
+    Conexao.Open();
   except
     on e:Exception do
     begin
       ShowMessage('Não foi possível efetuar a conexão. Erro: ' + e.Message);
-      conn := nil;
+      Conexao := nil;
     end;
   end;
 end;
 
-function TConexao.getConexao: TFDConnection;
+function TConexao.GetConexao: TFDConnection;
 begin
-  Result := conn;
+  Result := Conexao;
+end;
+
+function TConexao.TipoFQuery: TFDQuery;
+begin
+  Result := Query.Create(nil);
 end;
 
 end.

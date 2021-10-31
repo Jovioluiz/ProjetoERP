@@ -11,10 +11,11 @@ type
     FFTributacao: ITributacaoGenerica;
     procedure SetFTributacao(const Value: ITributacaoGenerica);
 
-    public
-      constructor Create(Tributacao: ITributacaoGenerica);
+  public
+    function CalculaImposto(ValorBase, Aliquota: Currency): Currency;
+    constructor Create(Tributacao: ITributacaoGenerica);
 
-      property FTributacao: ITributacaoGenerica read FFTributacao write SetFTributacao;
+    property FTributacao: ITributacaoGenerica read FFTributacao write SetFTributacao;
   end;
 
 implementation
@@ -29,6 +30,11 @@ end;
 procedure TManipuladorTributacao.SetFTributacao(const Value: ITributacaoGenerica);
 begin
   FFTributacao := Value;
+end;
+
+function TManipuladorTributacao.CalculaImposto(ValorBase, Aliquota: Currency): Currency;
+begin
+  Result := FFTributacao.CalculaImposto(ValorBase, Aliquota);
 end;
 
 end.

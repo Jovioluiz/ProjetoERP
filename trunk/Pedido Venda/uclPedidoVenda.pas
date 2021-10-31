@@ -57,7 +57,7 @@ end;
 implementation
 
 uses
-  uPedidoVenda, uManipuladorTributacao, uTributacaoICMS;
+  uPedidoVenda, uManipuladorTributacao, uTributacaoICMS, uTributacaoIPI;
 
 
 { TPedidoVenda }
@@ -110,21 +110,22 @@ function TPedidoVenda.CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: 
 var
   manipulador: TManipuladorTributacao;
 begin
+  Result := 0;
   if Tributacao.Equals('ICMS') then
     manipulador := TManipuladorTributacao.Create(TTributacaoICMS.Create)
   else if Tributacao.Equals('IPI') then
-    manipulador := TManipuladorTributacao.Create(TTributacaoIPI.Create);//implementar
+    manipulador := TManipuladorTributacao.Create(TTributacaoIPI.Create)
+  else
+    manipulador := nil;
 
-
-  try
-    Result := manipulador.FTributacao.CalculaImposto(ValorBase, Aliquota);
-  finally
-    manipulador.Free;
+  if Assigned(manipulador) then
+  begin
+    try
+      Result := manipulador.CalculaImposto(ValorBase, Aliquota);
+    finally
+      manipulador.Free;
+    end;
   end;
-
-
-//  Result := FTributacao.CalculaImposto(ValorBase, Aliquota)
-//  Result := (ValorBase * Aliquota) / 100;
 end;
 
 function TPedidoVenda.ValidaCondPgto(CdCond, CdForma: Integer): Boolean;

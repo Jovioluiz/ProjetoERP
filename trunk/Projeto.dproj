@@ -309,6 +309,7 @@
         <DCCReference Include="Tributacao\uTributacao.pas"/>
         <DCCReference Include="Tributacao\uTributacaoICMS.pas"/>
         <DCCReference Include="Tributacao\uManipuladorTributacao.pas"/>
+        <DCCReference Include="Tributacao\uTributacaoIPI.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

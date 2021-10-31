@@ -78,7 +78,8 @@ uses
   uTributacaoGenerica in 'Tributacao\uTributacaoGenerica.pas',
   uTributacao in 'Tributacao\uTributacao.pas',
   uTributacaoICMS in 'Tributacao\uTributacaoICMS.pas',
-  uManipuladorTributacao in 'Tributacao\uManipuladorTributacao.pas';
+  uManipuladorTributacao in 'Tributacao\uManipuladorTributacao.pas',
+  uTributacaoIPI in 'Tributacao\uTributacaoIPI.pas';
 
 {$R *.res}
 

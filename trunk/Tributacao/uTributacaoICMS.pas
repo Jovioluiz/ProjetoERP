@@ -16,11 +16,16 @@ type
 
 implementation
 
+uses
+  System.Math;
+
 { TTributacaoICMS }
 
 function TTributacaoICMS.CalculaImposto(ValorBase, Aliquota: Currency): Currency;
 begin
-  Result := (ValorBase * Aliquota) / 100;
+  if Aliquota = 0 then
+    Exit(0);
+  Result := RoundTo(ValorBase * (Aliquota / 100), -2);
 end;
 
 procedure TTributacaoICMS.RecalculaTributacao;
