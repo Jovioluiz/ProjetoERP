@@ -74,7 +74,11 @@ uses
   uclLogin in 'Login\uclLogin.pas',
   uclUsuario in 'Usuario\uclUsuario.pas',
   dUsuario in 'Usuario\dUsuario.pas' {dmUsuario: TDataModule},
-  fFiredacETL in 'Outros\fFiredacETL.pas' {frmFiredacETL};
+  fFiredacETL in 'Outros\fFiredacETL.pas' {frmFiredacETL},
+  uTributacaoGenerica in 'Tributacao\uTributacaoGenerica.pas',
+  uTributacao in 'Tributacao\uTributacao.pas',
+  uTributacaoICMS in 'Tributacao\uTributacaoICMS.pas',
+  uManipuladorTributacao in 'Tributacao\uManipuladorTributacao.pas';
 
 {$R *.res}
 

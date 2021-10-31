@@ -305,6 +305,10 @@
             <Form>frmFiredacETL</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Tributacao\uTributacaoGenerica.pas"/>
+        <DCCReference Include="Tributacao\uTributacao.pas"/>
+        <DCCReference Include="Tributacao\uTributacaoICMS.pas"/>
+        <DCCReference Include="Tributacao\uManipuladorTributacao.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

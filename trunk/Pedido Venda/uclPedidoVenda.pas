@@ -9,7 +9,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, System.Generics.Collections, dPedidoVenda,
-  Datasnap.DBClient, uUtil;
+  Datasnap.DBClient, uUtil, uTributacaoGenerica;
 
 type TPedidoVenda = class
 
@@ -45,7 +45,7 @@ type TPedidoVenda = class
     function GetCdItem(IdItem: Integer): TInfProdutosCodBarras;
     procedure PreencheDataSet(Info: TArray<TInfProdutosCodBarras>);
     function CarregaPedidoVenda(NroPedido: Integer): Boolean;
-    function CalculaImposto(ValorBase, Aliquota: Currency): Currency;
+    function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: string): Currency;
     procedure EditarPedido(NrPedido: Integer);
 
     property Dados: TdmPedidoVenda read FDados write SetDados;
@@ -57,7 +57,7 @@ end;
 implementation
 
 uses
-  uPedidoVenda;
+  uPedidoVenda, uManipuladorTributacao, uTributacaoICMS;
 
 
 { TPedidoVenda }
@@ -106,9 +106,25 @@ begin
   end;
 end;
 
-function TPedidoVenda.CalculaImposto(ValorBase, Aliquota: Currency): Currency;
+function TPedidoVenda.CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: string): Currency;
+var
+  manipulador: TManipuladorTributacao;
 begin
-  Result := (ValorBase * Aliquota) / 100;
+  if Tributacao.Equals('ICMS') then
+    manipulador := TManipuladorTributacao.Create(TTributacaoICMS.Create)
+  else if Tributacao.Equals('IPI') then
+    manipulador := TManipuladorTributacao.Create(TTributacaoIPI.Create);//implementar
+
+
+  try
+    Result := manipulador.FTributacao.CalculaImposto(ValorBase, Aliquota);
+  finally
+    manipulador.Free;
+  end;
+
+
+//  Result := FTributacao.CalculaImposto(ValorBase, Aliquota)
+//  Result := (ValorBase * Aliquota) / 100;
 end;
 
 function TPedidoVenda.ValidaCondPgto(CdCond, CdForma: Integer): Boolean;

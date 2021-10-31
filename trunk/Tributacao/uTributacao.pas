@@ -35,11 +35,14 @@ begin
   begin
     DataSet.Edit;
     DataSet.FieldByName('icms_vl_base').AsCurrency := DataSet.FieldByName('vl_total_item').AsCurrency;
-    DataSet.FieldByName('icms_valor').AsCurrency := CalculaImposto(DataSet.FieldByName('icms_vl_base').AsCurrency, DataSet.FieldByName('icms_pc_aliq').AsCurrency);
+    DataSet.FieldByName('icms_valor').AsCurrency := CalculaImposto(DataSet.FieldByName('icms_vl_base').AsCurrency,
+                                                                   DataSet.FieldByName('icms_pc_aliq').AsCurrency);
     DataSet.FieldByName('ipi_vl_base').AsCurrency := DataSet.FieldByName('vl_total_item').AsCurrency;
-    DataSet.FieldByName('ipi_valor').AsCurrency := CalculaImposto(DataSet.FieldByName('ipi_vl_base').AsCurrency, DataSet.FieldByName('ipi_pc_aliq').AsCurrency);
+    DataSet.FieldByName('ipi_valor').AsCurrency := CalculaImposto(DataSet.FieldByName('ipi_vl_base').AsCurrency,
+                                                                  DataSet.FieldByName('ipi_pc_aliq').AsCurrency);
     DataSet.FieldByName('pis_cofins_vl_base').AsCurrency := DataSet.FieldByName('vl_total_item').AsCurrency;
-    DataSet.FieldByName('pis_cofins_valor').AsCurrency := CalculaImposto(DataSet.FieldByName('pis_cofins_vl_base').AsCurrency, DataSet.FieldByName('pis_cofins_pc_aliq').AsCurrency);
+    DataSet.FieldByName('pis_cofins_valor').AsCurrency := CalculaImposto(DataSet.FieldByName('pis_cofins_vl_base').AsCurrency,
+                                                                         DataSet.FieldByName('pis_cofins_pc_aliq').AsCurrency);
     DataSet.Post;
   end
   );

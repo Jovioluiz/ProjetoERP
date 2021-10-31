@@ -10,7 +10,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, System.UITypes, Datasnap.DBClient, Vcl.Mask,
   Vcl.ComCtrls, System.Generics.Collections, Xml.xmldom, Xml.XMLIntf, Xml.XMLDoc, uclPedidoVenda, uGerador,
-  Vcl.NumberBox;
+  Vcl.NumberBox, uTributacaoGenerica;
 
 type
   TAliqItem = record
@@ -1139,7 +1139,7 @@ begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency := edtVlTotal.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsFloat := aliq.AliqIcms;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency,
-                                                                                                      aliq.AliqIcms);
+                                                                                                      aliq.AliqIcms, 'ICMS');
     end;
     if aliq.AliqIpi = 0 then
     begin
@@ -1151,7 +1151,7 @@ begin
     begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency := edtVlTotal.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsFloat := aliq.AliqIpi;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency, aliq.AliqIpi);
+      FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency, aliq.AliqIpi, 'IPI');
     end;
     if aliq.AliqPisCofins = 0 then
     begin
@@ -1163,7 +1163,8 @@ begin
     begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency := edtVlTotal.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsFloat := aliq.AliqPisCofins;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency, aliq.AliqPisCofins);
+      FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency,
+                                                                                                            aliq.AliqPisCofins, 'PISCOFINS');
     end;
 
     FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt := FRegras.GetIdItem(edtCdProduto.Text);
