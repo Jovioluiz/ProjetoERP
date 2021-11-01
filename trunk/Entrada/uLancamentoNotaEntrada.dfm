@@ -262,7 +262,6 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Width = 52
       Height = 21
       TabOrder = 0
-      OnChange = edtOperacaoChange
       OnExit = edtOperacaoExit
     end
     object edtModelo: TEdit
@@ -361,9 +360,9 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
     end
     object DBGridProdutos: TDBGrid
       Left = 24
-      Top = 409
+      Top = 376
       Width = 817
-      Height = 265
+      Height = 298
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
       TabOrder = 32
       TitleFont.Charset = DEFAULT_CHARSET
@@ -503,6 +502,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Top = 339
       Width = 40
       Height = 21
+      Enabled = False
       TabOrder = 21
     end
     object edtQuantidadeTotalProduto: TNumberBox
@@ -510,30 +510,26 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Top = 339
       Width = 50
       Height = 21
+      Enabled = False
       Mode = nbmFloat
       TabOrder = 22
     end
     object edtValorUnitario: TNumberBox
-      Left = 644
+      Left = 635
       Top = 339
-      Width = 59
+      Width = 68
       Height = 21
       Mode = nbmCurrency
       TabOrder = 23
       OnChange = edtValorUnitarioChange
     end
     object edtValorTotalProduto: TNumberBox
-      Left = 720
+      Left = 709
       Top = 339
-      Width = 51
+      Width = 76
       Height = 21
       Mode = nbmCurrency
       TabOrder = 24
     end
-  end
-  object sqlCabecalho: TFDQuery
-    Connection = dm.conexaoBanco
-    Left = 112
-    Top = 8
   end
 end

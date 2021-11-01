@@ -60,7 +60,6 @@ type
     DBGridProdutos: TDBGrid;
     btnConfirmar: TButton;
     btnCancelar: TButton;
-    sqlCabecalho: TFDQuery;
     edtVlServico: TNumberBox;
     edtVlProduto: TNumberBox;
     edtBaseIcms: TNumberBox;
@@ -77,7 +76,6 @@ type
     edtQuantidadeTotalProduto: TNumberBox;
     edtValorUnitario: TNumberBox;
     edtValorTotalProduto: TNumberBox;
-    procedure edtOperacaoChange(Sender: TObject);
     procedure edtOperacaoExit(Sender: TObject);
     procedure edtModeloChange(Sender: TObject);
     procedure edtModeloExit(Sender: TObject);
@@ -191,9 +189,7 @@ begin
       Exit;
     end;
 
-    qry.SQL.Add(sql);
-    qry.ParamByName('cd_cliente').AsInteger := StrToInt(edtCdFornecedor.Text);
-    qry.Open(sql);
+    qry.Open(sql, [StrToInt(edtCdFornecedor.Text)]);
     edtNomeFornecedor.Text := qry.FieldByName('nome').AsString;
   finally
     qry.Free;
@@ -329,14 +325,40 @@ begin
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtModeloExit(Sender: TObject);
+const
+  SQL = 'select '                    +
+        '    cd_modelo, '            +
+        '    nm_modelo '             +
+        'from '                      +
+        '    modelo_nota_fiscal mfn '+
+        'where '                     +
+        '    cd_modelo = :cd_modelo';
+var
+  query: TFDQuery;
 begin
-  if sqlCabecalho.IsEmpty then
+  if edtModelo.isEmpty then
   begin
-    if (Application.MessageBox('Modelo não Encontrado', 'Atenção', MB_OK) = IDOK) then
+    edtNomeModelo.Clear;
+    Exit;
+  end;
+
+  query := TFDQuery.Create(Self);
+  query.Connection := dm.conexaoBanco;
+
+  try
+    query.Open(SQL, [edtModelo.Text]);
+    if not query.IsEmpty then
+      edtNomeModelo.Text := query.FieldByName('nm_modelo').AsString
+    else
     begin
-      edtModelo.SetFocus;
-      edtNomeModelo.Clear;
+      if (Application.MessageBox('Modelo não Encontrado', 'Atenção', MB_OK) = IDOK) then
+      begin
+        edtModelo.SetFocus;
+        edtNomeModelo.Clear;
+      end;
     end;
+  finally
+    query.Free;
   end;
 end;
 
@@ -358,56 +380,62 @@ begin
 end;
 
 //busca a operação da nota e modelo caso possua alguma vinculada
-procedure TfrmLancamentoNotaEntrada.edtOperacaoChange(Sender: TObject);
+procedure TfrmLancamentoNotaEntrada.edtOperacaoExit(Sender: TObject);
+const
+  SQL = ' select                          '+
+        '   op.cd_operacao,            '+
+        '   op.nm_operacao,            '+
+        '   op.cd_modelo_nota_fiscal,  '+
+        '   mnf.nm_modelo              '+
+        ' from                             '+
+        '   operacao op                '+
+        '   left join modelo_nota_fiscal mnf on   '+
+        '   op.cd_modelo_nota_fiscal = mnf.cd_modelo ' +
+        ' where              '+
+        '   (op.cd_operacao = :cd_operacao) '+
+        '   and (op.fl_ent_sai = ''E'')';
+var
+  query: TFDQuery;
 begin
-  if edtOperacao.Text = EmptyStr then
+  if btnCancelar.MouseInClient then
+    Exit;
+
+  if edtOperacao.isEmpty then
   begin
     edtNomeOperacao.Text := '';
     Exit;
   end;
-  if ((edtOperacao.Text = EmptyStr) and (edtModelo.Text = EmptyStr)) then
+  if ((edtOperacao.isEmpty) and (edtModelo.isEmpty)) then
   begin
     edtNomeOperacao.Clear;
     edtNomeModelo.Clear;
     Exit;
   end;
 
-  sqlCabecalho.Close;
-  sqlCabecalho.SQL.Text := 'select                          '+
-                                'op.cd_operacao,            '+
-                                'op.nm_operacao,            '+
-                                'op.cd_modelo_nota_fiscal,  '+
-                                'mnf.nm_modelo              '+
-                          'from                             '+
-                                'operacao op                '+
-                          'left join modelo_nota_fiscal mnf on   '+
-                                'op.cd_modelo_nota_fiscal = mnf.cd_modelo ' +
-                          'where              '+
-                                '(op.cd_operacao = :cd_operacao) '+
-                                'and (op.fl_ent_sai = ''E'')';
+  query := TFDQuery.Create(Self);
+  query.Connection := dm.conexaoBanco;
 
-  sqlCabecalho.ParamByName('cd_operacao').AsInteger := StrToInt(edtOperacao.Text);
-  sqlCabecalho.Open();
-  edtNomeOperacao.Text := sqlCabecalho.FieldByName('nm_operacao').AsString;
-  edtModelo.Text := sqlCabecalho.FieldByName('cd_modelo_nota_fiscal').AsString;
-  edtNomeModelo.Text := sqlCabecalho.FieldByName('nm_modelo').AsString;
+  try
+    query.Open(SQL, [StrToInt(edtOperacao.Text)]);
 
-end;
-
-procedure TfrmLancamentoNotaEntrada.edtOperacaoExit(Sender: TObject);
-begin
-  if btnCancelar.MouseInClient then
-    Exit;
-
-  if sqlCabecalho.IsEmpty then
-  begin
-    if (Application.MessageBox('Operação não encontrada','Atenção', MB_OK) = idOK) then
+    if not query.IsEmpty then
     begin
-      edtOperacao.SetFocus;
-      edtNomeOperacao.Clear;
-      edtModelo.Clear;
-      edtNomeModelo.Clear;
+      edtNomeOperacao.Text := query.FieldByName('nm_operacao').AsString;
+      edtModelo.Text := query.FieldByName('cd_modelo_nota_fiscal').AsString;
+      edtNomeModelo.Text := query.FieldByName('nm_modelo').AsString;
+    end
+    else
+    begin
+      if (Application.MessageBox('Operação não encontrada','Atenção', MB_OK) = idOK) then
+      begin
+        edtOperacao.SetFocus;
+        edtNomeOperacao.Clear;
+        edtModelo.Clear;
+        edtNomeModelo.Clear;
+      end;
     end;
+  finally
+    query.Free;
   end;
 end;
 
