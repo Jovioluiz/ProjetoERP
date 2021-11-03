@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, StrUtils;
 
 type
   TfrmCadContato = class(TForm)
@@ -23,11 +23,13 @@ type
     Label6: TLabel;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtCodigoExit(Sender: TObject);
   private
     { Private declarations }
     procedure Salvar;
     procedure LimparCampos;
     procedure Excluir;
+    procedure CarregaContato;
   public
     { Public declarations }
   end;
@@ -38,13 +40,67 @@ var
 implementation
 
 uses
-  uManipuladorContato, uContatoFisica, uContatoJuridica;
+  uManipuladorContato, uContatoFisica, uContatoJuridica, FireDAC.Comp.Client,
+  uDataModule;
 
 {$R *.dfm}
 
-procedure TfrmCadContato.Excluir;
+procedure TfrmCadContato.CarregaContato;
+const
+  SQL = ' SELECT ' +
+        ' 	tp_pessoa, ' +
+        ' 	nm_contato, ' +
+        ' 	logradouro, ' +
+        ' 	bairro, ' +
+        ' 	cidade, ' +
+        '   nr_documento ' +
+        ' FROM ' +
+        ' 	contato ' +
+        ' WHERE cd_contato = :cd_contato';
+var
+  query: TFDQuery;
 begin
+  query := TFDQuery.Create(Self);
+  query.Connection := dm.ConexaoBanco;
 
+  try
+    query.Open(SQL, [StrToInt(edtCodigo.Text)]);
+    if not query.IsEmpty then
+    begin
+      edtNome.Text := query.FieldByName('nm_contato').AsString;
+      edtDocumento.Text := query.FieldByName('nr_documento').AsString;
+      edtLogradouro.Text := query.FieldByName('logradouro').AsString;
+      edtBairro.Text := query.FieldByName('bairro').AsString;
+      edtCidade.Text := query.FieldByName('cidade').AsString;
+      case AnsiIndexStr(query.FieldByName('tp_pessoa').AsString.ToUpper, ['F', 'J']) of
+        0: rgTpPessoa.ItemIndex := 0;
+        1: rgTpPessoa.ItemIndex := 1;
+      end;
+    end
+    else
+      LimparCampos;
+  finally
+    query.Free;
+  end;
+end;
+
+procedure TfrmCadContato.edtCodigoExit(Sender: TObject);
+begin
+  CarregaContato;
+end;
+
+procedure TfrmCadContato.Excluir;
+var
+  manipulador: TManipuladorContato;
+begin
+  manipulador := TManipuladorContato.Create;
+
+  try
+    manipulador.ExcluirContato(StrToInt(edtCodigo.Text));
+    LimparCampos;
+  finally
+    manipulador.Free;
+  end;
 end;
 
 procedure TfrmCadContato.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -91,7 +147,6 @@ begin
   end;
 
   try
-
     manipulador.Contato.Codigo := StrToInt(edtCodigo.Text);
     manipulador.Contato.Nome := edtNome.Text;
     manipulador.Contato.Logradouro := edtLogradouro.Text;
@@ -102,8 +157,10 @@ begin
     else if (manipulador.Contato is TContatoJuridica) then
       (manipulador.Contato as TContatoJuridica).CNPJ := edtDocumento.Text;
     manipulador.Contato.TipoPessoa := manipulador.Contato.TipoContato;
+    manipulador.Contato.NrDocumento := edtDocumento.Text;
 
-    manipulador.SalvarContato(manipulador.Contato);
+    manipulador.SalvarContato;
+    LimparCampos;
   finally
     manipulador.Free;
   end;

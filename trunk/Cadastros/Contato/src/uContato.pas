@@ -10,12 +10,14 @@ interface
     FNome: string;
     FCidade: string;
     FTipoPessoa: string;
+    FNrDocumento: string;
     procedure SetBairro(const Value: string);
     procedure SetCidade(const Value: string);
     procedure SetCodigo(const Value: Integer);
     procedure SetLogradouro(const Value: string);
     procedure SetNome(const Value: string);
     procedure SetTipoPessoa(const Value: string);
+    procedure SetNrDocumento(const Value: string);
   public
     function TipoContato: String; virtual; abstract;
     function ValidaDocumento(Documento: string): Boolean; virtual; abstract;
@@ -26,6 +28,7 @@ interface
     property Bairro: string read FBairro write SetBairro;
     property Cidade: string read FCidade write SetCidade;
     property TipoPessoa: string read FTipoPessoa write SetTipoPessoa;
+    property NrDocumento: string read FNrDocumento write SetNrDocumento;
   end;
 
 implementation
@@ -55,6 +58,11 @@ end;
 procedure TContato.SetNome(const Value: string);
 begin
   FNome := Value;
+end;
+
+procedure TContato.SetNrDocumento(const Value: string);
+begin
+  FNrDocumento := Value;
 end;
 
 procedure TContato.SetTipoPessoa(const Value: string);

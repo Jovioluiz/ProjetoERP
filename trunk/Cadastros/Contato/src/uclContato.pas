@@ -18,6 +18,7 @@ type TContatos = class
     Flogradouro: String;
     Fnm_contato: String;
     Ftp_pessoa: String;
+    Fnr_documento: string;
     procedure Setbairro(const Value: String);
     procedure Setcd_contato(const Value: Integer);
     procedure Setcidade(const Value: String);
@@ -25,6 +26,7 @@ type TContatos = class
     procedure Setlogradouro(const Value: String);
     procedure Setnm_contato(const Value: String);
     procedure Settp_pessoa(const Value: String);
+    procedure Setnr_documento(const Value: string);
   public 
    //Metodo Pesquisar pela chave primaria
     function Pesquisar(cd_contato: Integer): Boolean; 
@@ -40,6 +42,7 @@ type TContatos = class
     property logradouro: String read Flogradouro write Setlogradouro;
     property nm_contato: String read Fnm_contato write Setnm_contato;
     property tp_pessoa: String read Ftp_pessoa write Settp_pessoa;
+    property nr_documento: string read Fnr_documento write Setnr_documento;
 
 end;
 
@@ -61,7 +64,8 @@ const
    'dt_atz, ' +
    'logradouro, ' +
    'nm_contato, ' +
-   'tp_pessoa)' +
+   'tp_pessoa, '+
+   'nr_documento)' +
    'VALUES (' +
    ':bairro, ' +
    ':cd_contato, ' +
@@ -69,7 +73,8 @@ const
    ':dt_atz, ' +
    ':logradouro, ' +
    ':nm_contato, ' +
-   ':tp_pessoa)';
+   ':tp_pessoa, ' +
+   ':nr_documento)';
 var
   query: TFDquery;
 begin
@@ -86,6 +91,7 @@ begin
       query.ParamByName('logradouro').AsString := Flogradouro;
       query.ParamByName('nm_contato').AsString := Fnm_contato;
       query.ParamByName('tp_pessoa').AsString := Ftp_pessoa;
+      query.ParamByName('nr_documento').AsString := Fnr_documento;
       query.ExecSQL;
       query.Connection.Commit;
     except
@@ -113,7 +119,8 @@ const
    'dt_atz = :dt_atz,' +
    'logradouro = :logradouro,' +
    'nm_contato = :nm_contato,' +
-   'tp_pessoa = :tp_pessoa ' +
+   'tp_pessoa = :tp_pessoa, ' +
+   'nr_documento = :nr_documento ' +
 'WHERE ' +
 'cd_contato = :cd_contato';
 
@@ -133,6 +140,7 @@ begin
       query.ParamByName('logradouro').AsString := Flogradouro;
       query.ParamByName('nm_contato').AsString := Fnm_contato;
       query.ParamByName('tp_pessoa').AsString := Ftp_pessoa;
+      query.ParamByName('nr_documento').AsString := Fnr_documento;
       query.ExecSQL;
       query.Connection.Commit;
     except
@@ -173,7 +181,7 @@ begin
   try
     query.Open(SQL, [cd_contato]);
 
-    Result := query.IsEmpty;
+    Result := not query.IsEmpty;
   finally
     query.Free;
   end;
@@ -240,6 +248,11 @@ end;
 procedure TContatos.Setnm_contato(const Value: String);
 begin
   Fnm_contato := Value;
+end;
+
+procedure TContatos.Setnr_documento(const Value: string);
+begin
+  Fnr_documento := Value;
 end;
 
 procedure TContatos.Settp_pessoa(const Value: String);

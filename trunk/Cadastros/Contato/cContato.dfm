@@ -73,6 +73,7 @@ object frmCadContato: TfrmCadContato
     Width = 49
     Height = 21
     TabOrder = 0
+    OnExit = edtCodigoExit
   end
   object edtLogradouro: TEdit
     Left = 80
