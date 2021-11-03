@@ -1358,3 +1358,21 @@ CREATE SEQUENCE public.usuario_seq
 	START 1
 	CACHE 1
 	NO CYCLE;
+	
+CREATE TABLE contato(
+	cd_contato int2 NOT NULL,
+	tp_pessoa bpchar(1) NOT NULL,
+	nm_contato varchar(100) NOT NULL,
+	logradouro varchar(100),
+	bairro varchar(100),
+	cidade varchar(50),
+	dt_atz timestamp,
+	CONSTRAINT pk_contato PRIMARY KEY (cd_contato)
+);
+
+create trigger tr_dt_atz before
+insert
+    or
+update
+    on
+    public.contato for each row execute procedure func_grava_dt_atz();

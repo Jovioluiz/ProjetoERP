@@ -3,7 +3,7 @@ unit uclPedidoVendaItem;
 interface
 
 uses
-  uclPedidoVenda, System.Generics.Collections;
+  uclPedidoVenda, System.Generics.Collections, Firedac.Stan.Param;
 
 type TPedidoVendaItem = class(TPedidoVenda)
 
@@ -45,7 +45,6 @@ const
 var
   qry: TFDQuery;
   j: Integer;
-  infoProdutos: TArray<TInfProdutosCodBarras>;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;

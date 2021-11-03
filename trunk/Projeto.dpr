@@ -79,7 +79,13 @@ uses
   uTributacao in 'Tributacao\uTributacao.pas',
   uTributacaoICMS in 'Tributacao\uTributacaoICMS.pas',
   uManipuladorTributacao in 'Tributacao\uManipuladorTributacao.pas',
-  uTributacaoIPI in 'Tributacao\uTributacaoIPI.pas';
+  uTributacaoIPI in 'Tributacao\uTributacaoIPI.pas',
+  uContato in 'Cadastros\Contato\src\uContato.pas',
+  uContatoFisica in 'Cadastros\Contato\src\uContatoFisica.pas',
+  uContatoJuridica in 'Cadastros\Contato\src\uContatoJuridica.pas',
+  uManipuladorContato in 'Cadastros\Contato\src\uManipuladorContato.pas',
+  uclContato in 'Cadastros\Contato\src\uclContato.pas',
+  cContato in 'Cadastros\Contato\cContato.pas' {frmCadContato};
 
 {$R *.res}
 

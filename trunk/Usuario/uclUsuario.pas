@@ -3,7 +3,7 @@ unit uclUsuario;
 interface
 
 uses
-  dUsuario, System.SysUtils;
+  dUsuario, System.SysUtils, Firedac.Stan.Param;
 
 type TUsuario = class
   private

@@ -11631,6 +11631,10 @@ object frmPrincipal: TfrmPrincipal
           Caption = 'Tabela de Pre'#231'o'
           OnClick = TabeladePreo1Click
         end
+        object Contato1: TMenuItem
+          Caption = 'Contato'
+          OnClick = Contato1Click
+        end
       end
     end
     object Consulta1: TMenuItem
