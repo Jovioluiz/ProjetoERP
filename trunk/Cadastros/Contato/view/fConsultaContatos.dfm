@@ -1,11 +1,10 @@
 object frmConsultaContatos: TfrmConsultaContatos
   Left = 0
   Top = 0
-  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Consulta de Contatos'
   ClientHeight = 391
-  ClientWidth = 596
+  ClientWidth = 814
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,10 +20,11 @@ object frmConsultaContatos: TfrmConsultaContatos
   object pnlFundo: TPanel
     Left = 0
     Top = 0
-    Width = 596
+    Width = 814
     Height = 391
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 596
     object Label1: TLabel
       Left = 1
       Top = 39
@@ -35,9 +35,10 @@ object frmConsultaContatos: TfrmConsultaContatos
     object gridContatos: TDBGrid
       Left = 1
       Top = 87
-      Width = 594
+      Width = 812
       Height = 303
       Align = alBottom
+      Anchors = [akLeft, akTop, akRight, akBottom]
       PopupMenu = pmOpcoes
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
@@ -49,12 +50,12 @@ object frmConsultaContatos: TfrmConsultaContatos
     object edtPesquisa: TEdit
       Left = 53
       Top = 36
-      Width = 252
+      Width = 308
       Height = 21
       TabOrder = 1
     end
     object ComboBox1: TComboBox
-      Left = 328
+      Left = 376
       Top = 36
       Width = 145
       Height = 21
@@ -66,7 +67,7 @@ object frmConsultaContatos: TfrmConsultaContatos
         'Nro Documento')
     end
     object btnPesquisar: TButton
-      Left = 479
+      Left = 527
       Top = 34
       Width = 75
       Height = 25
@@ -76,8 +77,8 @@ object frmConsultaContatos: TfrmConsultaContatos
     end
   end
   object pmOpcoes: TPopupMenu
-    Left = 544
-    Top = 56
+    Left = 768
+    Top = 40
     object EditarContato1: TMenuItem
       Caption = 'Editar Contato'
       OnClick = EditarContato1Click
