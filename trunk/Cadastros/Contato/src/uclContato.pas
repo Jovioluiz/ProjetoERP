@@ -180,6 +180,18 @@ begin
 
   try
     query.Open(SQL, [cd_contato]);
+    query.First;
+    while not query.Eof do
+    begin
+      Fcd_contato := query.FieldByName('cd_contato').AsInteger;
+      Fnm_contato := query.FieldByName('nm_contato').AsString;
+      Fnr_documento := query.FieldByName('nr_documento').AsString;
+      Flogradouro := query.FieldByName('logradouro').AsString;
+      Fbairro := query.FieldByName('bairro').AsString;
+      Fcidade := query.FieldByName('cidade').AsString;
+      Ftp_pessoa := query.FieldByName('tp_pessoa').AsString;
+      query.Next;
+    end;
 
     Result := not query.IsEmpty;
   finally

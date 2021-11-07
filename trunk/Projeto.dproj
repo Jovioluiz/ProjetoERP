@@ -282,13 +282,11 @@
         </DCCReference>
         <DCCReference Include="Entrada\dNotaEntrada.pas">
             <Form>dmNotaEntrada</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Estoque\uMovimentacaoEstoque.pas"/>
         <DCCReference Include="Outros\fCadastroPadrao.pas">
             <Form>frmCadastroPadrao</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Pedido Venda\uclPedidoVendaItem.pas"/>
         <DCCReference Include="Outros\uSet.pas">
@@ -298,12 +296,10 @@
         <DCCReference Include="Usuario\uclUsuario.pas"/>
         <DCCReference Include="Usuario\dUsuario.pas">
             <Form>dmUsuario</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Outros\fFiredacETL.pas">
             <Form>frmFiredacETL</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Tributacao\uTributacaoGenerica.pas"/>
         <DCCReference Include="Tributacao\uTributacao.pas"/>
@@ -315,9 +311,16 @@
         <DCCReference Include="Cadastros\Contato\src\uContatoJuridica.pas"/>
         <DCCReference Include="Cadastros\Contato\src\uManipuladorContato.pas"/>
         <DCCReference Include="Cadastros\Contato\src\uclContato.pas"/>
-        <DCCReference Include="Cadastros\Contato\cContato.pas">
+        <DCCReference Include="Cadastros\Contato\view\cContato.pas">
             <Form>frmCadContato</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\Contato\view\fConsultaContatos.pas">
+            <Form>frmConsultaContatos</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\Contato\datamodule\dtmContatos.pas">
+            <Form>dmContatos</Form>
             <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

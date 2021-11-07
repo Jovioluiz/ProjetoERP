@@ -3,25 +3,42 @@ unit uManipuladorContato;
 interface
 
 uses
-  uContato;
+  uContato, dtmContatos;
+
+type
+  tpDadosContato = record
+      Codigo: Integer;
+      Nome,
+      Logradouro,
+      Bairro,
+      Cidade,
+      NrDocumento,
+      TipoPessoa: string;
+  end;
 type
   TManipuladorContato = class
   private
     FContato: TContato;
+    FDados: TdmContatos;
     procedure SetContato(const Value: TContato);
+    procedure SetDados(const Value: TdmContatos);
   public
     constructor Create(TipoContato: TContato); overload;
     constructor Create; overload;
+    destructor Destroy; override;
     procedure SalvarContato;
     procedure ExcluirContato(CdContato: Integer);
+    procedure ListarTodosContatos;
+    function EditarContato(CodContato: Integer): tpDadosContato;
 
   property Contato: TContato read FContato write SetContato;
+  property Dados: TdmContatos read FDados write SetDados;
 end;
 
 implementation
 
 uses
-  uclContato;
+  uclContato, FireDAC.Comp.Client, uUtil, uDataModule;
 
 { TManipuladorContato }
 
@@ -33,6 +50,35 @@ end;
 constructor TManipuladorContato.Create;
 begin
   inherited;
+  FDados := TdmContatos.Create(nil);
+end;
+
+destructor TManipuladorContato.Destroy;
+begin
+  FDados.Free;
+  inherited;
+end;
+
+function TManipuladorContato.EditarContato(CodContato: Integer): tpDadosContato;
+var
+  persistencia: TContatos;
+begin
+  persistencia := TContatos.Create;
+
+  try
+    if persistencia.Pesquisar(CodContato) then
+    begin
+      Result.Codigo := persistencia.cd_contato;
+      Result.Nome := persistencia.nm_contato;
+      Result.Logradouro := persistencia.logradouro;
+      Result.Bairro := persistencia.bairro;
+      Result.Cidade := persistencia.cidade;
+      Result.NrDocumento := persistencia.nr_documento;
+      Result.TipoPessoa := persistencia.tp_pessoa;
+    end;
+  finally
+    persistencia.Free;
+  end;
 end;
 
 procedure TManipuladorContato.ExcluirContato(CdContato: Integer);
@@ -52,6 +98,48 @@ begin
   end;
 end;
 
+procedure TManipuladorContato.ListarTodosContatos;
+const
+  SQL = ' SELECT ' +
+        ' 	cd_contato, ' +
+        ' 	tp_pessoa, ' +
+        ' 	nm_contato, ' +
+        ' 	logradouro, ' +
+        ' 	bairro, ' +
+        ' 	cidade, ' +
+        ' 	nr_documento ' +
+        ' FROM ' +
+        ' 	contato ';
+var
+  query: TFDQuery;
+begin
+  query := TFDQuery.Create(nil);
+  query.Connection := dm.conexaoBanco;
+
+  try
+    FDados.cdsContatos.EmptyDataSet;
+    query.Open(SQL);
+
+    query.Loop(
+      procedure
+      begin
+        FDados.cdsContatos.Append;
+        FDados.cdsContatos.FieldByName('cd_contato').AsInteger := query.FieldByName('cd_contato').AsInteger;
+        FDados.cdsContatos.FieldByName('tp_pessoa').AsString := query.FieldByName('tp_pessoa').AsString;
+        FDados.cdsContatos.FieldByName('nm_contato').AsString := query.FieldByName('nm_contato').AsString;
+        FDados.cdsContatos.FieldByName('logradouro').AsString := query.FieldByName('logradouro').AsString;
+        FDados.cdsContatos.FieldByName('bairro').AsString := query.FieldByName('bairro').AsString;
+        FDados.cdsContatos.FieldByName('cidade').AsString := query.FieldByName('cidade').AsString;
+        FDados.cdsContatos.FieldByName('nr_documento').AsString := query.FieldByName('nr_documento').AsString;
+        FDados.cdsContatos.Post;
+      end
+      );
+
+  finally
+    query.Free;
+  end;
+end;
+
 procedure TManipuladorContato.SalvarContato;
 var
   persistencia: TContatos;
@@ -60,7 +148,7 @@ begin
   persistencia := TContatos.Create;
 
   try
-    novo := persistencia.Pesquisar(FContato.Codigo);
+    novo := not persistencia.Pesquisar(FContato.Codigo);
 
     persistencia.cd_contato := FContato.Codigo;
     persistencia.nm_contato := FContato.Nome;
@@ -78,6 +166,11 @@ end;
 procedure TManipuladorContato.SetContato(const Value: TContato);
 begin
   FContato := Value;
+end;
+
+procedure TManipuladorContato.SetDados(const Value: TdmContatos);
+begin
+  FDados := Value;
 end;
 
 end.

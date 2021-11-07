@@ -85,7 +85,9 @@ uses
   uContatoJuridica in 'Cadastros\Contato\src\uContatoJuridica.pas',
   uManipuladorContato in 'Cadastros\Contato\src\uManipuladorContato.pas',
   uclContato in 'Cadastros\Contato\src\uclContato.pas',
-  cContato in 'Cadastros\Contato\cContato.pas' {frmCadContato};
+  cContato in 'Cadastros\Contato\view\cContato.pas' {frmCadContato},
+  fConsultaContatos in 'Cadastros\Contato\view\fConsultaContatos.pas' {frmConsultaContatos},
+  dtmContatos in 'Cadastros\Contato\datamodule\dtmContatos.pas' {dmContatos: TDataModule};
 
 {$R *.res}
 

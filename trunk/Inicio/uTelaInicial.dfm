@@ -11643,6 +11643,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Produtos'
         OnClick = Produtos1Click
       end
+      object Contatos1: TMenuItem
+        Caption = 'Contatos'
+        OnClick = Contatos1Click
+      end
     end
     object PedidoVenda1: TMenuItem
       Caption = 'Pedido Venda'

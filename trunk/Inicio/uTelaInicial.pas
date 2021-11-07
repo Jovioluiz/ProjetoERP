@@ -55,6 +55,7 @@ type
     hreads1: TMenuItem;
     FiredacETL1: TMenuItem;
     Contato1: TMenuItem;
+    Contatos1: TMenuItem;
     procedure Cliente1Click(Sender: TObject);
     procedure Produto1Click(Sender: TObject);
     procedure FormaPagamento1Click(Sender: TObject);
@@ -83,6 +84,7 @@ type
     procedure hreads1Click(Sender: TObject);
     procedure FiredacETL1Click(Sender: TObject);
     procedure Contato1Click(Sender: TObject);
+    procedure Contatos1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -119,7 +121,8 @@ implementation
 {$R *.dfm}
 
 uses uUsuario, fControleAcesso, uDataModule, uGravaArquivo, fCadastroEnderecos,
-  uSplash, fImportaDados, fGridsThread, fFiredacETL, cContato;
+  uSplash, fImportaDados, fGridsThread, fFiredacETL, cContato,
+  fConsultaContatos;
 
 
 procedure TfrmPrincipal.ApplicationEvents1Minimize(Sender: TObject);
@@ -231,6 +234,19 @@ begin
     cadContato.ShowModal;
   finally
     cadContato.Free;
+  end;
+end;
+
+procedure TfrmPrincipal.Contatos1Click(Sender: TObject);
+var
+  consultaContato: TfrmConsultaContatos;
+begin
+  consultaContato := TfrmConsultaContatos.Create(Self);
+
+  try
+    consultaContato.ShowModal;
+  finally
+    consultaContato.Free;
   end;
 end;
 

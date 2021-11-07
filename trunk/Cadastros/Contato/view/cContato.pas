@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, StrUtils;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, StrUtils,
+  Vcl.Menus;
 
 type
   TfrmCadContato = class(TForm)
@@ -76,9 +77,7 @@ begin
         0: rgTpPessoa.ItemIndex := 0;
         1: rgTpPessoa.ItemIndex := 1;
       end;
-    end
-    else
-      LimparCampos;
+    end;
   finally
     query.Free;
   end;
@@ -162,6 +161,7 @@ begin
     manipulador.SalvarContato;
     LimparCampos;
   finally
+    manipulador.Contato.Free;
     manipulador.Free;
   end;
 end;
