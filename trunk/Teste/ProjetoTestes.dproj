@@ -112,6 +112,10 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="TestuUsuario.pas"/>
+        <DCCReference Include="TestuPedidoVenda.pas"/>
+        <DCCReference Include="TestfCadastroEnderecos.pas"/>
+        <DCCReference Include="TestcCLIENTE.pas"/>
+        <DCCReference Include="TestuclPedidoVenda.pas"/>
         <DCCReference Include="..\Usuario\uUsuario.pas">
             <Form>$R *.RES</Form>
             <FormType>dfm</FormType>
@@ -122,28 +126,167 @@
         </DCCReference>
         <DCCReference Include="..\Validacao\uUtil.pas"/>
         <DCCReference Include="uGerador.pas"/>
-        <DCCReference Include="TestfCadastroEnderecos.pas"/>
-        <DCCReference Include="..\WMS\fCadastroEnderecos.pas"/>
-        <DCCReference Include="TestuPedidoVenda.pas"/>
-        <DCCReference Include="..\Pedido Venda\uPedidoVenda.pas">
-            <Form>$R *.RES</Form>
-            <FormType>dfm</FormType>
+        <DCCReference Include="Validacao\uValidaDcto.pas"/>
+        <DCCReference Include="Inicio\uTelaInicial.pas">
+            <Form>frmPrincipal</Form>
         </DCCReference>
-        <DCCReference Include="..\Conexao\uConexao.pas">
-            <Form>frmConexao</Form>
+        <DCCReference Include="Cadastros\cCTA_FORMA_PAGAMENTO.pas">
+            <Form>frmCadFormaPagamento</Form>
         </DCCReference>
-        <DCCReference Include="..\Pedido Venda\uclPedidoVenda.pas">
-            <Form>$R *.RES</Form>
+        <DCCReference Include="Cadastros\uCadTABELAPRECO.pas">
+            <Form>frmcadTabelaPreco</Form>
         </DCCReference>
-        <DCCReference Include="..\Configuracoes\uConfiguracoes.pas">
+        <DCCReference Include="Cadastros\uCadTabelaPrecoProduto.pas">
+            <Form>frmCadTabelaPrecoProduto</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\cPRODUTO.pas">
+            <Form>frmCadProduto</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\cCTA_COND_PGTO.pas">
+            <Form>frmCadCondPgto</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\cCLIENTE.pas">
+            <Form>frmCadCliente</Form>
+        </DCCReference>
+        <DCCReference Include="Pedido Venda\uVisualizaPedidoVenda.pas">
+            <Form>frmVisualizaPedidoVenda</Form>
+        </DCCReference>
+        <DCCReference Include="Pedido Venda\uPedidoVenda.pas">
+            <Form>frmPedidoVenda</Form>
+        </DCCReference>
+        <DCCReference Include="Login\uLogin.pas">
+            <Form>frmLogin</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\uCadastroTributacaoItem.pas">
+            <Form>frmCadastraTributacaoItem</Form>
+        </DCCReference>
+        <DCCReference Include="Entrada\uLancamentoNotaEntrada.pas">
+            <Form>frmLancamentoNotaEntrada</Form>
+        </DCCReference>
+        <DCCReference Include="Configuracoes\uConfiguracoes.pas">
             <Form>frmConfiguracoes</Form>
         </DCCReference>
-        <DCCReference Include="TestcCLIENTE.pas"/>
-        <DCCReference Include="..\Cadastros\cCLIENTE.pas">
-            <Form>TfrmCadCliente</Form>
-            <FormType>dfm</FormType>
+        <DCCReference Include="Consulta\FConsultaProduto.pas">
+            <Form>frmConsultaProdutos</Form>
         </DCCReference>
-        <DCCReference Include="TestuclPedidoVenda.pas"/>
+        <DCCReference Include="Arquivos\UfrmRelVendaDiaria.pas">
+            <Form>frmRelVendaDiaria</Form>
+        </DCCReference>
+        <DCCReference Include="Acesso\fControleAcesso.pas">
+            <Form>frmControleAcesso</Form>
+        </DCCReference>
+        <DCCReference Include="Consulta\dtmConsultaProduto.pas">
+            <Form>dmConsultaProduto</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Pedido Venda\uclPedidoVenda.pas"/>
+        <DCCReference Include="Arquivos\uGravaArquivo.pas">
+            <Form>frmGravaArquivo</Form>
+        </DCCReference>
+        <DCCReference Include="Validacao\uVersao.pas"/>
+        <DCCReference Include="Consulta\uConsulta.pas">
+            <Form>frmConsulta</Form>
+        </DCCReference>
+        <DCCReference Include="Entrada\uclNotaEntrada.pas"/>
+        <DCCReference Include="WMS\fCadastroEnderecos.pas">
+            <Form>frmCadastroEnderecos</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\uCadastrarSenha.pas">
+            <Form>frmCadastraSenha</Form>
+        </DCCReference>
+        <DCCReference Include="Inicio\uSplash.pas">
+            <Form>frmSplash</Form>
+        </DCCReference>
+        <DCCReference Include="Outros\uLista.pas">
+            <Form>frmLista</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\Persistencia\uclCliente.pas"/>
+        <DCCReference Include="Cadastros\Persistencia\uclCta_Cond_Pgto.pas"/>
+        <DCCReference Include="Outros\uInterface.pas"/>
+        <DCCReference Include="Cadastros\Persistencia\uclCtaFormaPagamento.pas"/>
+        <DCCReference Include="Conexao\fConexao.pas">
+            <Form>frmConexao</Form>
+        </DCCReference>
+        <DCCReference Include="Outros\uclPadrao.pas"/>
+        <DCCReference Include="Cadastros\Persistencia\uclProduto.pas"/>
+        <DCCReference Include="Cadastros\Persistencia\uclProdutoTributacao.pas"/>
+        <DCCReference Include="Cadastros\dProdutoCodBarras.pas">
+            <Form>dmProdutoCodBarras</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Cadastros\Persistencia\uclTabelaPreco.pas"/>
+        <DCCReference Include="Cadastros\Persistencia\uclTabelaPrecoProduto.pas"/>
+        <DCCReference Include="Conexao\uConexao.pas"/>
+        <DCCReference Include="WMS\uEnderecoWMS.pas"/>
+        <DCCReference Include="Login\uValidacoesLogin.pas"/>
+        <DCCReference Include="Arquivos\dImportaDados.pas">
+            <Form>dmImportaDados</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Arquivos\fImportaDados.pas">
+            <Form>frmImportaDados</Form>
+        </DCCReference>
+        <DCCReference Include="Arquivos\uImportacaoDados.pas"/>
+        <DCCReference Include="Acesso\uControleAcessoSistema.pas"/>
+        <DCCReference Include="Acesso\dControleAcesso.pas">
+            <Form>dmControleAcesso</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Consulta\uConsultaProdutos.pas"/>
+        <DCCReference Include="Outros\uThread.pas"/>
+        <DCCReference Include="Cadastros\dTabelaPreco.pas">
+            <Form>dmProdutosTabelaPreco</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Outros\fGridsThread.pas">
+            <Form>fThreads</Form>
+        </DCCReference>
+        <DCCReference Include="Outros\fVisualizaCodigoBarras.pas">
+            <Form>fVisualizaCodBarras</Form>
+        </DCCReference>
+        <DCCReference Include="WMS\dWMS.pas">
+            <Form>dmWMS</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Pedido Venda\dPedidoVenda.pas">
+            <Form>dmPedidoVenda</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Entrada\dNotaEntrada.pas">
+            <Form>dmNotaEntrada</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Estoque\uMovimentacaoEstoque.pas"/>
+        <DCCReference Include="Outros\fCadastroPadrao.pas">
+            <Form>frmCadastroPadrao</Form>
+        </DCCReference>
+        <DCCReference Include="Pedido Venda\uclPedidoVendaItem.pas"/>
+        <DCCReference Include="Outros\uSet.pas">
+            <Form>$R *.res</Form>
+        </DCCReference>
+        <DCCReference Include="Login\uclLogin.pas"/>
+        <DCCReference Include="Usuario\uclUsuario.pas"/>
+        <DCCReference Include="Usuario\dUsuario.pas">
+            <Form>dmUsuario</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="Outros\fFiredacETL.pas">
+            <Form>frmFiredacETL</Form>
+        </DCCReference>
+        <DCCReference Include="Tributacao\uTributacaoGenerica.pas"/>
+        <DCCReference Include="Tributacao\uTributacao.pas"/>
+        <DCCReference Include="Tributacao\uTributacaoICMS.pas"/>
+        <DCCReference Include="Tributacao\uManipuladorTributacao.pas"/>
+        <DCCReference Include="Tributacao\uTributacaoIPI.pas"/>
+        <DCCReference Include="Cadastros\Contato\src\uContato.pas"/>
+        <DCCReference Include="Cadastros\Contato\src\uContatoFisica.pas"/>
+        <DCCReference Include="Cadastros\Contato\src\uContatoJuridica.pas"/>
+        <DCCReference Include="Cadastros\Contato\src\uManipuladorContato.pas"/>
+        <DCCReference Include="Cadastros\Contato\src\uclContato.pas"/>
+        <DCCReference Include="Cadastros\Contato\cContato.pas">
+            <Form>frmCadContato</Form>
+        </DCCReference>
+        <DCCReference Include="TestuManipuladorContato.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

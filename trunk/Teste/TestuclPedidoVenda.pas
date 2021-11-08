@@ -128,7 +128,7 @@ var
   CodBarras: string;
 begin
   // TODO: Setup method call parameters
-  ReturnValue := FPedidoVenda.BuscaProdutoCodBarras(CodBarras);
+//  ReturnValue := FPedidoVenda.BuscaProdutoCodBarras(CodBarras);
   // TODO: Validate method results
 end;
 
@@ -149,7 +149,7 @@ var
   CodTabela: Integer;
 begin
   // TODO: Setup method call parameters
-  ReturnValue := FPedidoVenda.BuscaTabelaPreco(CodTabela, CodProduto);
+//  ReturnValue := FPedidoVenda.BuscaTabelaPreco(CodTabela, CodProduto);
   // TODO: Validate method results
 end;
 
@@ -170,7 +170,7 @@ var
   CodForma: Integer;
 begin
   // TODO: Setup method call parameters
-  ReturnValue := FPedidoVenda.BuscaFormaPgto(CodForma);
+//  ReturnValue := FPedidoVenda.BuscaFormaPgto(CodForma);
   // TODO: Validate method results
 end;
 
@@ -183,7 +183,7 @@ begin
   // TODO: Setup method call parameters
   CodForma := 1;
   CodCond := 2;
-  ReturnValue := FPedidoVenda.BuscaCondicaoPgto(CodCond, CodForma);
+//  ReturnValue := FPedidoVenda.BuscaCondicaoPgto(CodCond, CodForma);
   // TODO: Validate method results
   CheckNotNull(ReturnValue, 'condição não encontrada');
 end;
