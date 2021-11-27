@@ -90,10 +90,7 @@ uses
   dtmContatos in 'Cadastros\Contato\datamodule\dtmContatos.pas' {dmContatos: TDataModule},
   uFuncionario in 'Cadastros\Funcionario\src\uFuncionario.pas',
   uGerente in 'Cadastros\Funcionario\src\uGerente.pas',
-  uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas',
-  uRegistrosArquivoBosch in 'Importacao\src\uRegistrosArquivoBosch.pas',
-  uRegistroArquivoBoschKB1 in 'Importacao\src\uRegistroArquivoBoschKB1.pas',
-  uManipuladorArquivoBosch in 'Importacao\src\uManipuladorArquivoBosch.pas';
+  uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas';
 
 {$R *.res}
 

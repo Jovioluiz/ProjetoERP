@@ -324,9 +324,6 @@
         <DCCReference Include="Cadastros\Funcionario\src\uFuncionario.pas"/>
         <DCCReference Include="Cadastros\Funcionario\src\uGerente.pas"/>
         <DCCReference Include="Cadastros\Funcionario\src\uEstagiario.pas"/>
-        <DCCReference Include="Importacao\src\uRegistrosArquivoBosch.pas"/>
-        <DCCReference Include="Importacao\src\uRegistroArquivoBoschKB1.pas"/>
-        <DCCReference Include="Importacao\src\uManipuladorArquivoBosch.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
