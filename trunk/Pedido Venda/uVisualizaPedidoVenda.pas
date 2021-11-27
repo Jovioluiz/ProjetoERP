@@ -53,6 +53,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure edtCdCondPgtoChange(Sender: TObject);
     procedure edtNrPedidoExit(Sender: TObject);
+    procedure dbGridProdutosTitleClick(Column: TColumn);
   private
     FPedidoVenda: TPedidoVenda;
     procedure SetPedidoVenda(const Value: TPedidoVenda);
@@ -146,6 +147,14 @@ begin
     Canvas.FillRect(Rect);
     DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
+end;
+
+procedure TfrmVisualizaPedidoVenda.dbGridProdutosTitleClick(Column: TColumn);
+begin
+  if FPedidoVenda.Dados.cdsPedidoVendaItem.IndexFieldNames = Column.FieldName then
+    FPedidoVenda.Dados.cdsPedidoVendaItem.IndexFieldNames := Column.FieldName + ':D'
+  else
+    FPedidoVenda.Dados.cdsPedidoVendaItem.IndexFieldNames := Column.FieldName;
 end;
 
 procedure TfrmVisualizaPedidoVenda.edtCdCondPgtoChange(Sender: TObject);

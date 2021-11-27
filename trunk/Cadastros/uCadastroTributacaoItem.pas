@@ -262,7 +262,7 @@ end;
 
 procedure TfrmCadastraTributacaoItem.salvar;
 begin
-  if TabSheetICMS.Showing = true then      //ICMS
+  if TabSheetICMS.Showing then      //ICMS
   begin
     comandoSelect.Close;
     comandoSelect.SQL.Text := 'select                             '+

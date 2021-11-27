@@ -43,7 +43,7 @@ type
     procedure limpaCampos;
     procedure Salvar;
     procedure Excluir;
-    function GetIdItem(CdItem: string): Int64;
+    function GetIdItem(const CdItem: string): Int64;
     procedure SetDados(const Value: TdmProdutosTabelaPreco);
   public
     { Public declarations }
@@ -86,7 +86,7 @@ begin
   end;
 end;
 
-function TfrmcadTabelaPreco.GetIdItem(CdItem: string): Int64;
+function TfrmcadTabelaPreco.GetIdItem(const CdItem: string): Int64;
 const
   SQL = 'select id_item from produto where cd_produto = :cd_produto';
 var

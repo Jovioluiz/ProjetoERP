@@ -386,6 +386,7 @@ end;
 destructor TProdutoCodigoBarras.Destroy;
 begin
   FDados.Free;
+  inherited;
 end;
 
 procedure TProdutoCodigoBarras.Excluir;

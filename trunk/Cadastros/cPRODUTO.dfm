@@ -98,12 +98,12 @@ object frmCadProduto: TfrmCadProduto
         Height = 13
         Caption = 'Tipo C'#243'digo de Barras'
       end
-      object imagem: TImage
+      object tImagem: TImage
         Left = 424
         Top = 232
         Width = 286
         Height = 219
-        OnMouseDown = imagemMouseDown
+        OnMouseDown = tImagemMouseDown
       end
       object Label13: TLabel
         Left = 424

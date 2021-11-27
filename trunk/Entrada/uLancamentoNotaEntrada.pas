@@ -142,7 +142,7 @@ type
     procedure SetRegras(const Value: TNotaEntrada);
     procedure AdicionaItem;
     procedure LimpaOutrosCampos;
-    function GetInfoProduto(CodItem: String): TInfoProdutos;
+    function GetInfoProduto(const CodItem: String): TInfoProdutos;
     function GetAliqProduto(IdItem: Integer): TAliqProduto;
     function CalculaImposto(ValorBase, Aliquota: Currency): Currency;
     procedure PreencheDatasetNFC;
@@ -560,7 +560,7 @@ begin
   end;
 end;
 
-function TfrmLancamentoNotaEntrada.GetInfoProduto(CodItem: String): TInfoProdutos;
+function TfrmLancamentoNotaEntrada.GetInfoProduto(const CodItem: String): TInfoProdutos;
 const
   SQL = 'select                 '+
         '    cd_produto,        '+

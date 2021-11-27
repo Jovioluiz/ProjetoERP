@@ -31,14 +31,13 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtCodProdutoExit(Sender: TObject);
-    procedure edtValorExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     FIdItem: Int64;
     procedure LimpaCampos;
     procedure Salvar;
     procedure Excluir;
-    function GetIdItem(CdItem: string): Int64;
+    function GetIdItem(const CdItem: string): Int64;
   public
     { Public declarations }
   end;
@@ -86,7 +85,7 @@ begin
   end;
 end;
 
-function TfrmCadTabelaPrecoProduto.GetIdItem(CdItem: string): Int64;
+function TfrmCadTabelaPrecoProduto.GetIdItem(const CdItem: string): Int64;
 const
   SQL = 'select id_item from produto where cd_produto = :cd_produto';
 var
@@ -137,11 +136,6 @@ begin
   finally
     qry.Free;
   end;
-end;
-
-procedure TfrmCadTabelaPrecoProduto.edtValorExit(Sender: TObject);
-begin
-//
 end;
 
 procedure TfrmCadTabelaPrecoProduto.Excluir;

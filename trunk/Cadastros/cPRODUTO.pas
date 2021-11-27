@@ -46,7 +46,7 @@ type
     edtProdutoNomeGrupoTributacaoICMS: TEdit;
     edtProdutoNomeGrupoTributacaoIPI: TEdit;
     edtProdutoNomeGrupoTributacaoPISCOFINS: TEdit;
-    imagem: TImage;
+    tImagem: TImage;
     Label13: TLabel;
     Button1: TButton;
     btnCarregarImagem: TButton;
@@ -63,7 +63,7 @@ type
     procedure edtProdutoGrupoTributacaoPISCOFINSChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCarregarImagemClick(Sender: TObject);
-    procedure imagemMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure tImagemMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnAddCodBarrasClick(Sender: TObject);
@@ -88,8 +88,8 @@ type
     procedure SalvarFoto;
     procedure SalvarTributacao;
     function carregaImagem(Aimagem: TImage; ABlobField: TBlobField): Boolean;
-    function GetIdItem(CdItem: string): Int64;
-    procedure CarregaProduto(CodItem: String);
+    function GetIdItem(const CdItem: string): Int64;
+    procedure CarregaProduto(const CodItem: String);
   public
     { Public declarations }
 
@@ -133,7 +133,7 @@ end;
 procedure TfrmCadProduto.btnCarregarImagemClick(Sender: TObject);
 begin
   if dlgImagem.Execute then
-    imagem.Picture.LoadFromFile(dlgImagem.FileName);
+    tImagem.Picture.LoadFromFile(dlgImagem.FileName);
 end;
 
 procedure TfrmCadProduto.btnPRODUTOCANCELARClick(Sender: TObject);
@@ -173,7 +173,7 @@ begin
   Result := True;
 end;
 
-procedure TfrmCadProduto.CarregaProduto(CodItem: String);
+procedure TfrmCadProduto.CarregaProduto(const CodItem: String);
 const
   sql = 'select                                             '+
         '    fl_ativo,                                      '+
@@ -256,9 +256,9 @@ begin
     edtProdutoNomeGrupoTributacaoPISCOFINS.Text := qry.FieldByName('nm_tributacao_pis_cofins').AsString;
 
     if qry.FieldByName('imagem').AsBytes = null then
-      imagem.Picture := nil
+      tImagem.Picture := nil
     else
-      carregaImagem(imagem, TBlobField(qry.FieldByName('imagem')));
+      carregaImagem(tImagem, TBlobField(qry.FieldByName('imagem')));
 
     listarCodBarras;
 
@@ -494,7 +494,7 @@ begin
   end;
 end;
 
-function TfrmCadProduto.GetIdItem(CdItem: string): Int64;
+function TfrmCadProduto.GetIdItem(const CdItem: string): Int64;
 const
   SQL = 'select id_item from produto where cd_produto = :cd_produto';
 var
@@ -515,7 +515,7 @@ begin
   end;
 end;
 
-procedure TfrmCadProduto.imagemMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TfrmCadProduto.tImagemMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
@@ -523,7 +523,7 @@ begin
   begin
     if (Application.MessageBox('Deseja Excluir a Imagem do Produto?', 'Aviso', MB_YESNO) = IDYES) then
     begin
-      imagem.Picture := nil;
+      tImagem.Picture := nil;
       dm.conexaoBanco.ExecSQL('update produto set imagem = NULL where cd_produto = :cd_produto',
                                                       [StrToInt(edtPRODUTOCD_PRODUTO.Text)]);
     end
@@ -575,7 +575,7 @@ begin
   memoObservacao.Clear;
   edtUnCodBarras.Clear;
   edtPRODUTOCD_PRODUTO.SetFocus;
-  imagem.Picture := nil;
+  tImagem.Picture := nil;
   TabSheetCadastroProduto.Show;//se estiver em outra aba, sempre volta para a primeira aba
 
   FRegra.Dados.cdsBarras.EmptyDataSet;

@@ -67,7 +67,6 @@ type
     procedure VendaDiria1Click(Sender: TObject);
     procedure NotaEntrada1Click(Sender: TObject);
     procedure Cadastro2Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure Produtos1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Configuraes1Click(Sender: TObject);
@@ -138,14 +137,11 @@ procedure TfrmPrincipal.Cadastro2Click(Sender: TObject);
 begin
   temPermissao := False;
   acesso := TValidaDados.Create;
-
+  frmCadastraTributacaoItem := TfrmCadastraTributacaoItem.Create(Self);
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoCadastraTributacaoItem);
     if temPermissao then
-    begin
-      frmCadastraTributacaoItem := TfrmCadastraTributacaoItem.Create(Self);
       frmCadastraTributacaoItem.ShowModal;
-    end;
   finally
     FreeAndNil(acesso);
     frmCadastraTributacaoItem.Free;
@@ -164,7 +160,7 @@ begin
     if temPermissao then
     begin
 
-      if frmCadastroEnderecos.ShowModal = mrOk then
+      frmCadastroEnderecos.ShowModal;
 
     end;
   finally
@@ -321,18 +317,6 @@ begin
     CanClose := True;
 end;
 
-//mostra o usuário logado
-procedure TfrmPrincipal.FormCreate(Sender: TObject);
-begin
-//  try
-//    //StatusBar1.Panels.Items[0].Text := Concat('Usuário Logado: ', frmLogin.edtUsuario.Text);
-//    frmsplash := TfrmSplash.Create(Self);
-//    frmSplash.ShowModal;
-//  finally
-//    frmSplash.Free;
-//  end;
-end;
-
 procedure TfrmPrincipal.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -345,8 +329,8 @@ end;
 
 procedure TfrmPrincipal.GravarVendas1Click(Sender: TObject);
 begin
+  frmGravaArquivo := TfrmGravaArquivo.Create(Self);
   try
-    frmGravaArquivo := TfrmGravaArquivo.Create(Self);
     frmGravaArquivo.ShowModal;
   finally
     frmGravaArquivo.Free;
@@ -356,8 +340,8 @@ end;
 
 procedure TfrmPrincipal.hreads1Click(Sender: TObject);
 begin
+  fThreads := TfThreads.Create(Self);
   try
-    fThreads := TfThreads.Create(Self);
     fThreads.ShowModal;
   finally
     fThreads.Free;

@@ -21,7 +21,6 @@ type
     edtBusca: TEdit;
     cds: TClientDataSet;
     ds: TDataSource;
-    procedure dbgrd1DblClick(Sender: TObject);
     procedure edtBuscaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
@@ -44,16 +43,6 @@ uses
 {$R *.dfm}
 
 
-
-procedure TfrmConsulta.dbgrd1DblClick(Sender: TObject);
-begin
-//  if FChamada = 'cntCliente' then
-//  begin
-//    CodCliente := cds.FieldByName('cd_cliente').AsInteger;
-//    Close;
-//    FChamada := '';
-//  end;
-end;
 
 procedure TfrmConsulta.edtBuscaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -129,6 +118,8 @@ begin
   try
     qry.SQL.Add(consulta);
     qry.Open();
+
+    Result := '';
 
     //CloneDatasets(qry, cds);
 

@@ -35,7 +35,6 @@ object frmConsulta: TfrmConsulta
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
-      OnDblClick = dbgrd1DblClick
     end
     object rgFiltros: TRadioGroup
       Left = 543

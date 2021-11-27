@@ -13,7 +13,6 @@ type
     Label1: TLabel;
     Timer1: TTimer;
     procedure Timer1Timer(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -26,11 +25,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TfrmSplash.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  //FreeAndNil(frmSplash);
-end;
 
 procedure TfrmSplash.Timer1Timer(Sender: TObject);
 begin

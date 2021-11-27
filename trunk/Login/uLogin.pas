@@ -29,7 +29,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure edtUsuarioExit(Sender: TObject);
     procedure btnConexaoClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     procedure Entrar;
@@ -137,11 +136,6 @@ begin
   finally
     versao.Free;
   end;
-end;
-
-procedure TfrmLogin.FormDestroy(Sender: TObject);
-begin
-  //frmLogin := nil;
 end;
 
 procedure TfrmLogin.FormKeyPress(Sender: TObject; var Key: Char);

@@ -70,7 +70,6 @@ object frmCadTabelaPrecoProduto: TfrmCadTabelaPrecoProduto
       Width = 83
       Height = 21
       TabOrder = 2
-      OnExit = edtValorExit
     end
     object edtUNMedida: TEdit
       Left = 110

@@ -50,7 +50,6 @@ type
     procedure edtCodBarrasProdutoExit(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure btnAdicionarClick(Sender: TObject);
-    procedure btnConfirmarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btn2Click(Sender: TObject);
@@ -84,13 +83,6 @@ uses
   uDataModule, uGerador, uUtil, StrUtils;
 
 {$R *.dfm}
-
-procedure TfrmCadastroEnderecos.btnConfirmarClick(Sender: TObject);
-begin
-
-  //SalvaEnderecoProduto;
-  //LimpaDados;
-end;
 
 procedure TfrmCadastroEnderecos.Adicionar;
 begin

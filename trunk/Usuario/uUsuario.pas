@@ -177,12 +177,12 @@ end;
 
 procedure TfrmUsuario.ValidaCampos;
 var
-  usuario : TValidaDados;
+  validacao: TValidaDados;
 begin
+  validacao := TValidaDados.Create;
   try
     try
-      usuario := TValidaDados.Create;
-      usuario.validaCodigo(StrToInt(edtIdUsuario.Text));
+      validacao.validaCodigo(StrToInt(edtIdUsuario.Text));
     except
       on E: Exception do
       ShowMessage(

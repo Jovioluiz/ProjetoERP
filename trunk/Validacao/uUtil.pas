@@ -10,7 +10,7 @@ type TValidaDados = class
 
   public
 
-    function validaNomeCpf(nome : String; cpf : String) : String;
+    function ValidaNomeCpf(nome : String; cpf : String) : Boolean;
     function validaCodigo(cod : Integer) : Integer;
     function ValidaAcessoAcao(cdUsuario : Integer; cdAcao : Integer) : Boolean; //valida se o usuário pode acessar a ação
     function ValidaEdicaoAcao(cdUsuario : Integer; cdAcao : Integer) : String; //valida se o usuário pode editar um cadastro
@@ -114,13 +114,9 @@ begin
   end;
 end;
 
-function TValidaDados.validaNomeCpf(nome: String; cpf : String): String;
+function TValidaDados.ValidaNomeCpf(nome: String; cpf : String): Boolean;
 begin
-  if (Trim(nome) = '') or (Trim(cpf) = '') then
-  begin
-    ShowMessage('Nome e CPF não podem ser vazios');
-    Abort;
-  end;
+  Result := (Trim(nome) <> '') or (Trim(cpf) <> '');
 end;
 
 { TEditDocumento }

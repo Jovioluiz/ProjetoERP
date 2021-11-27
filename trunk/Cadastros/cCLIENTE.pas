@@ -119,7 +119,12 @@ begin
   try
     if edtCLIENTENM_CLIENTE.Text <> '' then
     begin
-      cliente.validaNomeCpf(edtCLIENTENM_CLIENTE.Text, edtCLIENTECPF_CNPJ.Text);
+      if not cliente.ValidaNomeCpf(edtCLIENTENM_CLIENTE.Text, edtCLIENTECPF_CNPJ.Text) then
+      begin
+        ShowMessage('Nome e ou CPF não podem ser vazios');
+        Exit;
+      end;
+
       cliente.validaCodigo(StrToInt(edtCLIENTEcd_cliente.Text));
 
       persistencia.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
@@ -215,7 +220,7 @@ begin
     //executa o sql acima
     if FCep <> edtCep.Text then
       FTemCep := False;
-    if FTemCep = True then
+    if FTemCep then
       Exit;
 
     if not qry.IsEmpty then

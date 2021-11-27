@@ -15,7 +15,6 @@ type
   TfrmControleAcesso = class(TForm)
     Label3: TLabel;
     edtUsuario: TEdit;
-    query: TFDQuery;
     edtNomeUsuario: TEdit;
     dbGridAcoes: TDBGrid;
     Label1: TLabel;

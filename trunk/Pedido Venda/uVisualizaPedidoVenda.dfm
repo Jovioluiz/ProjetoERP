@@ -155,6 +155,7 @@ object frmVisualizaPedidoVenda: TfrmVisualizaPedidoVenda
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
       OnDrawColumnCell = dbGridProdutosDrawColumnCell
+      OnTitleClick = dbGridProdutosTitleClick
     end
     object btnCancelar: TButton
       Left = 906

@@ -13,7 +13,6 @@ object frmSplash: TfrmSplash
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object Gauge1: TGauge

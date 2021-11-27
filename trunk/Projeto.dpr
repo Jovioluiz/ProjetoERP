@@ -87,7 +87,13 @@ uses
   uclContato in 'Cadastros\Contato\src\uclContato.pas',
   cContato in 'Cadastros\Contato\view\cContato.pas' {frmCadContato},
   fConsultaContatos in 'Cadastros\Contato\view\fConsultaContatos.pas' {frmConsultaContatos},
-  dtmContatos in 'Cadastros\Contato\datamodule\dtmContatos.pas' {dmContatos: TDataModule};
+  dtmContatos in 'Cadastros\Contato\datamodule\dtmContatos.pas' {dmContatos: TDataModule},
+  uFuncionario in 'Cadastros\Funcionario\src\uFuncionario.pas',
+  uGerente in 'Cadastros\Funcionario\src\uGerente.pas',
+  uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas',
+  uRegistrosArquivoBosch in 'Importacao\src\uRegistrosArquivoBosch.pas',
+  uRegistroArquivoBoschKB1 in 'Importacao\src\uRegistroArquivoBoschKB1.pas',
+  uManipuladorArquivoBosch in 'Importacao\src\uManipuladorArquivoBosch.pas';
 
 {$R *.res}
 

@@ -53,7 +53,7 @@ var
   id: Int64;
 begin
   qry := TFDQuery.Create(nil);
-  qry.Connection := FConexao;
+  qry.Connection := dm.conexaoBanco;
 
   try
     qry.Open(SQL, [IdItem]);
@@ -111,9 +111,9 @@ var
   IdGeral: TGerador;
 begin
   qry := TFDQuery.Create(nil);
-  qry.Connection := FConexao;
+  qry.Connection := dm.conexaoBanco;
   qrySelect := TFDQuery.Create(nil);
-  qrySelect.Connection := FConexao;
+  qrySelect.Connection := dm.conexaoBanco;
   IdGeral := TGerador.Create;
 
   try

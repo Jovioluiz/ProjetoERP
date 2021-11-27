@@ -49,38 +49,38 @@ end;
 
 procedure TfrmGravaArquivo.btnGerarClick(Sender: TObject);
 const
-  sql = 'select                                                 ' +
-'             pv.nr_pedido,                                      ' +
-'             c.nome,                                            ' +
-'             pv.vl_total,                                       ' +
-'             pv.vl_acrescimo,                                   ' +
-'             pv.vl_desconto_pedido,                             ' +
-'             pv.dt_emissao,                                     ' +
-'             p.cd_produto,                                      ' +
-'             p.desc_produto,                                    ' +
-'             pvi.qtd_venda,                                     ' +
-'             pvi.un_medida,                                     ' +
-'             pvi.vl_unitario,                                   ' +
-'             pvi.vl_desconto,                                   ' +
-'             pvi.vl_total_item,                                 ' +
-'             pvi.icms_vl_base,                                  ' +
-'             pvi.icms_pc_aliq,                                  ' +
-'             pvi.icms_valor,                                    ' +
-'             pvi.ipi_vl_base,                                   ' +
-'             pvi.ipi_pc_aliq,                                   ' +
-'             pvi.ipi_valor,                                     ' +
-'             pvi.pis_cofins_vl_base,                            ' +
-'             pvi.pis_cofins_pc_aliq,                            ' +
-'             pvi.pis_cofins_valor                               ' +
-'         from                                                   ' +
-'             pedido_venda pv                                    ' +
-'         join pedido_venda_item pvi on                          ' +
-'             pv.id_geral = pvi.id_pedido_venda                  ' +
-'        join produto p on p.id_item = pvi.id_item               ' +
-'         join cliente c on                                      ' +
-'             pv.cd_cliente = c.cd_cliente                       ' +
-'         where pv.dt_emissao between :dt_inicial and :dt_final  ' +
-'             order by pv.nr_pedido, pv.dt_emissao asc  ';
+  sql = 'select                                             ' +
+        '             pv.nr_pedido,                         ' +
+        '             c.nome,                               ' +
+        '             pv.vl_total,                          ' +
+        '             pv.vl_acrescimo,                      ' +
+        '             pv.vl_desconto_pedido,                ' +
+        '             pv.dt_emissao,                        ' +
+        '             p.cd_produto,                         ' +
+        '             p.desc_produto,                       ' +
+        '             pvi.qtd_venda,                        ' +
+        '             pvi.un_medida,                        ' +
+        '             pvi.vl_unitario,                      ' +
+        '             pvi.vl_desconto,                      ' +
+        '             pvi.vl_total_item,                    ' +
+        '             pvi.icms_vl_base,                     ' +
+        '             pvi.icms_pc_aliq,                     ' +
+        '             pvi.icms_valor,                       ' +
+        '             pvi.ipi_vl_base,                      ' +
+        '             pvi.ipi_pc_aliq,                      ' +
+        '             pvi.ipi_valor,                        ' +
+        '             pvi.pis_cofins_vl_base,               ' +
+        '             pvi.pis_cofins_pc_aliq,               ' +
+        '             pvi.pis_cofins_valor                  ' +
+        '         from                                      ' +
+        '             pedido_venda pv                       ' +
+        '         join pedido_venda_item pvi on             ' +
+        '             pv.id_geral = pvi.id_pedido_venda     ' +
+        '        join produto p on p.id_item = pvi.id_item  ' +
+        '         join cliente c on                         ' +
+        '             pv.cd_cliente = c.cd_cliente          ' +
+        '         where pv.dt_emissao between :dt_inicial and :dt_final  ' +
+        '             order by pv.nr_pedido, pv.dt_emissao asc  ';
 var
   qry: TFDQuery;
 begin

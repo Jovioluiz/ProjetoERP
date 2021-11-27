@@ -71,6 +71,7 @@ destructor TImportacaoDados.Destroy;
 begin
   FDados.Free;
   FListaProdutos.Free;
+  inherited;
 end;
 
 procedure TImportacaoDados.ListaClientes(Caminho: String);
