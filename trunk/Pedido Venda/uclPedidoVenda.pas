@@ -433,58 +433,56 @@ begin
     qry.Open(SQL_PEDIDO, [NroPedido]);
 
     if qry.IsEmpty then
-      Exit(False)
-    else
-    begin
-      FDados.cdsPedidoVenda.Append;
-      FDados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := qry.FieldByName('id_geral').AsLargeInt;
-      FDados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := qry.FieldByName('nr_pedido').AsInteger;
-      FDados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean := qry.FieldByName('fl_orcamento').AsBoolean;
-      FDados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := qry.FieldByName('cd_cliente').AsInteger;
-      FDados.cdsPedidoVenda.FieldByName('nm_cliente').AsString := qry.FieldByName('nome').AsString;
-      FDados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := qry.FieldByName('cd_forma_pag').AsInteger;
-      FDados.cdsPedidoVenda.FieldByName('nm_forma_pgto').AsString := qry.FieldByName('nm_forma_pag').AsString;
-      FDados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger := qry.FieldByName('cd_cond_pag').AsInteger;
-      FDados.cdsPedidoVenda.FieldByName('nm_cond_pgto').AsString := qry.FieldByName('nm_cond_pag').AsString;
-      FDados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := qry.FieldByName('vl_desconto_pedido').AsCurrency;
-      FDados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := qry.FieldByName('vl_acrescimo').AsCurrency;
-      FDados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := qry.FieldByName('vl_total').AsCurrency;
-      FDados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime := qry.FieldByName('dt_emissao').AsDateTime;
-      FDados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString := qry.FieldByName('fl_cancelado').AsString;
-      FDados.cdsPedidoVenda.FieldByName('cidade').AsString := qry.FieldByName('cidade').AsString + '/' + qry.FieldByName('uf').AsString;
-      FDados.cdsPedidoVenda.Post;
+      Exit(False);
 
-      qry.Loop(
-      procedure
-      begin
-        produto := GetCdItem(GetIdItem(qry.FieldByName('cd_produto').AsString));
-        FDados.cdsPedidoVendaItem.Append;
-        FDados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt := qry.FieldByName('id_pvi').AsLargeInt;
-        FDados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt := qry.FieldByName('id_geral').AsLargeInt;
-        FDados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt := GetIdItem(qry.FieldByName('cd_produto').AsString);
-        FDados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString := produto.CodItem;
-        FDados.cdsPedidoVendaItem.FieldByName('descricao').AsString := produto.DescProduto;
-        FDados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsFloat := qry.FieldByName('qtd_venda').AsFloat;
-        FDados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger := qry.FieldByName('cd_tabela_preco').AsInteger;
-        FDados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := qry.FieldByName('un_medida').AsString;
-        FDados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := qry.FieldByName('vl_unitario').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := qry.FieldByName('vl_desconto').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := qry.FieldByName('vl_total_item').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency := qry.FieldByName('icms_vl_base').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency := qry.FieldByName('icms_pc_aliq').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency := qry.FieldByName('icms_valor').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency := qry.FieldByName('ipi_vl_base').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency := qry.FieldByName('ipi_pc_aliq').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency := qry.FieldByName('ipi_valor').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency := qry.FieldByName('pis_cofins_vl_base').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency := qry.FieldByName('pis_cofins_pc_aliq').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency := qry.FieldByName('pis_cofins_valor').AsCurrency;
-        FDados.cdsPedidoVendaItem.FieldByName('seq').AsInteger := qry.FieldByName('seq_item').AsInteger;
-        FDados.cdsPedidoVendaItem.Post;
-      end
-      );
-      Result := True;
-    end;
+    FDados.cdsPedidoVenda.Append;
+    FDados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := qry.FieldByName('id_geral').AsLargeInt;
+    FDados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := qry.FieldByName('nr_pedido').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean := qry.FieldByName('fl_orcamento').AsBoolean;
+    FDados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := qry.FieldByName('cd_cliente').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('nm_cliente').AsString := qry.FieldByName('nome').AsString;
+    FDados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := qry.FieldByName('cd_forma_pag').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('nm_forma_pgto').AsString := qry.FieldByName('nm_forma_pag').AsString;
+    FDados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger := qry.FieldByName('cd_cond_pag').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('nm_cond_pgto').AsString := qry.FieldByName('nm_cond_pag').AsString;
+    FDados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := qry.FieldByName('vl_desconto_pedido').AsCurrency;
+    FDados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := qry.FieldByName('vl_acrescimo').AsCurrency;
+    FDados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := qry.FieldByName('vl_total').AsCurrency;
+    FDados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime := qry.FieldByName('dt_emissao').AsDateTime;
+    FDados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString := qry.FieldByName('fl_cancelado').AsString;
+    FDados.cdsPedidoVenda.FieldByName('cidade').AsString := qry.FieldByName('cidade').AsString + '/' + qry.FieldByName('uf').AsString;
+    FDados.cdsPedidoVenda.Post;
+
+    qry.Loop(
+    procedure
+    begin
+      produto := GetCdItem(GetIdItem(qry.FieldByName('cd_produto').AsString));
+      FDados.cdsPedidoVendaItem.Append;
+      FDados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt := qry.FieldByName('id_pvi').AsLargeInt;
+      FDados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt := qry.FieldByName('id_geral').AsLargeInt;
+      FDados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt := GetIdItem(qry.FieldByName('cd_produto').AsString);
+      FDados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString := produto.CodItem;
+      FDados.cdsPedidoVendaItem.FieldByName('descricao').AsString := produto.DescProduto;
+      FDados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsFloat := qry.FieldByName('qtd_venda').AsFloat;
+      FDados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger := qry.FieldByName('cd_tabela_preco').AsInteger;
+      FDados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := qry.FieldByName('un_medida').AsString;
+      FDados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := qry.FieldByName('vl_unitario').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := qry.FieldByName('vl_desconto').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := qry.FieldByName('vl_total_item').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency := qry.FieldByName('icms_vl_base').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency := qry.FieldByName('icms_pc_aliq').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency := qry.FieldByName('icms_valor').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency := qry.FieldByName('ipi_vl_base').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency := qry.FieldByName('ipi_pc_aliq').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency := qry.FieldByName('ipi_valor').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency := qry.FieldByName('pis_cofins_vl_base').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency := qry.FieldByName('pis_cofins_pc_aliq').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency := qry.FieldByName('pis_cofins_valor').AsCurrency;
+      FDados.cdsPedidoVendaItem.FieldByName('seq').AsInteger := qry.FieldByName('seq_item').AsInteger;
+      FDados.cdsPedidoVendaItem.Post;
+    end
+    );
+    Result := True;
 
   finally
     qry.Free;
@@ -529,7 +527,6 @@ begin
       frmPedidoVenda.EdicaoPedido := True;
       frmPedidoVenda.Visible := False;
       frmPedidoVenda.ShowModal;
-
     end;
   finally
     qry.Free;

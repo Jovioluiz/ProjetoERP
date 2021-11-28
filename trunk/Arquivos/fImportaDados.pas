@@ -80,7 +80,7 @@ end;
 procedure TfrmImportaDados.btnGravarClick(Sender: TObject);
 begin
   if edtArquivo.Text <> '' then
-    if FRegras.SalvarProduto(dlArquivo.FileName) then
+    if FRegras.SalvarProduto then
       LimpaCampos;
 end;
 

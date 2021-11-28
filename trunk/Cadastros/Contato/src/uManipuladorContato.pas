@@ -66,16 +66,14 @@ begin
   persistencia := TContatos.Create;
 
   try
-    if persistencia.Pesquisar(CodContato) then
-    begin
-      Result.Codigo := persistencia.cd_contato;
-      Result.Nome := persistencia.nm_contato;
-      Result.Logradouro := persistencia.logradouro;
-      Result.Bairro := persistencia.bairro;
-      Result.Cidade := persistencia.cidade;
-      Result.NrDocumento := persistencia.nr_documento;
-      Result.TipoPessoa := persistencia.tp_pessoa;
-    end;
+    persistencia.Pesquisar(CodContato);
+    Result.Codigo := persistencia.cd_contato;
+    Result.Nome := persistencia.nm_contato;
+    Result.Logradouro := persistencia.logradouro;
+    Result.Bairro := persistencia.bairro;
+    Result.Cidade := persistencia.cidade;
+    Result.NrDocumento := persistencia.nr_documento;
+    Result.TipoPessoa := persistencia.tp_pessoa;
   finally
     persistencia.Free;
   end;

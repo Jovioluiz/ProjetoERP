@@ -115,7 +115,6 @@ begin
   persistencia := TCliente.Create;
   endereco := TClienteEndereco.Create;
   cliente := TValidaDados.Create;
-
   try
     if edtCLIENTENM_CLIENTE.Text <> '' then
     begin
@@ -126,7 +125,6 @@ begin
       end;
 
       cliente.validaCodigo(StrToInt(edtCLIENTEcd_cliente.Text));
-
       persistencia.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
       persistencia.nome := edtCLIENTENM_CLIENTE.Text;
       persistencia.fl_ativo := edtCLIENTEFL_ATIVO.Checked;
@@ -138,7 +136,6 @@ begin
       persistencia.cpf_cnpj := edtCLIENTECPF_CNPJ.Text;
       persistencia.rg_ie := edtCLIENTERG.Text;
       persistencia.dt_nasc_fundacao := StrToDate(edtCLIENTEDATANASCIMENTO.Text);
-
       endereco.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
       endereco.logradouro := edtCLIENTEENDERECO_LOGRADOURO.Text;
       endereco.numero := edtCLIENTEENDERECO_NUMERO.Text;
@@ -251,7 +248,6 @@ var
 begin
   FTemCep := False;
   edicao := TValidaDados.Create;
-
   persistencia := TCliente.Create;
   enderecoPersistencia := TClienteEndereco.Create;
 
@@ -266,8 +262,6 @@ begin
       end;
 
       edtCLIENTEFL_ATIVO.SetFocus;
-
-      //incrementa o código do cliente
       edtCLIENTEcd_cliente.Text := persistencia.GeraCodigoCliente.ToString;
     end
     else
@@ -281,17 +275,11 @@ begin
       edtCLIENTEFL_ATIVO.Checked := persistencia.fl_ativo;
       edtCLIENTEFL_FORNECEDOR.Checked := persistencia.fl_fornecedor;
 
-      if persistencia.tp_pessoa = 'F' then
-      begin
-        edtCLIENTETP_PESSOA.ItemIndex := 0;
-        pFormarCamposPessoa;
-      end
+      if persistencia.tp_pessoa.Equals('F') then
+        edtCLIENTETP_PESSOA.ItemIndex := 0
       else
-      begin
         edtCLIENTETP_PESSOA.ItemIndex := 1;
-        pFormarCamposPessoa;
-      end;
-
+      pFormarCamposPessoa;
       edtCLIENTEFONE.Text := persistencia.telefone;
       edtCLIENTECELULAR.Text := persistencia.celular;
       edtCLIENTEEMAIL.Text := persistencia.email;
@@ -305,7 +293,6 @@ begin
       edtEstado.Text := enderecoPersistencia.uf;
       edtCep.Text := enderecoPersistencia.cep;
       FCep := edtCep.Text;
-
     end;
 
     if edicao.ValidaEdicaoAcao(IdUsuario, 1).Equals('N') then

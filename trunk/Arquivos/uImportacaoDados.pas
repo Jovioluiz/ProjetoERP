@@ -14,7 +14,7 @@ type TImportacaoDados = class
 
   constructor Create;
   procedure ParseDelimited(const sl: TStrings; const value, delimiter: string);
-  function SalvarProduto(Caminho: String): Boolean;
+  function SalvarProduto: Boolean;
   procedure ListaProdutos(Caminho: String);
   procedure SalvarCliente(Caminho: String);
   procedure ListaClientes(Caminho: String);
@@ -247,7 +247,7 @@ begin
   end;
 end;
 
-function TImportacaoDados.SalvarProduto(Caminho: String): Boolean;
+function TImportacaoDados.SalvarProduto: Boolean;
 const
   SQL_INSERT =  'insert ' +
                 ' into  ' +

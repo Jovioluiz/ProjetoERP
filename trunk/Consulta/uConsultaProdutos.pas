@@ -13,7 +13,7 @@ type TConsultaProdutos = class
 
   public
     constructor Create;
-    procedure CarregaUltimaEntrada(IDitem: Int64);
+    procedure CarregaUltimaEntrada;
     procedure CarregaProdutos(Descricao: string; bolCodigo, bolDescricao, bolAtivo, bolEstoque: Boolean);
     procedure CarregaPrecos(IDItem: Int64);
     procedure CarregaEstoques(IDItem: Int64);
@@ -190,7 +190,7 @@ begin
   end;
 end;
 
-procedure TConsultaProdutos.CarregaUltimaEntrada(IDitem: Int64);
+procedure TConsultaProdutos.CarregaUltimaEntrada;
 const
   sql = 'select                                  '+
         '    nfc.dcto_numero,                    '+

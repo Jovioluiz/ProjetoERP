@@ -62,7 +62,6 @@ type TProdutoCodigoBarras = class(TProduto)
     procedure Atualizar; override;
     procedure Inserir; override;
     procedure Excluir; override;
-    function Pesquisar(CdProduto: Integer): Boolean; overload;
     function Pesquisar(IdItem: Int64; CodBarras: String): Boolean;overload;
     constructor Create;
     destructor Destroy; override;
@@ -465,11 +464,6 @@ begin
     qry.Connection.Rollback;
     qry.Free;
   end;
-end;
-
-function TProdutoCodigoBarras.Pesquisar(CdProduto: Integer): Boolean;
-begin
- Result := False;
 end;
 
 function TProdutoCodigoBarras.Pesquisar(IdItem: Int64; CodBarras: String): Boolean;

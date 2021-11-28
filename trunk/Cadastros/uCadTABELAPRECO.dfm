@@ -102,7 +102,7 @@ object frmcadTabelaPreco: TfrmcadTabelaPreco
     end
     object DBGridProduto: TDBGrid
       Left = 8
-      Top = 240
+      Top = 232
       Width = 512
       Height = 297
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]

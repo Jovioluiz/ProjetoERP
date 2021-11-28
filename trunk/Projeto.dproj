@@ -324,6 +324,7 @@
         <DCCReference Include="Cadastros\Funcionario\src\uFuncionario.pas"/>
         <DCCReference Include="Cadastros\Funcionario\src\uGerente.pas"/>
         <DCCReference Include="Cadastros\Funcionario\src\uEstagiario.pas"/>
+        <DCCReference Include="Cadastros\src\uclTabelaPrecoRegras.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

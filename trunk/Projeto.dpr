@@ -90,7 +90,8 @@ uses
   dtmContatos in 'Cadastros\Contato\datamodule\dtmContatos.pas' {dmContatos: TDataModule},
   uFuncionario in 'Cadastros\Funcionario\src\uFuncionario.pas',
   uGerente in 'Cadastros\Funcionario\src\uGerente.pas',
-  uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas';
+  uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas',
+  uclTabelaPrecoRegras in 'Cadastros\src\uclTabelaPrecoRegras.pas';
 
 {$R *.res}
 

@@ -75,7 +75,7 @@ begin
       FThread.Synchronize(FThread.CurrentThread,
                           procedure
                           begin
-                            FConsulta.CarregaUltimaEntrada(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
+                            FConsulta.CarregaUltimaEntrada;
                             FConsulta.CarregaPrecos(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
                             FConsulta.CarregaEstoques(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
                           end);

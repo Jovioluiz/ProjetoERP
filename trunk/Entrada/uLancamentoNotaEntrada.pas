@@ -548,12 +548,9 @@ begin
   try
     query.Open(SQL, [IdItem]);
 
-    if not query.IsEmpty then
-    begin
-      Result.AliqIcms := query.FieldByName('aliquota_icms').AsFloat;
-      Result.AliqIPI := query.FieldByName('aliquota_ipi').AsFloat;
-      Result.AliqPisCofins := query.FieldByName('aliquota_pis_cofins').AsFloat;
-    end;
+    Result.AliqIcms := query.FieldByName('aliquota_icms').AsFloat;
+    Result.AliqIPI := query.FieldByName('aliquota_ipi').AsFloat;
+    Result.AliqPisCofins := query.FieldByName('aliquota_pis_cofins').AsFloat;
 
   finally
     query.Free;
@@ -580,13 +577,10 @@ begin
   try
     query.Open(SQL, [CodItem]);
 
-    if not query.IsEmpty then
-    begin
-      Result.CodItem := query.FieldByName('cd_produto').AsString;
-      Result.DescProduto := query.FieldByName('desc_produto').AsString;
-      Result.UnMedida := query.FieldByName('un_medida').AsString;
-      Result.FatorConversao := query.FieldByName('fator_conversao').AsInteger;
-    end;
+    Result.CodItem := query.FieldByName('cd_produto').AsString;
+    Result.DescProduto := query.FieldByName('desc_produto').AsString;
+    Result.UnMedida := query.FieldByName('un_medida').AsString;
+    Result.FatorConversao := query.FieldByName('fator_conversao').AsInteger;
   finally
     query.Free;
   end;
