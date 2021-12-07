@@ -106,11 +106,7 @@ end;
 
 function TfrmConsulta.MontaDataset(consulta: string): string;
 var
-  linha, coluna: Integer;
   qry: TFDQuery;
-  campo: TField;
-  tamanhoCampo: Integer;
-  colunas: TDBGridColumns;
 begin
   qry := TFDQuery.Create(Self);
   qry.Connection := dm.conexaoBanco;

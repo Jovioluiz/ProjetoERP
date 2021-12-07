@@ -18,7 +18,7 @@ uses
   FireDAC.Stan.Error, Vcl.Graphics, FireDAC.Phys.Intf, FireDAC.Comp.Client,
   Winapi.Windows, System.Variants, uDataModule, Vcl.Dialogs, FireDAC.Stan.Async,
   FireDAC.DApt, Vcl.Forms, System.SysUtils, Data.DB, Vcl.Controls, Vcl.Mask,
-  FireDAC.Comp.DataSet, Winapi.Messages;
+  FireDAC.Comp.DataSet, Winapi.Messages, DUnitX.TestFramework;
 
 type
   // Test methods for class TPedidoVenda
@@ -66,8 +66,13 @@ var
   CdItem: string;
 begin
   // TODO: Setup method call parameters
+  CdItem := '1';
+  QtdPedido := 100;
+
   ReturnValue := FPedidoVenda.ValidaQtdadeItem(CdItem, QtdPedido);
+
   // TODO: Validate method results
+  CheckTrue(ReturnValue, 'item não possui quantidade');
 end;
 
 procedure TestTPedidoVenda.TestCalculaValorTotalItem;
@@ -76,9 +81,16 @@ var
   qtdadeItem: Double;
   valorUnitario: Double;
 begin
-  // TODO: Setup method call parameters
+  // inicializa as variaveis
+
+  qtdadeItem := 2;
+  valorUnitario := 3.50;
+
   ReturnValue := FPedidoVenda.CalculaValorTotalItem(valorUnitario, qtdadeItem);
-  // TODO: Validate method results
+
+  // validando o retorno
+
+  CheckEquals(7, ReturnValue, 'falhou no teste');
 end;
 
 procedure TestTPedidoVenda.TestValidaFormaPgto;
@@ -87,8 +99,10 @@ var
   CdFormaPgto: Integer;
 begin
   // TODO: Setup method call parameters
+  CdFormaPgto := 1;
   ReturnValue := FPedidoVenda.ValidaFormaPgto(CdFormaPgto);
   // TODO: Validate method results
+  CheckFalse(ReturnValue, 'Forma de pagamento não existe');
 end;
 
 procedure TestTPedidoVenda.TestValidaCliente;

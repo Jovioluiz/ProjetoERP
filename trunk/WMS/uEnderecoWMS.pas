@@ -191,15 +191,18 @@ end;
 function TEnderecoWMS.Pesquisar(IdEndereco: Int64; Endereco: string): Boolean;
 const
   SQL = 'select nm_endereco from wms_endereco_produto ' +
-        'where id_endereco = :id_endereco';
+        ' where id_endereco = :id_endereco ' +
+        ' AND id_item = :id_item' ;
 var
   qry: TFDQuery;
+  idItem: Integer;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(SQL, [IdEndereco]);
+    idItem := GetIdItem(Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString);
+    qry.Open(SQL, [IdEndereco, idItem]);
 
     Result := qry.FieldByName('nm_endereco').AsString = Endereco;
   finally
@@ -235,7 +238,6 @@ begin
       qry.ExecSQL;
       qry.Connection.Commit;
     end;
-
     SalvarWmsEstoque(idEndereco, GetIdItem(Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString));
   finally
     idGeral.Free;

@@ -68,7 +68,8 @@ var
 implementation
 
 uses
-  uUtil, uDataModule, uLogin;
+  uUtil, uDataModule, uLogin, uGrupoTributacao, uGrupoTributacaoICMS,
+  uGrupoTributacaoIPI, uGrupoTributacaoISS, uGrupoTributacaoPISCOFINS;
 
 {$R *.dfm}
 
@@ -261,299 +262,93 @@ begin
 end;
 
 procedure TfrmCadastraTributacaoItem.salvar;
+var
+  tributacao: TGrupoTributacao;
+  novo: Boolean;
 begin
-  if TabSheetICMS.Showing then      //ICMS
-  begin
-    comandoSelect.Close;
-    comandoSelect.SQL.Text := 'select                             '+
-                              '    cd_tributacao                  '+
-                              'from                               '+
-                              '    grupo_tributacao_icms          '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoSelect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoICMS.Text);
-    comandoSelect.Open();
-
-    if not comandoselect.IsEmpty then
+  try
+    if edtCdGrupoTributacaoICMS.Text <> '' then//ICMS
     begin
-      //update
-      comandoSQL.Close;
-      comandoSQL.SQL.Text :=  'update                              '+
-                                  'grupo_tributacao_icms           '+
-                              'set                                 '+
-                                  'cd_tributacao = :cd_tributacao, '+
-                                  'nm_tributacao_icms = :nm_tributacao_icms, '+
-                                  'aliquota_icms = :aliquota_icms  '+
-                              'where                               '+
-                                  'cd_tributacao = :cd_tributacao';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoICMS.Text);
-      comandoSQL.ParamByName('nm_tributacao_icms').AsString := edtNomeGrupoTributacaoICMS.Text;
-      comandoSQL.ParamByName('aliquota_icms').AsCurrency := StrToCurr(edtAliqICMS.Text);
+      tributacao := TGrupoTributacaoICMS.Create;
 
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoICMS.Clear;
-       edtNomeGrupoTributacaoICMS.Clear;
-       edtAliqICMS.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
-    end
-    else
-    begin
-      comandoSQL.Close;
-      comandoSQL.SQL.Text := 'insert                                      '+
-                                  'into                                   '+
-                                  'grupo_tributacao_icms (cd_tributacao,  '+
-                                  'nm_tributacao_icms,                    '+
-                                  'aliquota_icms)                         '+
-                              'values (:cd_tributacao,                    '+
-                                  ':nm_tributacao_icms,                   '+
-                                  ':aliquota_icms)';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoICMS.Text);
-      comandoSQL.ParamByName('nm_tributacao_icms').AsString := edtNomeGrupoTributacaoICMS.Text;
-      comandoSQL.ParamByName('aliquota_icms').AsCurrency := StrToCurr(edtAliqICMS.Text);
+      try
+        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoICMS.Text));
 
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoICMS.Clear;
-       edtNomeGrupoTributacaoICMS.Clear;
-       edtAliqICMS.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
+        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoICMS.Text);
+        tributacao.NomeTributacao := edtNomeGrupoTributacaoICMS.Text;
+        tributacao.Aliquota := StrToCurr(edtAliqICMS.Text);
+
+        tributacao.Persistir(novo);
+
+        edtCdGrupoTributacaoICMS.Clear;
+        edtNomeGrupoTributacaoICMS.Clear;
+        edtAliqICMS.Clear;
+      finally
+        tributacao.Free;
+      end;
     end;
-  end
-  else if TabSheetIPI.Showing then    //IPI
-  begin
-    comandoSelect.Close;
-    comandoSelect.SQL.Text := 'select                             '+
-                              '    cd_tributacao                  '+
-                              'from                               '+
-                              '    grupo_tributacao_ipi           '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoSelect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoIPI.Text);
-    comandoSelect.Open();
 
-    if not comandoselect.IsEmpty then
-      //update
+    if edtCdGrupoTributacaoIPI.Text <> '' then    //IPI
     begin
-      comandoSQL.Close;
-      comandoSQL.SQL.Text :=  'update                              '+
-                                  'grupo_tributacao_ipi            '+
-                              'set                                 '+
-                                  'cd_tributacao = :cd_tributacao, '+
-                                  'nm_tributacao_ipi = :nm_tributacao_ipi, '+
-                                  'aliquota_ipi = :aliquota_ipi    '+
-                              'where                               '+
-                                  'cd_tributacao = :cd_tributacao';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoIPI.Text);
-      comandoSQL.ParamByName('nm_tributacao_ipi').AsString := edtNomeGrupoTributacaoIPI.Text;
-      comandoSQL.ParamByName('aliquota_ipi').AsCurrency := StrToCurr(edtAliqIPI.Text);
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoIPI.Clear;
-       edtNomeGrupoTributacaoIPI.Clear;
-       edtAliqIPI.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
-    end
-    else
-    begin
-      comandoSQL.Close;
-      comandoSQL.SQL.Text := 'insert                                    '+
-                                  'into                                 '+
-                                  'grupo_tributacao_ipi (cd_tributacao, '+
-                                  'nm_tributacao_ipi,                   '+
-                                  'aliquota_ipi)                        '+
-                              'values (:cd_tributacao,                  '+
-                                  ':nm_tributacao_ipi,                  '+
-                                  ':aliquota_ipi)';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoIPI.Text);
-      comandoSQL.ParamByName('nm_tributacao_ipi').AsString := edtNomeGrupoTributacaoIPI.Text;
-      comandoSQL.ParamByName('aliquota_ipi').AsCurrency := StrToCurr(edtAliqIPI.Text);
+      tributacao := TGrupoTributacaoIPI.Create;
 
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoIPI.Clear;
-       edtNomeGrupoTributacaoIPI.Clear;
-       edtAliqIPI.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
+      try
+        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoIPI.Text));
+
+        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoIPI.Text);
+        tributacao.NomeTributacao := edtNomeGrupoTributacaoIPI.Text;
+        tributacao.Aliquota := StrToCurr(edtAliqIPI.Text);
+
+        tributacao.Persistir(novo);
+        edtCdGrupoTributacaoIPI.Clear;
+        edtNomeGrupoTributacaoIPI.Clear;
+        edtAliqIPI.Clear;
+      finally
+        tributacao.Free;
+      end;
     end;
-  end
-  else if TabSheetISS.Showing then      //ISS
-   begin
-    comandoSelect.Close;
-    comandoSelect.SQL.Text := 'select                             '+
-                              '    cd_tributacao                  '+
-                              'from                               '+
-                              '    grupo_tributacao_iss           '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoSelect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoISS.Text);
-    comandoSelect.Open();
 
-    if not comandoselect.IsEmpty then
-      //update
-      begin
-        comandoSQL.Close;
-        comandoSQL.SQL.Text :=  'update                              '+
-                                    'grupo_tributacao_iss            '+
-                                'set                                 '+
-                                    'cd_tributacao = :cd_tributacao, '+
-                                    'nm_tributacao_iss = :nm_tributacao_iss, '+
-                                    'aliquota_iss = :aliquota_iss    '+
-                                'where                               '+
-                                    'cd_tributacao = :cd_tributacao';
-        comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoISS.Text);
-        comandoSQL.ParamByName('nm_tributacao_iss').AsString := edtNomeGrupoTributacaoISS.Text;
-        comandoSQL.ParamByName('aliquota_iss').AsCurrency := StrToCurr(edtAliqISS.Text);
-       try
-         comandoSQL.ExecSQL;
-         comandoSQL.Close;
-         ShowMessage('Salvo');
-         edtCdGrupoTributacaoISS.Clear;
-         edtNomeGrupoTributacaoISS.Clear;
-         edtAliqISS.Clear;
-       except
-        on E:Exception do
-          begin
-            ShowMessage('Erro ao gravar os dados'+ E.Message);
-            Exit;
-          end;
-       end;
-      end
-    else
+    if edtCdGrupoTributacaoISS.Text <> '' then      //ISS
     begin
-      comandoSQL.Close;
-      comandoSQL.SQL.Text := 'insert                                    '+
-                                  'into                                 '+
-                                  'grupo_tributacao_iss (cd_tributacao, '+
-                                  'nm_tributacao_iss,                       '+
-                                  'aliquota_iss)                        '+
-                              'values (:cd_tributacao,                  '+
-                                  ':nm_tributacao_iss,                      '+
-                                  ':aliquota_iss)';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoISS.Text);
-      comandoSQL.ParamByName('nm_tributacao_iss').AsString := edtNomeGrupoTributacaoISS.Text;
-      comandoSQL.ParamByName('aliquota_iss').AsCurrency := StrToCurr(edtAliqISS.Text);
+      tributacao := TGrupoTributacaoISS.Create;
 
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoISS.Clear;
-       edtNomeGrupoTributacaoISS.Clear;
-       edtAliqISS.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
+      try
+        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoISS.Text));
+
+        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoISS.Text);
+        tributacao.NomeTributacao := edtNomeGrupoTributacaoISS.Text;
+        tributacao.Aliquota := StrToCurr(edtAliqISS.Text);
+
+        tributacao.Persistir(novo);
+        edtCdGrupoTributacaoISS.Clear;
+        edtNomeGrupoTributacaoISS.Clear;
+        edtAliqISS.Clear;
+      finally
+        tributacao.Free;
+      end;
     end;
-  end
-  else if TabSheetPISCOFINS.Showing then //PIS/COFINS
-  begin
-    comandoSelect.Close;
-    comandoSelect.SQL.Text := 'select         '+
-                              '    cd_tributacao                        '+
-                              'from                                     '+
-                              '    grupo_tributacao_pis_cofins          '+
-                              'where                                    '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoSelect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
-    comandoSelect.Open();
 
-    if not comandoselect.IsEmpty then
-      //update
+    if edtCdGrupoTributacaoISS.Text <> '' then //PIS/COFINS
     begin
-      comandoSQL.Close;
-      comandoSQL.SQL.Text :=  'update                                           '+
-                                  'grupo_tributacao_pis_cofins                  '+
-                              'set                                              '+
-                                  'cd_tributacao = :cd_tributacao,              '+
-                                  'nm_tributacao_pis_cofins = :nm_tributacao_pis_cofins,              '+
-                                  'aliquota_pis_cofins = :aliquota_pis_cofins   '+
-                              'where                                            '+
-                                  'cd_tributacao = :cd_tributacao';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
-      comandoSQL.ParamByName('nm_tributacao_pis_cofins').AsString := edtNomeGrupoTributacaoPISCOFINS.Text;
-      comandoSQL.ParamByName('aliquota_pis_cofins').AsCurrency := StrToCurr(edtAliqPISCOFINS.Text);
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoPISCOFINS.Clear;
-       edtNomeGrupoTributacaoPISCOFINS.Clear;
-       edtAliqPISCOFINS.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
-    end
-    else
-    begin
-      comandoSQL.Close;
-      comandoSQL.SQL.Text := 'insert                                          '+
-                                  'into                                       '+
-                                  'grupo_tributacao_pis_cofins (cd_tributacao,'+
-                                  'nm_tributacao_pis_cofins,                  '+
-                                  'aliquota_pis_cofins)                       '+
-                              'values (:cd_tributacao,                        '+
-                                  ':nm_tributacao_pis_cofins,                 '+
-                                  ':aliquota_pis_cofins)';
-      comandoSQL.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
-      comandoSQL.ParamByName('nm_tributacao_pis_cofins').AsString := edtNomeGrupoTributacaoPISCOFINS.Text;
-      comandoSQL.ParamByName('aliquota_pis_cofins').AsCurrency := StrToCurr(edtAliqPISCOFINS.Text);
+      tributacao := TGrupoTributacaoPISCOFINS.Create;
 
-     try
-       comandoSQL.ExecSQL;
-       comandoSQL.Close;
-       ShowMessage('Salvo');
-       edtCdGrupoTributacaoPISCOFINS.Clear;
-       edtNomeGrupoTributacaoPISCOFINS.Clear;
-       edtAliqPISCOFINS.Clear;
-     except
-      on E:Exception do
-        begin
-          ShowMessage('Erro ao gravar os dados'+ E.Message);
-          Exit;
-        end;
-     end;
+      try
+        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoPISCOFINS.Text));
+
+        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
+        tributacao.NomeTributacao := edtNomeGrupoTributacaoPISCOFINS.Text;
+        tributacao.Aliquota := StrToCurr(edtAliqPISCOFINS.Text);
+
+        tributacao.Persistir(novo);
+        edtCdGrupoTributacaoPISCOFINS.Clear;
+        edtNomeGrupoTributacaoPISCOFINS.Clear;
+        edtAliqPISCOFINS.Clear;
+      finally
+        tributacao.Free;
+      end;
     end;
+  except on E: exception do
+    raise Exception.Create('Ocorreu o seguinte erro ao gravar os dados ' + E.Message);
   end;
 end;
 

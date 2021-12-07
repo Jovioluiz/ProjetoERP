@@ -216,7 +216,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 444
       Height = 21
       Enabled = False
-      TabOrder = 14
+      TabOrder = 16
     end
     object edtUnMedida: TComboBox
       Left = 662
@@ -240,7 +240,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 63
       Height = 25
       Caption = 'Adicionar'
-      TabOrder = 8
+      TabOrder = 10
       OnClick = btnAdicionarClick
     end
     object dbGridProdutos: TDBGrid
@@ -250,7 +250,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       Height = 271
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
       ReadOnly = True
-      TabOrder = 15
+      TabOrder = 17
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -11
@@ -261,21 +261,13 @@ object frmPedidoVenda: TfrmPedidoVenda
       OnKeyDown = dbGridProdutosKeyDown
       OnTitleClick = dbGridProdutosTitleClick
     end
-    object edtVlDescontoItem: TEdit
-      Left = 651
-      Top = 247
-      Width = 65
-      Height = 21
-      TabOrder = 7
-      OnExit = edtVlDescontoItemExit
-    end
     object btnConfirmarPedido: TButton
       Left = 661
       Top = 579
       Width = 95
       Height = 32
       Caption = 'Confirmar'
-      TabOrder = 12
+      TabOrder = 14
       OnClick = btnConfirmarPedidoClick
     end
     object btnCancelar: TButton
@@ -284,7 +276,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 95
       Height = 32
       Caption = 'Cancelar'
-      TabOrder = 13
+      TabOrder = 15
       OnClick = btnCancelarClick
     end
     object edtDataEmissao: TDateTimePicker
@@ -294,7 +286,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       Height = 21
       Date = 44353.000000000000000000
       Time = 0.678792071761563400
-      TabOrder = 16
+      TabOrder = 18
     end
     object edtVlTotalPedido: TNumberBox
       Left = 203
@@ -302,7 +294,8 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 70
       Height = 21
       Mode = nbmCurrency
-      TabOrder = 11
+      TabOrder = 13
+      UseUpDownKeys = False
       OnExit = edtVlTotalPedidoExit
     end
     object edtVlAcrescimoTotalPedido: TNumberBox
@@ -311,7 +304,8 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 70
       Height = 21
       Mode = nbmCurrency
-      TabOrder = 10
+      TabOrder = 12
+      UseUpDownKeys = False
       OnExit = edtVlAcrescimoTotalPedidoExit
     end
     object edtVlDescTotalPedido: TNumberBox
@@ -320,7 +314,8 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 70
       Height = 21
       Mode = nbmCurrency
-      TabOrder = 9
+      TabOrder = 11
+      UseUpDownKeys = False
       OnExit = edtVlDescTotalPedidoExit
     end
     object edtQtdade: TNumberBox
@@ -330,6 +325,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       Height = 21
       Mode = nbmFloat
       TabOrder = 4
+      UseUpDownKeys = False
       OnChange = edtQtdadeChange
       OnExit = edtQtdadeExit
     end
@@ -339,7 +335,8 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 65
       Height = 21
       Mode = nbmCurrency
-      TabOrder = 17
+      TabOrder = 9
+      UseUpDownKeys = False
     end
     object edtVlUnitario: TNumberBox
       Left = 574
@@ -347,7 +344,18 @@ object frmPedidoVenda: TfrmPedidoVenda
       Width = 64
       Height = 21
       Mode = nbmCurrency
-      TabOrder = 18
+      TabOrder = 7
+      UseUpDownKeys = False
+    end
+    object edtVlDescontoItem: TNumberBox
+      Left = 658
+      Top = 247
+      Width = 58
+      Height = 21
+      Mode = nbmCurrency
+      TabOrder = 8
+      UseUpDownKeys = False
+      OnExit = edtVlDescontoItemExit
     end
   end
   object edtNrPedido: TEdit

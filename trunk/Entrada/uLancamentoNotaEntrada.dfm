@@ -407,6 +407,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 9
+      UseUpDownKeys = False
       OnExit = edtVlProdutoExit
     end
     object edtBaseIcms: TNumberBox
@@ -416,6 +417,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 10
+      UseUpDownKeys = False
     end
     object edtValorIcms: TNumberBox
       Left = 316
@@ -424,6 +426,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 11
+      UseUpDownKeys = False
     end
     object edtValorFrete: TNumberBox
       Left = 412
@@ -432,6 +435,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 12
+      UseUpDownKeys = False
       OnExit = edtValorFreteExit
     end
     object edtValorIPI: TNumberBox
@@ -441,6 +445,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 13
+      UseUpDownKeys = False
       OnExit = edtValorIPIExit
     end
     object edtValorISS: TNumberBox
@@ -450,6 +455,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 14
+      UseUpDownKeys = False
     end
     object edtValorDesconto: TNumberBox
       Left = 24
@@ -458,6 +464,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 15
+      UseUpDownKeys = False
       OnExit = edtValorDescontoExit
     end
     object edtValorAcrescimo: TNumberBox
@@ -467,6 +474,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 16
+      UseUpDownKeys = False
       OnExit = edtValorAcrescimoExit
     end
     object edtValorOutrasDespesas: TNumberBox
@@ -476,6 +484,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 17
+      UseUpDownKeys = False
       OnExit = edtValorOutrasDespesasExit
     end
     object edtValorTotalNota: TNumberBox
@@ -494,6 +503,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmFloat
       TabOrder = 20
+      UseUpDownKeys = False
       OnChange = edtQuantidadeChange
       OnExit = edtQuantidadeExit
     end
@@ -504,6 +514,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Enabled = False
       TabOrder = 21
+      UseUpDownKeys = False
     end
     object edtQuantidadeTotalProduto: TNumberBox
       Left = 579
@@ -513,6 +524,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Enabled = False
       Mode = nbmFloat
       TabOrder = 22
+      UseUpDownKeys = False
     end
     object edtValorUnitario: TNumberBox
       Left = 635
@@ -521,6 +533,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 23
+      UseUpDownKeys = False
       OnChange = edtValorUnitarioChange
     end
     object edtValorTotalProduto: TNumberBox
@@ -530,6 +543,7 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
       Height = 21
       Mode = nbmCurrency
       TabOrder = 24
+      UseUpDownKeys = False
     end
   end
 end

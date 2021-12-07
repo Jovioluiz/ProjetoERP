@@ -35,7 +35,7 @@ uses
   uVersao in 'Validacao\uVersao.pas',
   uConsulta in 'Consulta\uConsulta.pas' {frmConsulta},
   uclNotaEntrada in 'Entrada\uclNotaEntrada.pas',
-  uGerador in 'Outros\uGerador.pas' {$R *.res},
+  uGerador in 'Outros\uGerador.pas',
   fCadastroEnderecos in 'WMS\fCadastroEnderecos.pas' {frmCadastroEnderecos},
   uCadastrarSenha in 'Cadastros\uCadastrarSenha.pas' {frmCadastraSenha},
   uSplash in 'Inicio\uSplash.pas' {frmSplash},
@@ -70,7 +70,7 @@ uses
   uMovimentacaoEstoque in 'Estoque\uMovimentacaoEstoque.pas',
   fCadastroPadrao in 'Outros\fCadastroPadrao.pas' {frmCadastroPadrao},
   uclPedidoVendaItem in 'Pedido Venda\uclPedidoVendaItem.pas',
-  uSet in 'Outros\uSet.pas' {$R *.res},
+  uSet in 'Outros\uSet.pas',
   uclLogin in 'Login\uclLogin.pas',
   uclUsuario in 'Usuario\uclUsuario.pas',
   dUsuario in 'Usuario\dUsuario.pas' {dmUsuario: TDataModule},
@@ -91,7 +91,12 @@ uses
   uFuncionario in 'Cadastros\Funcionario\src\uFuncionario.pas',
   uGerente in 'Cadastros\Funcionario\src\uGerente.pas',
   uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas',
-  uclTabelaPrecoRegras in 'Cadastros\src\uclTabelaPrecoRegras.pas';
+  uclTabelaPrecoRegras in 'Cadastros\src\uclTabelaPrecoRegras.pas',
+  uGrupoTributacao in 'Cadastros\src\uGrupoTributacao.pas',
+  uGrupoTributacaoICMS in 'Cadastros\src\uGrupoTributacaoICMS.pas',
+  uGrupoTributacaoIPI in 'Cadastros\src\uGrupoTributacaoIPI.pas',
+  uGrupoTributacaoISS in 'Cadastros\src\uGrupoTributacaoISS.pas',
+  uGrupoTributacaoPISCOFINS in 'Cadastros\src\uGrupoTributacaoPISCOFINS.pas';
 
 {$R *.res}
 

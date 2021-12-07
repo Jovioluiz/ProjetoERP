@@ -119,9 +119,12 @@ begin
     ShowMessage('Salvo');
   except
     on E: Exception do
+    begin
       ShowMessage(
         'Ocorreu um erro.' + #13 +
         'Mensagem de erro: ' + E.Message);
+        FRegras.Dados.cdsEnderecoProduto.Cancel;
+    end;
   end;
 end;
 

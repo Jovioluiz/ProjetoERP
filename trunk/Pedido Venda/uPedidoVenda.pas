@@ -52,7 +52,6 @@ type
     btnAdicionar: TButton;
     dbGridProdutos: TDBGrid;
     Label15: TLabel;
-    edtVlDescontoItem: TEdit;
     Label16: TLabel;
     Label17: TLabel;
     Label18: TLabel;
@@ -68,6 +67,7 @@ type
     edtQtdade: TNumberBox;
     edtVlTotal: TNumberBox;
     edtVlUnitario: TNumberBox;
+    edtVlDescontoItem: TNumberBox;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure edtCdClienteChange(Sender: TObject);
     procedure edtCdClienteExit(Sender: TObject);
@@ -119,7 +119,7 @@ type
     procedure SalvaCabecalho;
 
     procedure SalvaItens(EhEdicao: Boolean);
-    procedure SetDadosNota;
+
     procedure CancelaPedidoVenda;
     procedure InsereWmsMvto;
     function GetNumeroParcelas(CdCondPgto: Integer): Integer;
@@ -132,7 +132,7 @@ type
     procedure BuscarProduto;
   public
     { Public declarations }
-
+    procedure SetDadosNota;
     property NumeroPedido: Integer read FNumeroPedido write FNumeroPedido;
     property Regras: TPedidoVenda read FRegras write SetRegras;
     property EdicaoPedido: Boolean read FEdicaoPedido write SetEdicaoPedido;
@@ -307,7 +307,7 @@ begin
   edtCdtabelaPreco.Text := IntToStr(FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger);
   edtUnMedida.Text := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
   edtVlUnitario.ValueCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
-  edtVlDescontoItem.Text := CurrToStr(FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency);
+  edtVlDescontoItem.ValueCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
   edtVlTotal.ValueCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
   edtCdProduto.SetFocus;
 end;
@@ -629,6 +629,8 @@ begin
     Exit;
   end;
 
+  lista := TFDQuery.Create(Self);
+
   try
     lista := FRegras.BuscaTabelaPreco(StrToInt(edtCdtabelaPreco.Text), edtCdProduto.Text);
 
@@ -720,19 +722,8 @@ end;
 
 //altera o valor total ao sair do campo de desconto
 procedure TfrmPedidoVenda.edtVlDescontoItemExit(Sender: TObject);
-var
-  vlDesconto, vlUnitario,
-  vlTotalComDesc: Currency;
 begin
-  if edtVlDescontoItem.Text = EmptyStr then
-    edtVlDescontoItem.Text := '0,00'
-  else
-  begin
-    vlDesconto := StrToCurr(edtVlDescontoItem.Text);
-    vlUnitario := edtVlUnitario.ValueCurrency;
-    vlTotalComDesc := (vlUnitario * edtQtdade.ValueFloat) - vlDesconto;
-    edtVlTotal.ValueCurrency := vlTotalComDesc;
-  end;
+  edtVlTotal.ValueCurrency := (edtVlUnitario.ValueCurrency * edtQtdade.ValueFloat) - edtVlDescontoItem.ValueCurrency;
 end;
 
 //recalcula o valor total se informado um valor de desconto no total do pedido
@@ -991,7 +982,9 @@ begin
     except
       on e:Exception do
       begin
-        ShowMessage('Erro ao gravar os dados do movimento do produto ' + FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString + E.Message);
+        ShowMessage('Erro ao gravar os dados do movimento do produto '
+                    + FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString
+                    + E.Message);
         Exit;
       end;
     end;
@@ -1112,7 +1105,7 @@ begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsFloat := edtQtdade.ValueFloat;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := edtUnMedida.Text;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := edtVlUnitario.ValueCurrency;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := StrToCurr(edtVlDescontoItem.Text);
+      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := edtVlDescontoItem.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := edtVlTotal.ValueCurrency;
     end
     else
@@ -1128,7 +1121,7 @@ begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger := StrToInt(edtCdtabelaPreco.Text);
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := edtUnMedida.Text;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := edtVlUnitario.ValueCurrency;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := StrToCurr(edtVlDescontoItem.Text);
+      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := edtVlDescontoItem.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := edtVlTotal.ValueCurrency;
     end;
 
@@ -1206,7 +1199,7 @@ begin
   edtCdtabelaPreco.Clear;
   edtUnMedida.Clear;
   edtVlUnitario.Clear;
-  edtVlDescontoItem.Clear;
+  edtVlDescontoItem.ValueCurrency := 0;
   edtVlTotal.Clear;
   edtCdProduto.SetFocus;
   edtVlDescTotalPedido.ValueCurrency := 0;
@@ -1238,7 +1231,8 @@ begin
     FRegras.Dados.cdsPedidoVenda.Append;
 
   FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := ifthen(FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt > 0,
-                                                                            FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt, FGerador.GeraIdGeral);
+                                                                            FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt,
+                                                                            FGerador.GeraIdGeral);
   FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := NumeroPedido;
   FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := StrToInt(edtCdCliente.Text);
   FRegras.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := StrToInt(edtCdFormaPgto.Text);

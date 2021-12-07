@@ -290,7 +290,11 @@
         </DCCReference>
         <DCCReference Include="Pedido Venda\uclPedidoVendaItem.pas"/>
         <DCCReference Include="Outros\uSet.pas">
-            <Form>$R *.res</Form>
+            <Form>,
+  uclLogin in &apos;Login\uclLogin.pas&apos;,
+  uclUsuario in &apos;Usuario\uclUsuario.pas&apos;,
+  dUsuario in &apos;Usuario\dUsuario.pas&apos; {dmUsuario</Form>
+            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Login\uclLogin.pas"/>
         <DCCReference Include="Usuario\uclUsuario.pas"/>
@@ -325,6 +329,19 @@
         <DCCReference Include="Cadastros\Funcionario\src\uGerente.pas"/>
         <DCCReference Include="Cadastros\Funcionario\src\uEstagiario.pas"/>
         <DCCReference Include="Cadastros\src\uclTabelaPrecoRegras.pas"/>
+        <DCCReference Include="Cadastros\src\uGrupoTributacao.pas">
+            <Form>,
+  uGrupoTributacaoICMS in &apos;Cadastros\src\uGrupoTributacaoICMS.pas&apos;,
+  uGrupoTributacaoIPI in &apos;Cadastros\src\uGrupoTributacaoIPI.pas&apos;,
+  uGrupoTributacaoISS in &apos;Cadastros\src\uGrupoTributacaoISS.pas&apos;,
+  uGrupoTributacaoPISCOFINS in &apos;Cadastros\src\uGrupoTributacaoPISCOFINS.pas&apos;;
+
+{$R *.res</Form>
+        </DCCReference>
+        <DCCReference Include="Cadastros\src\uGrupoTributacaoICMS.pas"/>
+        <DCCReference Include="Cadastros\src\uGrupoTributacaoIPI.pas"/>
+        <DCCReference Include="Cadastros\src\uGrupoTributacaoISS.pas"/>
+        <DCCReference Include="Cadastros\src\uGrupoTributacaoPISCOFINS.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
