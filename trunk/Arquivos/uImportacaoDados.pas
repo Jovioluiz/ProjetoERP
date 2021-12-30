@@ -28,7 +28,8 @@ implementation
 
 uses
   FireDAC.Comp.Client, uDataModule, uclProduto, System.SysUtils, Vcl.Dialogs,
-  Vcl.Samples.Gauges, uUtil, Data.DB, FireDAC.Stan.Param;
+  Vcl.Samples.Gauges, uUtil, Data.DB, FireDAC.Stan.Param, FireDAC.Phys.Intf,
+  Vcl.ComCtrls;
 
 { TImportacaoDados }
 
@@ -272,20 +273,30 @@ var
   qry: TFDquery;
   produto: TProduto;
   inicio: TDateTime;
+  barraProgresso: TProgressBar;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
   qry.Connection.StartTransaction;
   produto := TProduto.Create;
-
+  barraProgresso := TProgressBar.Create(nil);
+  FDados.cdsProdutos.DisableControls;
   try
     try
+      barraProgresso.Visible := True;
       qry.SQL.Add(SQL_INSERT);
       inicio := Now;
-        //se FDados.cdsProdutos.RecordCount * 8(numero de parametros) > 65535 da erro (postgres), mas mesmo assim insere os registros
+      //se FDados.cdsProdutos.RecordCount * 8(numero de parametros) > 65535 da erro (postgres), mas mesmo assim insere os registros
       qry.Params.ArraySize := FDados.cdsProdutos.RecordCount;
+      barraProgresso.Min := 0;
+      barraProgresso.Max := FDados.cdsProdutos.RecordCount;
+      barraProgresso.State := pbsNormal;
+      FDados.cdsProdutos.First;
       for var I := 0 to Pred(FDados.cdsProdutos.RecordCount) do
       begin
+
+        barraProgresso.Position := I;
+        barraProgresso.Repaint;
         qry.ParamByName('cd_produto').AsStrings[I] := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
         qry.ParamByName('fl_ativo').AsBooleans[I] := True;
         qry.ParamByName('desc_produto').AsStrings[I] := FDados.cdsProdutos.FieldByName('desc_produto').AsString;
@@ -294,6 +305,7 @@ begin
         qry.ParamByName('peso_liquido').AsFloats[I] := FDados.cdsProdutos.FieldByName('peso_liquido').AsFloat;
         qry.ParamByName('peso_bruto').AsFloats[I] := FDados.cdsProdutos.FieldByName('peso_bruto').AsFloat;
         qry.ParamByName('id_item').AsLargeInts[I] := produto.GeraIdItem;
+        FDados.cdsProdutos.Next;
       end;
       qry.Execute(qry.Params.ArraySize, 0);
 
@@ -314,7 +326,8 @@ begin
 //      );
 
       qry.Connection.Commit;
-      ShowMessage('Dados gravados com Sucesso - ' + FormatDateTime('hh:mm:ss:zzz', Now - inicio));
+
+      ShowMessage('Dados gravados com Sucesso - ' + FormatDateTime('hh:mm:ss:zzz', Now - inicio) + ' ' + qry.RowsAffected.ToString);
       Result := True;
 
     except
@@ -326,9 +339,11 @@ begin
     end;
 
   finally
+    FDados.cdsProdutos.EnableControls;
     qry.Connection.Rollback;
     qry.Free;
     produto.Free;
+    barraProgresso.Free;
   end;
 end;
 

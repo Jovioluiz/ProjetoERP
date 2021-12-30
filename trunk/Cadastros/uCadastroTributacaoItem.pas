@@ -42,8 +42,6 @@ type
     edtNomeGrupoTributacaoPISCOFINS: TEdit;
     edtAliqPISCOFINS: TEdit;
     Label12: TLabel;
-    comandoSQL: TFDQuery;
-    comandoselect: TFDQuery;
     procedure edtCdGrupoTributacaoICMSExit(Sender: TObject);
     procedure edtCdGrupoTributacaoIPIExit(Sender: TObject);
     procedure edtCdGrupoTributacaoISSExit(Sender: TObject);
@@ -56,14 +54,12 @@ type
     { Private declarations }
     procedure limpaCampos;
     procedure salvar;
-    procedure desabilitaCampos;
   public
     { Public declarations }
   end;
 
 var
   frmCadastraTributacaoItem: TfrmCadastraTributacaoItem;
-  camposDesabilitados: Boolean;
 
 implementation
 
@@ -73,139 +69,92 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmCadastraTributacaoItem.desabilitaCampos;
-begin
-  edtCdGrupoTributacaoICMS.Enabled := False;
-  edtNomeGrupoTributacaoICMS.Enabled := False;
-  edtAliqICMS.Enabled := False;
-  camposDesabilitados := True;
-end;
 
 procedure TfrmCadastraTributacaoItem.edtCdGrupoTributacaoICMSExit(Sender: TObject);
 var
-  icms : TValidaDados;
+  tributacao: TGrupoTributacao;
+  dados: TDadosTributacao;
 begin
-  icms := TValidaDados.Create;
-
   if edtCdGrupoTributacaoICMS.Text = EmptyStr then
   begin
     edtCdGrupoTributacaoICMS.SetFocus;
     raise Exception.Create('Campo não pode ser vazio');
-  end
-  else
-  begin
-    comandoselect.Close;
-    comandoselect.SQL.Text := 'select                             '+
-                              '    cd_tributacao,                 '+
-                              '    nm_tributacao_icms,            '+
-                              '    aliquota_icms                  '+
-                              'from                               '+
-                              '    grupo_tributacao_icms          '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoselect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoICMS.Text);
-    comandoselect.Open();
-    if not comandoselect.IsEmpty then
-    begin
-      //edtCdGrupoTributacaoICMS.Text := IntToStr(comandoselect.FieldByName('cd_tributacao').AsInteger);
-      edtNomeGrupoTributacaoICMS.Text := comandoselect.FieldByName('nm_tributacao_icms').AsString;
-      edtAliqICMS.Text := CurrToStr(comandoselect.FieldByName('aliquota_icms').AsCurrency);
-    end;
+  end;
 
-    if (icms.ValidaEdicaoAcao(IdUsuario, 13).Equals('N')) and (comandoSQL.IsEmpty) then
-    begin
-      MessageDlg('Usuário não possui Permissão para realizar Cadastro/Edição', mtInformation, [mbOK], 0);
-      desabilitaCampos;
-    end;
+  tributacao := TGrupoTributacaoICMS.Create;
+
+  try
+    dados := tributacao.GetDadosTributacao(StrToInt(edtCdGrupoTributacaoICMS.Text));
+    edtNomeGrupoTributacaoICMS.Text := dados.DescTributacao;
+    edtAliqICMS.Text := CurrToStr(dados.Aliquota);
+  finally
+    tributacao.Free;
   end;
 end;
 
 procedure TfrmCadastraTributacaoItem.edtCdGrupoTributacaoIPIExit(Sender: TObject);
+var
+  tributacao: TGrupoTributacao;
+  dados: TDadosTributacao;
 begin
   if edtCdGrupoTributacaoIPI.Text = EmptyStr then
   begin
     edtCdGrupoTributacaoIPI.SetFocus;
     raise Exception.Create('Campo não pode ser vazio');
-  end
-  else
-  begin
-    comandoselect.Close;
-    comandoselect.SQL.Text := 'select                             '+
-                              '    cd_tributacao,                 '+
-                              '    nm_tributacao_ipi,             '+
-                              '    aliquota_ipi                   '+
-                              'from                               '+
-                              '    grupo_tributacao_ipi           '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoselect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoIPI.Text);
-    comandoselect.Open();
-    if not comandoselect.IsEmpty then
-    begin
-      //edtCdGrupoTributacaoIPI.Text := IntToStr(comandoselect.FieldByName('cd_tributacao').AsInteger);
-      edtNomeGrupoTributacaoIPI.Text := comandoselect.FieldByName('nm_tributacao_ipi').AsString;
-      edtAliqIPI.Text := CurrToStr(comandoselect.FieldByName('aliquota_ipi').AsCurrency);
-    end;
+  end;
+
+  tributacao := TGrupoTributacaoIPI.Create;
+
+  try
+    dados := tributacao.GetDadosTributacao(StrToInt(edtCdGrupoTributacaoIPI.Text));
+    edtNomeGrupoTributacaoIPI.Text := dados.DescTributacao;
+    edtAliqIPI.Text := CurrToStr(dados.Aliquota);
+  finally
+    tributacao.Free;
   end;
 end;
 
 procedure TfrmCadastraTributacaoItem.edtCdGrupoTributacaoISSExit(Sender: TObject);
+var
+  tributacao: TGrupoTributacao;
+  dados: TDadosTributacao;
 begin
   if edtCdGrupoTributacaoISS.Text = EmptyStr then
   begin
     edtCdGrupoTributacaoISS.SetFocus;
     raise Exception.Create('Campo não pode ser vazio');
-  end
-  else
-  begin
-    comandoselect.Close;
-    comandoselect.SQL.Text := 'select                             '+
-                              '    cd_tributacao,                 '+
-                              '    nm_tributacao_iss,             '+
-                              '    aliquota_iss                   '+
-                              'from                               '+
-                              '    grupo_tributacao_iss           '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoselect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoISS.Text);
-    comandoselect.Open();
+  end;
 
-    if not comandoselect.IsEmpty then
-    begin
-      //edtCdGrupoTributacaoISS.Text := IntToStr(comandoselect.FieldByName('cd_tributacao').AsInteger);
-      edtNomeGrupoTributacaoISS.Text := comandoselect.FieldByName('nm_tributacao_iss').AsString;
-      edtAliqISS.Text := CurrToStr(comandoselect.FieldByName('aliquota_iss').AsCurrency);
-    end;
+  tributacao := TGrupoTributacaoISS.Create;
+
+  try
+    dados := tributacao.GetDadosTributacao(StrToInt(edtCdGrupoTributacaoISS.Text));
+    edtNomeGrupoTributacaoISS.Text := dados.DescTributacao;
+    edtAliqISS.Text := CurrToStr(dados.Aliquota);
+  finally
+    tributacao.Free;
   end;
 end;
 
 procedure TfrmCadastraTributacaoItem.edtCdGrupoTributacaoPISCOFINSExit(Sender: TObject);
+var
+  tributacao: TGrupoTributacao;
+  dados: TDadosTributacao;
 begin
   if edtCdGrupoTributacaoPISCOFINS.Text = EmptyStr then
   begin
     edtCdGrupoTributacaoPISCOFINS.SetFocus;
     raise Exception.Create('Campo não pode ser vazio');
-  end
-  else
-  begin
-    comandoselect.Close;
-    comandoselect.SQL.Text := 'select                             '+
-                              '    cd_tributacao,                 '+
-                              '    nm_tributacao_pis_cofins,                 '+
-                              '    aliquota_pis_cofins            '+
-                              'from                               '+
-                              '    grupo_tributacao_pis_cofins    '+
-                              'where                              '+
-                                  'cd_tributacao = :cd_tributacao';
-    comandoselect.ParamByName('cd_tributacao').AsInteger := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
-    comandoselect.Open();
+  end;
 
-    if not comandoselect.IsEmpty then
-    begin
-      //edtCdGrupoTributacaoPISCOFINS.Text := IntToStr(comandoselect.FieldByName('cd_tributacao').AsInteger);
-      edtNomeGrupoTributacaoPISCOFINS.Text := comandoselect.FieldByName('nm_tributacao_pis_cofins').AsString;
-      edtAliqPISCOFINS.Text := CurrToStr(comandoselect.FieldByName('aliquota_pis_cofins').AsCurrency);
-    end;
+  tributacao := TGrupoTributacaoPISCOFINS.Create;
+
+  try
+    dados := tributacao.GetDadosTributacao(StrToInt(edtCdGrupoTributacaoPISCOFINS.Text));
+    edtNomeGrupoTributacaoPISCOFINS.Text := dados.DescTributacao;
+    edtAliqPISCOFINS.Text := CurrToStr(dados.Aliquota);
+  finally
+    tributacao.Free;
   end;
 end;
 
@@ -239,14 +188,6 @@ end;
 
 procedure TfrmCadastraTributacaoItem.limpaCampos;
 begin
-  if camposDesabilitados then
-  begin
-    edtCdGrupoTributacaoICMS.Enabled := True;
-    edtNomeGrupoTributacaoICMS.Enabled := True;
-    edtAliqICMS.Enabled := True;
-    camposDesabilitados := False;
-  end;
-
   edtCdGrupoTributacaoICMS.Clear;
   edtNomeGrupoTributacaoICMS.Clear;
   edtAliqICMS.Clear;
@@ -288,7 +229,7 @@ begin
       end;
     end;
 
-    if edtCdGrupoTributacaoIPI.Text <> '' then    //IPI
+    if edtCdGrupoTributacaoIPI.Text <> '' then //IPI
     begin
       tributacao := TGrupoTributacaoIPI.Create;
 
@@ -308,7 +249,7 @@ begin
       end;
     end;
 
-    if edtCdGrupoTributacaoISS.Text <> '' then      //ISS
+    if edtCdGrupoTributacaoISS.Text <> '' then //ISS
     begin
       tributacao := TGrupoTributacaoISS.Create;
 

@@ -1,7 +1,13 @@
 unit uGrupoTributacao;
 
 interface
-  type
+type
+  TDadosTributacao = record
+//    CodTributacao: Integer;
+    DescTributacao: string;
+    Aliquota: Currency;
+  end;
+type
     TGrupoTributacao = class
   private
     FCodTributacao: Integer;
@@ -11,15 +17,15 @@ interface
     procedure SetCodTributacao(const Value: Integer);
     procedure SetNomeTributacao(const Value: string);
 
-    public
-      procedure Persistir(Novo: Boolean); virtual;
-      procedure Inserir; virtual; abstract;
-      procedure Atualizar; virtual; abstract;
-      function Pesquisar(CodTributacao: Integer): Boolean; virtual; abstract;
-
-      property CodTributacao: Integer read FCodTributacao write SetCodTributacao;
-      property NomeTributacao: string read FNomeTributacao write SetNomeTributacao;
-      property Aliquota: Currency read FAliquota write SetAliquota;
+  public
+    procedure Persistir(Novo: Boolean); virtual;
+    procedure Inserir; virtual; abstract;
+    procedure Atualizar; virtual; abstract;
+    function Pesquisar(CodTributacao: Integer): Boolean; virtual; abstract;
+    function GetDadosTributacao(CodTributacao: Integer): TDadosTributacao; virtual; abstract;
+    property CodTributacao: Integer read FCodTributacao write SetCodTributacao;
+    property NomeTributacao: string read FNomeTributacao write SetNomeTributacao;
+    property Aliquota: Currency read FAliquota write SetAliquota;
 
     end;
 

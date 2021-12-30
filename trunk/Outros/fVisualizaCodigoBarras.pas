@@ -61,8 +61,8 @@ begin
   for var i in FDicionarioCod.Keys do
   begin
     cds.Append;
-    cds.FieldByName('cd_barras').AsString :=  i;
-    cds.FieldByName('un_medida').AsString :=  FDicionarioCod.Items[i];
+    cds.FieldByName('cd_barras').AsString := i;
+    cds.FieldByName('un_medida').AsString := FDicionarioCod.Items[i];
     cds.Post;
   end;
 end;

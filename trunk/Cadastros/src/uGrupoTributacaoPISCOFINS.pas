@@ -12,6 +12,7 @@ type
       procedure Inserir; override;
       procedure Atualizar; override;
       function Pesquisar(CodTributacao: Integer): Boolean; override;
+      function GetDadosTributacao(CodTributacao: Integer): TDadosTributacao; override;
   end;
 
 implementation
@@ -46,6 +47,30 @@ begin
     query.ExecSQL;
   finally
     query.Free;
+  end;
+end;
+
+function TGrupoTributacaoPISCOFINS.GetDadosTributacao(CodTributacao: Integer): TDadosTributacao;
+const
+  SQL = ' select ' +
+        '     nm_tributacao_pis_cofins, ' +
+        '     aliquota_pis_cofins ' +
+        ' from             ' +
+        '     grupo_tributacao_pis_cofins ' +
+        ' where ' +
+        ' cd_tributacao = :cd_tributacao';
+var
+  consulta: TFDQuery;
+begin
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
+
+  try
+    consulta.Open(SQL, [CodTributacao]);
+    Result.DescTributacao := consulta.FieldByName('nm_tributacao_pis_cofins').AsString;
+    Result.Aliquota := consulta.FieldByName('aliquota_pis_cofins').AsCurrency;
+  finally
+    consulta.Free;
   end;
 end;
 

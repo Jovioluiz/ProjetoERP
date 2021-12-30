@@ -160,9 +160,7 @@ end;
 procedure TfrmVisualizaPedidoVenda.edtCdCondPgtoChange(Sender: TObject);
 begin
   if edtCdCondPgto.Text <> '' then
-  begin
     edtNomeCondPgto.Text := FPedidoVenda.BuscaCondicaoPgto(StrToInt(edtCdCondPgto.Text), StrToInt(edtCdFormaPgto.Text));
-  end;
 end;
 
 procedure TfrmVisualizaPedidoVenda.edtNrPedidoExit(Sender: TObject);

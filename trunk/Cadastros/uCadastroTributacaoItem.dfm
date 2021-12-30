@@ -227,14 +227,4 @@ object frmCadastraTributacaoItem: TfrmCadastraTributacaoItem
     Panels = <>
     SimplePanel = True
   end
-  object comandoSQL: TFDQuery
-    Connection = dm.conexaoBanco
-    Left = 468
-    Top = 48
-  end
-  object comandoselect: TFDQuery
-    Connection = dm.conexaoBanco
-    Left = 464
-    Top = 112
-  end
 end
