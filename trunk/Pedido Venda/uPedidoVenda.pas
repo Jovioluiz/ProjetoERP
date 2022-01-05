@@ -145,7 +145,7 @@ implementation
 
 uses
   uDataModule, uConfiguracoes, uUtil, System.Math, uMovimentacaoEstoque,
-  uclPedidoVendaItem;
+  uclPedidoVendaItem, uclPedido_venda_item;
 
 {$R *.dfm}
 
@@ -491,6 +491,10 @@ procedure TfrmPedidoVenda.edtCdCondPgtoExit(Sender: TObject);
 var
   resposta : Boolean;
 begin
+
+  if edtCdCondPgto.isEmpty then
+    raise Exception.Create('Informe uma condição de pagamento');
+
   if not edtCdCondPgto.isEmpty then
   begin
     resposta := FRegras.ValidaCondPgto(StrToInt(edtCdCondPgto.Text), StrToInt(edtCdFormaPgto.Text));
@@ -522,6 +526,10 @@ procedure TfrmPedidoVenda.edtCdFormaPgtoExit(Sender: TObject);
 var
   resposta : Boolean;
 begin
+
+  if edtCdFormaPgto.isEmpty then
+    raise Exception.Create('Informe uma forma de pagamento');
+
   if not edtCdFormaPgto.isEmpty then
   begin
     resposta := FRegras.ValidaFormaPgto(StrToInt(edtCdFormaPgto.Text));
@@ -1313,74 +1321,35 @@ begin
 end;
 
 procedure TfrmPedidoVenda.SalvaItens(EhEdicao: Boolean);
-const
-  SQL_INSERT = 'insert '+
-               '    into '+
-               'pedido_venda_item (id_geral, id_pedido_venda, id_item, vl_unitario, vl_total_item, qtd_venda, ' +
-               'vl_desconto, cd_tabela_preco, icms_vl_base, icms_pc_aliq, icms_valor, ipi_vl_base, ipi_pc_aliq, ' +
-               'ipi_valor, pis_cofins_vl_base, pis_cofins_pc_aliq, pis_cofins_valor, un_medida, seq_item) ' +
-               'values (:id_geral, :id_pedido_venda, :id_item, :vl_unitario, :vl_total_item, ' +
-               ':qtd_venda, :vl_desconto, :cd_tabela_preco, :icms_vl_base, :icms_pc_aliq, :icms_valor, ' +
-               ':ipi_vl_base, :ipi_pc_aliq, :ipi_valor, :pis_cofins_vl_base, :pis_cofins_pc_aliq, ' +
-               ':pis_cofins_valor, :un_medida, :seq_item)';
-
-  SQL_UPDATE = 'update    ' +
-               'pedido_venda_item set id_item = :id_item, vl_unitario = :vl_unitario,   ' +
-               'vl_total_item = :vl_total_item, qtd_venda = :qtd_venda, vl_desconto = :vl_desconto, cd_tabela_preco = :cd_tabela_preco, icms_vl_base = :icms_vl_base,  ' +
-               'icms_pc_aliq = :icms_pc_aliq, icms_valor = :icms_valor, ipi_vl_base = :ipi_vl_base, ipi_pc_aliq = :ipi_pc_aliq, ipi_valor = :ipi_valor,              ' +
-               'pis_cofins_vl_base = :pis_cofins_vl_base, pis_cofins_pc_aliq = :pis_cofins_pc_aliq, pis_cofins_valor = :pis_cofins_valor, un_medida = :un_medida, ' +
-               'seq_item = :seq_item '+
-               'where id_geral = :id_geral';
 var
-  qry: TFDQuery;
+  pvi: TPedido_venda_item;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
+  pvi := TPedido_venda_item.Create;
 
   try
-    try
-      if not EhEdicao then
-      begin
-        qry.SQL.Add(SQL_INSERT);
-        qry.ParamByName('id_pedido_venda').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt;
-      end
-      else
-      begin
-        qry.SQL.Clear;
-        qry.SQL.Add(SQL_UPDATE);
-      end;
-      qry.ParamByName('id_geral').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt;
-      qry.ParamByName('id_item').AsLargeInt := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt;
-      qry.ParamByName('vl_unitario').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
-      qry.ParamByName('vl_total_item').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
-      qry.ParamByName('qtd_venda').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsInteger;
-      qry.ParamByName('vl_desconto').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
-      qry.ParamByName('cd_tabela_preco').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger;
-      qry.ParamByName('icms_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency;
-      qry.ParamByName('icms_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency;
-      qry.ParamByName('icms_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency;
-      qry.ParamByName('ipi_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency;
-      qry.ParamByName('ipi_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency;
-      qry.ParamByName('ipi_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency;
-      qry.ParamByName('pis_cofins_vl_base').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency;
-      qry.ParamByName('pis_cofins_pc_aliq').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency;
-      qry.ParamByName('pis_cofins_valor').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency;
-      qry.ParamByName('un_medida').AsString := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
-      qry.ParamByName('seq_item').AsInteger := FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger;
-      qry.ExecSQL;
-      qry.Connection.Commit;
+    pvi.id_geral := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt;
+    pvi.id_pedido_venda := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt;
+    pvi.id_item := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt;
+    pvi.vl_unitario := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
+    pvi.vl_total_item := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
+    pvi.qtd_venda := FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsInteger;
+    pvi.vl_desconto := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
+    pvi.cd_tabela_preco := FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger;
+    pvi.icms_vl_base := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency;
+    pvi.icms_pc_aliq := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency;
+    pvi.icms_valor := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency;
+    pvi.ipi_vl_base := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency;
+    pvi.ipi_pc_aliq := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency;
+    pvi.ipi_valor := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency;
+    pvi.pis_cofins_vl_base := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency;
+    pvi.pis_cofins_pc_aliq := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency;
+    pvi.pis_cofins_valor := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency;
+    pvi.un_medida := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
+    pvi.seq_item := FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger;
+    pvi.Persistir(not EhEdicao);
 
-    except
-    on E : exception do
-      begin
-        qry.Connection.Rollback;
-        raise Exception.Create('Erro ao gravar os itens do pedido ' + E.Message);
-      end;
-    end;
   finally
-    qry.Connection.Rollback;
-    qry.Free;
+    pvi.Free;
   end;
 end;
 

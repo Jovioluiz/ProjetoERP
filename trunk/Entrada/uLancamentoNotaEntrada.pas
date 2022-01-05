@@ -760,13 +760,16 @@ begin
     FRegras.DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency := edtValorTotalProduto.ValueCurrency;
     FRegras.DadosNota.cdsNfi.FieldByName('icms_vl_base').AsCurrency := edtValorTotalProduto.ValueCurrency;
     FRegras.DadosNota.cdsNfi.FieldByName('icms_pc_aliq').AsFloat := aliquotas.AliqIcms;
-    FRegras.DadosNota.cdsNfi.FieldByName('icms_valor').AsCurrency := (edtValorTotalProduto.ValueCurrency * aliquotas.AliqIcms) / 100;
+    FRegras.DadosNota.cdsNfi.FieldByName('icms_valor').AsCurrency := CalculaImposto(edtValorTotalProduto.ValueCurrency,
+                                                                                    aliquotas.AliqIcms);
     FRegras.DadosNota.cdsNfi.FieldByName('ipi_vl_base').AsCurrency := edtValorTotalProduto.ValueCurrency;
     FRegras.DadosNota.cdsNfi.FieldByName('ipi_pc_aliq').AsFloat := aliquotas.AliqIPI;
-    FRegras.DadosNota.cdsNfi.FieldByName('ipi_valor').AsCurrency := (edtValorTotalProduto.ValueCurrency * aliquotas.AliqIPI) / 100;
+    FRegras.DadosNota.cdsNfi.FieldByName('ipi_valor').AsCurrency := CalculaImposto(edtValorTotalProduto.ValueCurrency,
+                                                                                   aliquotas.AliqIPI);
     FRegras.DadosNota.cdsNfi.FieldByName('pis_cofins_vl_base').AsCurrency := edtValorTotalProduto.ValueCurrency;
     FRegras.DadosNota.cdsNfi.FieldByName('pis_cofins_pc_aliq').AsFloat := aliquotas.AliqPisCofins;
-    FRegras.DadosNota.cdsNfi.FieldByName('pis_cofins_valor').AsCurrency := (edtValorTotalProduto.ValueCurrency * aliquotas.AliqPisCofins) / 100;
+    FRegras.DadosNota.cdsNfi.FieldByName('pis_cofins_valor').AsCurrency := CalculaImposto(edtValorTotalProduto.ValueCurrency,
+                                                                                          aliquotas.AliqPisCofins);
     FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsLargeInt := FRegras.GetIdItem(edtCodProduto.Text);
     FRegras.DadosNota.cdsNfi.Post;
     FEdicaoItem := False;

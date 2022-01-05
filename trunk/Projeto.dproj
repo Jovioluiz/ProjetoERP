@@ -342,6 +342,7 @@
         <DCCReference Include="Cadastros\src\uGrupoTributacaoIPI.pas"/>
         <DCCReference Include="Cadastros\src\uGrupoTributacaoISS.pas"/>
         <DCCReference Include="Cadastros\src\uGrupoTributacaoPISCOFINS.pas"/>
+        <DCCReference Include="Pedido Venda\uclPedido_venda_item.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

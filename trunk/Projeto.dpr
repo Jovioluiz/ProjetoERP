@@ -35,7 +35,6 @@ uses
   uVersao in 'Validacao\uVersao.pas',
   uConsulta in 'Consulta\uConsulta.pas' {frmConsulta},
   uclNotaEntrada in 'Entrada\uclNotaEntrada.pas',
-  {$R}
   uGerador in 'Outros\uGerador.pas' {$R *.res},
   fCadastroEnderecos in 'WMS\fCadastroEnderecos.pas' {frmCadastroEnderecos},
   uCadastrarSenha in 'Cadastros\uCadastrarSenha.pas' {frmCadastraSenha},
@@ -96,17 +95,12 @@ uses
   uGerente in 'Cadastros\Funcionario\src\uGerente.pas',
   uEstagiario in 'Cadastros\Funcionario\src\uEstagiario.pas',
   uclTabelaPrecoRegras in 'Cadastros\src\uclTabelaPrecoRegras.pas',
-  uGrupoTributacao in 'Cadastros\src\uGrupoTributacao.pas' {,
+  uGrupoTributacao in 'Cadastros\src\uGrupoTributacao.pas',
   uGrupoTributacaoICMS in 'Cadastros\src\uGrupoTributacaoICMS.pas',
   uGrupoTributacaoIPI in 'Cadastros\src\uGrupoTributacaoIPI.pas',
   uGrupoTributacaoISS in 'Cadastros\src\uGrupoTributacaoISS.pas',
-  uGrupoTributacaoPISCOFINS in 'Cadastros\src\uGrupoTributacaoPISCOFINS.pas';
-
-{$R *.res},
-  uGrupoTributacaoICMS in 'Cadastros\src\uGrupoTributacaoICMS.pas',
-  uGrupoTributacaoIPI in 'Cadastros\src\uGrupoTributacaoIPI.pas',
-  uGrupoTributacaoISS in 'Cadastros\src\uGrupoTributacaoISS.pas',
-  uGrupoTributacaoPISCOFINS in 'Cadastros\src\uGrupoTributacaoPISCOFINS.pas';
+  uGrupoTributacaoPISCOFINS in 'Cadastros\src\uGrupoTributacaoPISCOFINS.pas',
+  uclPedido_venda_item in 'Pedido Venda\uclPedido_venda_item.pas';
 
 {$R *.res}
 

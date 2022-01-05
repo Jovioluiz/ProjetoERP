@@ -160,7 +160,6 @@ begin
   end;
 end;
 
-
 function TPedidoVenda.ValidaFormaPgto(CdFormaPgto: Integer): Boolean;
 const
   sql_forma_pgto =  'select                                '+

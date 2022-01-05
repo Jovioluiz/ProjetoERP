@@ -247,7 +247,7 @@ end;
 
 procedure TEnderecoWMS.SalvarWmsEstoque(IdEndereco: Int64; IdItem: Integer);
 const
-  SQL_ITEM = 'select	1 from wms_estoque where id_item = :id_item';
+  SQL_ITEM = 'select 1 from wms_estoque where id_item = :id_item';
   SQL_INSERT = ' INSERT INTO wms_estoque ' +
                ' (id_geral, id_wms_endereco_produto, id_item, qt_estoque, un_estoque) ' +
                ' VALUES(:id_geral, :id_wms_endereco_produto, :id_item, :qt_estoque, :un_estoque)';
