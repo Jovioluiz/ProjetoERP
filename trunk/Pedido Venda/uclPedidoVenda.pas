@@ -47,6 +47,7 @@ type TPedidoVenda = class
     function CarregaPedidoVenda(NroPedido: Integer): Boolean;
     function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: string): Currency;
     procedure EditarPedido(NrPedido: Integer);
+    procedure CancelaPedidoVenda(IdPedido: Int64);
 
     property Dados: TdmPedidoVenda read FDados write SetDados;
 
@@ -57,7 +58,8 @@ end;
 implementation
 
 uses
-  uPedidoVenda, uManipuladorTributacao, uTributacaoICMS, uTributacaoIPI;
+  uPedidoVenda, uManipuladorTributacao, uTributacaoICMS, uTributacaoIPI,
+  uConexao;
 
 
 { TPedidoVenda }
@@ -65,42 +67,24 @@ uses
 function TPedidoVenda.ValidaCliente(CdCliente: Integer): Boolean;
 const
   sql_cliente = 'select '+
-                '   c.cd_cliente, '+
-                '   c.nome, '+
-                '   e.cidade, '+
-                '   e.uf '+
+                '  1 '+
                 'from '+
                 '   cliente c '+
                 'join endereco_cliente e on '+
                 '   c.cd_cliente = e.cd_cliente '+
                 'where '+
-                '   (c.cd_cliente = :cd_cliente) and '+
-                '   (c.fl_ativo = true)';
+                '   c.cd_cliente = :cd_cliente '+
+                '   and c.fl_ativo ';
 var
   qry: TFDQuery;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
-  qry.Close;
-  qry.SQL.Clear;
-  Result := True;
 
   try
-    try
-      qry.SQL.Add(sql_cliente);
-      qry.ParamByName('cd_cliente').AsInteger := CdCliente;
-      qry.Open(sql_cliente);
+    qry.Open(sql_cliente, [CdCliente]);
 
-      if not qry.IsEmpty then
-        Result := True
-      else
-        Result := False;
-    except
-      on E: Exception do
-        ShowMessage(
-        'Ocorreu um erro.' + #13 +
-        'Mensagem de erro: ' + E.Message);
-    end;
+    Result := not qry.IsEmpty;
   finally
     qry.Free;
   end;
@@ -130,15 +114,14 @@ end;
 
 function TPedidoVenda.ValidaCondPgto(CdCond, CdForma: Integer): Boolean;
 const
-  sql_condPgto = 'select                                         '+
-                 '    ccp.cd_cond_pag,                           '+
-                 '    ccp.nm_cond_pag                            '+
-                 'from cta_cond_pagamento ccp                    '+
-                 '    join cta_forma_pagamento cfp on            '+
+  sql_condPgto = 'select                                '+
+                 '    1                                 '+
+                 'from cta_cond_pagamento ccp           '+
+                 '    join cta_forma_pagamento cfp on   '+
                  'ccp.cd_cta_forma_pagamento = cfp.cd_forma_pag  '+
                  '    where (ccp.cd_cond_pag = :cd_cond_pag) and '+
-                 '(cfp.cd_forma_pag = :cd_forma_pag) and         '+
-                 '(ccp.fl_ativo = true)';
+                 'cfp.cd_forma_pag = :cd_forma_pag and         '+
+                 'ccp.fl_ativo';
 var
   qry: TFDQuery;
 begin
@@ -146,15 +129,8 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Close;
-    qry.SQL.Clear;
-
-    qry.SQL.Add(sql_condPgto);
-    qry.ParamByName('cd_cond_pag').AsInteger := CdCond;
-    qry.ParamByName('cd_forma_pag').AsInteger := CdForma;
-    qry.Open(sql_condPgto);
-
-    Result := qry.IsEmpty;
+    qry.Open(sql_condPgto, [CdCond, CdForma]);
+    Result := not qry.IsEmpty;
   finally
     qry.Free;
   end;
@@ -163,35 +139,21 @@ end;
 function TPedidoVenda.ValidaFormaPgto(CdFormaPgto: Integer): Boolean;
 const
   sql_forma_pgto =  'select                                '+
-                    '   cd_forma_pag                       '+
+                    '   1                                  '+
                     'from                                  '+
                     '   cta_forma_pagamento                '+
                     'where                                 '+
                     '   (cd_forma_pag = :cd_forma_pag) and '+
-                    '   (fl_ativo = true)';
+                    '   fl_ativo';
 var
   qry: TFDQuery;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
-  Result := True;
 
   try
-    try
-      qry.Close;
-      qry.SQL.Clear;
-
-      qry.SQL.Add(sql_forma_pgto);
-      qry.ParamByName('cd_forma_pag').AsInteger := CdFormaPgto;
-      qry.Open(sql_forma_pgto);
-
-      Result := qry.IsEmpty;
-    except
-      on E: Exception do
-        ShowMessage(
-        'Ocorreu um erro.' + #13 +
-        'Mensagem de erro: ' + E.Message);
-    end;
+    qry.Open(sql_forma_pgto, [CdFormaPgto]);
+    Result := not qry.IsEmpty;
   finally
     qry.Free;
   end;
@@ -257,7 +219,6 @@ end;
 function TPedidoVenda.BuscaCondicaoPgto(CodCond, CodForma: Integer): string;
 const
   sql = 'select                                        '+
-       '    ccp.cd_cond_pag,                           '+
        '    ccp.nm_cond_pag                            '+
        'from cta_cond_pagamento ccp                    '+
        '    join cta_forma_pagamento cfp on            '+
@@ -284,13 +245,12 @@ end;
 function TPedidoVenda.BuscaFormaPgto(CodForma: Integer): string;
 const
   sql = 'select                                '+
-        '   cd_forma_pag,                      '+
         '   nm_forma_pag                       '+
         'from                                  '+
         '   cta_forma_pagamento                '+
         'where                                 '+
-        '   (cd_forma_pag = :cd_forma_pag) and '+
-        '   (fl_ativo = true)';
+        '   cd_forma_pag = :cd_forma_pag and '+
+        '   fl_ativo';
 var
   qry: TFDQuery;
 begin
@@ -345,8 +305,8 @@ const
         '   tp.cd_tabela = tpp.cd_tabela  '+
         'join produto p on                '+
         '   tpp.id_item = p.id_item '+
-        'where (tp.cd_tabela = :cd_tabela)'+
-        '   and (p.cd_produto = :cd_produto)';
+        'where tp.cd_tabela = :cd_tabela'+
+        '   and p.cd_produto = :cd_produto';
 begin
   Result := TFDQuery.Create(nil);
   Result.Connection := dm.conexaoBanco;
@@ -363,62 +323,92 @@ begin
   Result := valorUnitario * qtdadeItem;
 end;
 
+procedure TPedidoVenda.CancelaPedidoVenda(IdPedido: Int64);
+const
+  SQL = 'update pedido_venda set fl_cancelado = ''S'' where id_geral = :id_geral';
+var
+  qry: TConexao;
+begin
+  qry := TConexao.Create(nil);
+  qry.Connection := qry.GetConexao;
+
+  try
+    try
+      qry.SQL.Add(SQL);
+      qry.ParamByName('id_geral').AsLargeInt := IdPedido;
+      qry.ExecSQL;
+      qry.Conexao.Commit;
+
+    except on E:Exception do
+      begin
+        qry.Conexao.Rollback;
+        raise Exception.Create('Erro ao cancelar o pedido'+ E.Message);
+      end;
+    end;
+  finally
+    qry.Connection.Rollback;
+    qry.Free;
+  end;
+end;
+
 function TPedidoVenda.CarregaPedidoVenda(NroPedido: Integer): Boolean;
 const
-  SQL_PEDIDO ='select ' +
-              '  pv.id_geral, ' +
-              '  pvi.id_geral AS id_pvi, ' +
-              '  pv.nr_pedido, ' +
-              '  pv.fl_orcamento, ' +
-              '  pv.cd_cliente, ' +
-              '  c.nome, ' +
-              '  e.cidade, ' +
-              '  e.uf, ' +
-              '  pv.cd_forma_pag, ' +
-              '  cfp.nm_forma_pag, ' +
-              '  pv.cd_cond_pag, ' +
-              '  ccp.nm_cond_pag, ' +
-              '  p.cd_produto, ' +
-              '  p.desc_produto, ' +
-              '  (select ' +
-              '      codigo_barras ' +
-              '   from ' +
-              '      produto_cod_barras pcb ' +
-              '   where ' +
-              '      id_item = p.id_item ' +
-              '      and tipo_cod_barras = 1) as barras, ' +
-              '  pvi.qtd_venda, ' +
-              '  pvi.cd_tabela_preco, ' +
-              '  p.un_medida, ' +
-              '  pvi.vl_unitario, ' +
-              '  pvi.vl_desconto, ' +
-              '  pvi.vl_total_item, ' +
-              '  pvi.icms_vl_base, ' +
-              '  pvi.icms_pc_aliq, ' +
-              '  pvi.icms_valor, ' +
-              '  pvi.ipi_vl_base, ' +
-              '  pvi.ipi_pc_aliq, ' +
-              '  pvi.ipi_valor, ' +
-              '  pvi.pis_cofins_vl_base, ' +
-              '  pvi.pis_cofins_pc_aliq, ' +
-              '  pvi.pis_cofins_valor, ' +
-              '  pvi.vl_total_item, ' +
-              '  pv.vl_desconto_pedido, ' +
-              '  pv.vl_acrescimo, ' +
-              '  pv.vl_total, ' +
-              '  pv.fl_cancelado, ' +
-              '  pv.dt_emissao, ' +
-              '  pvi.seq_item ' +
-              'from ' +
-              '  pedido_venda pv ' +
-              '  left join pedido_venda_item pvi on pv.id_geral = pvi.id_pedido_venda ' +
-              '  left join produto p using(id_item) ' +
-              '  left join cta_forma_pagamento cfp on pv.cd_forma_pag = cfp.cd_forma_pag ' +
-              '  left join cta_cond_pagamento ccp on cfp.cd_forma_pag = ccp.cd_cta_forma_pagamento ' +
-              '  left join cliente c on pv.cd_cliente = c.cd_cliente ' +
-              '  left join endereco_cliente e on c.cd_cliente = e.cd_cliente ' +
-              'where ' +
-              '  pv.nr_pedido = :nr_pedido ';
+  SQL_PEDIDO = ' SELECT ' +
+               ' 	pv.id_geral, ' +
+               ' 	pvi.id_geral AS id_pvi, ' +
+               ' 	pv.nr_pedido, ' +
+               ' 	pv.fl_orcamento, ' +
+               ' 	pv.cd_cliente, ' +
+               ' 	c.nome, ' +
+               ' 	e.cidade, ' +
+               ' 	e.uf, ' +
+               ' 	pv.cd_forma_pag, ' +
+               ' 	cfp.nm_forma_pag, ' +
+               ' 	pv.cd_cond_pag, ' +
+               ' 	ccp.nm_cond_pag, ' +
+               ' 	p.cd_produto, ' +
+               ' 	p.desc_produto, ' +
+               ' 	barras.codigo_barras, ' +
+               ' 	pvi.qtd_venda, ' +
+               ' 	pvi.cd_tabela_preco, ' +
+               ' 	p.un_medida, ' +
+               ' 	pvi.vl_unitario, ' +
+               ' 	pvi.vl_desconto, ' +
+               ' 	pvi.vl_total_item, ' +
+               ' 	pvi.icms_vl_base, ' +
+               ' 	pvi.icms_pc_aliq, ' +
+               ' 	pvi.icms_valor, ' +
+               ' 	pvi.ipi_vl_base, ' +
+               ' 	pvi.ipi_pc_aliq, ' +
+               ' 	pvi.ipi_valor, ' +
+               ' 	pvi.pis_cofins_vl_base, ' +
+               ' 	pvi.pis_cofins_pc_aliq, ' +
+               ' 	pvi.pis_cofins_valor, ' +
+               ' 	pvi.vl_total_item, ' +
+               ' 	pv.vl_desconto_pedido, ' +
+               ' 	pv.vl_acrescimo, ' +
+               ' 	pv.vl_total, ' +
+               ' 	pv.fl_cancelado, ' +
+               ' 	pv.dt_emissao, ' +
+               ' 	pvi.seq_item ' +
+               ' FROM ' +
+               ' 	pedido_venda pv ' +
+               ' JOIN pedido_venda_item pvi ON pv.id_geral = pvi.id_pedido_venda ' +
+               ' JOIN produto p ' +
+               ' 		USING(id_item) ' +
+               ' LEFT JOIN ( ' +
+               ' 		SELECT ' +
+               ' 			id_item, ' +
+               ' 			codigo_barras ' +
+               ' 		FROM ' +
+               ' 			produto_cod_barras pcb ' +
+               ' 		WHERE tipo_cod_barras = 1 ' +
+               ' 	) AS barras ON barras.id_item = p.id_item  ' +
+               ' JOIN cta_forma_pagamento cfp ON	pv.cd_forma_pag = cfp.cd_forma_pag ' +
+               ' JOIN cta_cond_pagamento ccp ON cfp.cd_forma_pag = ccp.cd_cta_forma_pagamento ' +
+               ' JOIN cliente c ON pv.cd_cliente = c.cd_cliente ' +
+               ' JOIN endereco_cliente e ON c.cd_cliente = e.cd_cliente ' +
+               ' WHERE pv.nr_pedido = :nr_pedido ';
 var
   qry: TFDQuery;
   produto: TInfProdutosCodBarras;
@@ -668,7 +658,7 @@ begin
   try
     qry.SQL.Add(SQL);
     qry.ParamByName('id_item').AsLargeInt := GetIdItem(CdItem);
-    qry.Open();
+    qry.Open(SQL);
 
     if qry.IsEmpty then
       Exit(False);
@@ -687,18 +677,16 @@ end;
 
 function TPedidoVenda.ValidaTabelaPreco(CodTabela: Integer; CodProduto: String): Boolean;
 const
-  sql = 'select                             '+
-             'tp.cd_tabela,                 '+
-             'tp.nm_tabela,                 '+
-             'tpp.valor                     '+
-        'from                               '+
-            'tabela_preco tp                '+
-        'join tabela_preco_produto tpp on   '+
-            'tp.cd_tabela = tpp.cd_tabela   '+
-        'join produto p on                  '+
-            'tpp.id_item = p.id_item  '+
-        'where (tp.cd_tabela = :cd_tabela)  '+
-        'and (p.cd_produto = :cd_produto::text)';
+  sql = ' select                          '+
+        '  1                              '+
+        '  from                           '+
+        '  tabela_preco tp                '+
+        '  join tabela_preco_produto tpp on   '+
+        '  tp.cd_tabela = tpp.cd_tabela   '+
+        '  join produto p on              '+
+        '  tpp.id_item = p.id_item        '+
+        '  where tp.cd_tabela = :cd_tabela  '+
+        '  and p.cd_produto = :cd_produto::text';
 var
   qry: TFDQuery;
 begin
@@ -706,12 +694,8 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(sql);
-    qry.ParamByName('cd_tabela').AsInteger := CodTabela;
-    qry.ParamByName('cd_produto').AsString := CodProduto;
-    qry.Open(sql);
-
-    Result := qry.IsEmpty;
+    qry.Open(sql, [CodTabela, CodProduto]);
+    Result := not qry.IsEmpty;
   finally
     qry.Free;
   end;

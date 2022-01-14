@@ -269,33 +269,8 @@ begin
 end;
 
 procedure TfrmPedidoVenda.CancelaPedidoVenda;
-const
-  SQL = 'update pedido_venda set fl_cancelado = ''S'' where nr_pedido = :nr_pedido';
-var
-  qry: TFDQuery;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
-
-  try
-    try
-      qry.SQL.Add(SQL);
-      qry.ParamByName('nr_pedido').AsInteger := NumeroPedido;
-      qry.ExecSQL;
-      qry.Connection.Commit;
-
-    except on E:Exception do
-      begin
-        qry.Connection.Rollback;
-        ShowMessage('Erro ao cancelar o pedido ' + NumeroPedido.ToString + E.Message);
-        Exit;
-      end;
-    end;
-  finally
-    qry.Connection.Rollback;
-    qry.Free;
-  end;
+  FRegras.CancelaPedidoVenda(FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt);
 end;
 
 procedure TfrmPedidoVenda.CarregaItensEdicao;
@@ -459,14 +434,10 @@ end;
 
 //valida se não foi encontrado nenhum cliente
 procedure TfrmPedidoVenda.edtCdClienteExit(Sender: TObject);
-var
-  resposta : Boolean;
 begin
   if not edtCdCliente.isEmpty then
   begin
-    resposta := FRegras.ValidaCliente(StrToInt(edtCdCliente.Text));
-
-    if not resposta then
+    if not Regras.ValidaCliente(StrToInt(edtCdCliente.Text)) then
     begin
       if (Application.MessageBox('Cliente não encontrado ou Inativo','Atenção', MB_OK) = idOK) then
         edtCdCliente.SetFocus;
@@ -488,8 +459,6 @@ end;
 
 //valida se não foi encontrado nenhuma condição de pagamento
 procedure TfrmPedidoVenda.edtCdCondPgtoExit(Sender: TObject);
-var
-  resposta : Boolean;
 begin
 
   if edtCdCondPgto.isEmpty then
@@ -497,9 +466,7 @@ begin
 
   if not edtCdCondPgto.isEmpty then
   begin
-    resposta := FRegras.ValidaCondPgto(StrToInt(edtCdCondPgto.Text), StrToInt(edtCdFormaPgto.Text));
-
-    if resposta then
+    if not FRegras.ValidaCondPgto(StrToInt(edtCdCondPgto.Text), StrToInt(edtCdFormaPgto.Text)) then
     begin
       if (Application.MessageBox('Condição de pagamento não encontrada', 'Atenção', MB_OK) = idOK) then
         edtCdCondPgto.SetFocus;
@@ -523,8 +490,6 @@ end;
 
 //valida se não foi encontrado nenhuma forma de pagamento
 procedure TfrmPedidoVenda.edtCdFormaPgtoExit(Sender: TObject);
-var
-  resposta : Boolean;
 begin
 
   if edtCdFormaPgto.isEmpty then
@@ -532,9 +497,7 @@ begin
 
   if not edtCdFormaPgto.isEmpty then
   begin
-    resposta := FRegras.ValidaFormaPgto(StrToInt(edtCdFormaPgto.Text));
-
-    if resposta then
+    if not FRegras.ValidaFormaPgto(StrToInt(edtCdFormaPgto.Text)) then
     begin
       if (Application.MessageBox('Forma de Pagamento não encontrada', 'Atenção', MB_OK) = idOK) then
         edtCdFormaPgto.SetFocus;
@@ -650,14 +613,10 @@ begin
 end;
 
 procedure TfrmPedidoVenda.edtCdtabelaPrecoExit(Sender: TObject);
-var
-  resposta : Boolean;
 begin
   if not edtCdtabelaPreco.isEmpty then
   begin
-    resposta := FRegras.ValidaTabelaPreco(StrToInt(edtCdtabelaPreco.Text), edtCdProduto.Text);
-
-    if resposta then
+    if not FRegras.ValidaTabelaPreco(StrToInt(edtCdtabelaPreco.Text), edtCdProduto.Text) then
     begin
       if (Application.MessageBox('Tabela de Preço não encontrada', 'Atenção', MB_OK) = idOK) then
         edtCdtabelaPreco.SetFocus;
@@ -1322,32 +1281,12 @@ end;
 
 procedure TfrmPedidoVenda.SalvaItens(EhEdicao: Boolean);
 var
-  pvi: TPedido_venda_item;
+  pvi: TPedidoVendaItem;
 begin
-  pvi := TPedido_venda_item.Create;
+  pvi := TPedidoVendaItem.Create;
 
   try
-    pvi.id_geral := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt;
-    pvi.id_pedido_venda := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt;
-    pvi.id_item := FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt;
-    pvi.vl_unitario := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency;
-    pvi.vl_total_item := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
-    pvi.qtd_venda := FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsInteger;
-    pvi.vl_desconto := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency;
-    pvi.cd_tabela_preco := FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger;
-    pvi.icms_vl_base := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency;
-    pvi.icms_pc_aliq := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsCurrency;
-    pvi.icms_valor := FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency;
-    pvi.ipi_vl_base := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency;
-    pvi.ipi_pc_aliq := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsCurrency;
-    pvi.ipi_valor := FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency;
-    pvi.pis_cofins_vl_base := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency;
-    pvi.pis_cofins_pc_aliq := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency;
-    pvi.pis_cofins_valor := FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency;
-    pvi.un_medida := FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString;
-    pvi.seq_item := FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger;
-    pvi.Persistir(not EhEdicao);
-
+    pvi.SalvarItens(FRegras.Dados.cdsPedidoVendaItem, EhEdicao);
   finally
     pvi.Free;
   end;
