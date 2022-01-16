@@ -47,6 +47,9 @@ type
     cdsPedidoVendanm_forma_pgto: TStringField;
     cdsPedidoVendanm_cond_pgto: TStringField;
     cdsPedidoVendacidade: TStringField;
+    cdsPedidoVendaItemrateado_vl_desconto: TCurrencyField;
+    cdsPedidoVendaItemrateado_vl_acrescimo: TCurrencyField;
+    cdsPedidoVendaItemvl_contabil: TCurrencyField;
   private
     { Private declarations }
   public

@@ -31,6 +31,9 @@ type TPedido_venda_item = class
     Fvl_desconto: Currency;
     Fvl_total_item: Currency;
     Fvl_unitario: Currency;
+    Frateado_vl_desconto: Currency;
+    Frateado_vl_acrescimo: Currency;
+    Fvl_contabil: Currency;
     procedure Setcd_tabela_preco(const Value: Integer);
     procedure Setdt_atz(const Value: TDateTime);
     procedure Seticms_pc_aliq(const Value: Currency);
@@ -51,6 +54,9 @@ type TPedido_venda_item = class
     procedure Setvl_desconto(const Value: Currency);
     procedure Setvl_total_item(const Value: Currency);
     procedure Setvl_unitario(const Value: Currency);
+    procedure Setrateado_vl_desconto(const Value: Currency);
+    procedure Setrateado_vl_acrescimo(const Value: Currency);
+    procedure Setvl_contabil(const Value: Currency);
   public 
    //Metodo Pesquisar pela chave primaria
     function Pesquisar(id_geral: Int64): Boolean; 
@@ -79,6 +85,9 @@ type TPedido_venda_item = class
     property vl_desconto: Currency read Fvl_desconto write Setvl_desconto;
     property vl_total_item: Currency read Fvl_total_item write Setvl_total_item;
     property vl_unitario: Currency read Fvl_unitario write Setvl_unitario;
+    property rateado_vl_desconto: Currency read Frateado_vl_desconto write Setrateado_vl_desconto;
+    property rateado_vl_acrescimo: Currency read Frateado_vl_acrescimo write Setrateado_vl_acrescimo;
+    property vl_contabil: Currency read Fvl_contabil write Setvl_contabil;
 
 end;
 
@@ -113,7 +122,10 @@ const
    'un_medida, ' +
    'vl_desconto, ' +
    'vl_total_item, ' +
-   'vl_unitario)' +
+   'vl_unitario,   ' +
+   'rateado_vl_desconto, ' +
+   'rateado_vl_acrescimo, '+
+   'vl_contabil)' +
    'VALUES (' +
    ':cd_tabela_preco, ' +
    ':dt_atz, ' +
@@ -134,7 +146,10 @@ const
    ':un_medida, ' +
    ':vl_desconto, ' +
    ':vl_total_item, ' +
-   ':vl_unitario)';
+   ':vl_unitario,   ' +
+   ':rateado_vl_desconto,' +
+   ':rateado_vl_acrescimo, '+
+   ':vl_contabil)';
 var
   query: TFDquery;
 begin
@@ -164,6 +179,9 @@ begin
       query.ParamByName('vl_desconto').AsCurrency := Fvl_desconto;
       query.ParamByName('vl_total_item').AsCurrency := Fvl_total_item;
       query.ParamByName('vl_unitario').AsCurrency := Fvl_unitario;
+      query.ParamByName('rateado_vl_desconto').AsCurrency := Frateado_vl_desconto;
+      query.ParamByName('rateado_vl_acrescimo').AsCurrency := Frateado_vl_acrescimo;
+      query.ParamByName('vl_contabil').AsCurrency := Fvl_contabil;
       query.ExecSQL;
       query.Connection.Commit;
     except
@@ -190,7 +208,6 @@ const
    'icms_pc_aliq = :icms_pc_aliq, ' +
    'icms_valor = :icms_valor, ' +
    'icms_vl_base = :icms_vl_base, ' +
-   'id_geral = :id_geral, ' +
    'id_item = :id_item, ' +
    'id_pedido_venda = :id_pedido_venda, ' +
    'ipi_pc_aliq = :ipi_pc_aliq, ' +
@@ -204,7 +221,10 @@ const
    'un_medida = :un_medida, ' +
    'vl_desconto = :vl_desconto, ' +
    'vl_total_item = :vl_total_item, ' +
-   'vl_unitario = :vl_unitario ' +
+   'vl_unitario = :vl_unitario, ' +
+   'rateado_vl_desconto = :rateado_vl_desconto, ' +
+   'rateado_vl_acrescimo = :rateado_vl_acrescimo, ' +
+   'vl_contabil = :vl_contabil  ' +
 'WHERE ' +
 'id_geral = :id_geral';
 
@@ -237,6 +257,9 @@ begin
       query.ParamByName('vl_desconto').AsCurrency := Fvl_desconto;
       query.ParamByName('vl_total_item').AsCurrency := Fvl_total_item;
       query.ParamByName('vl_unitario').AsCurrency := Fvl_unitario;
+      query.ParamByName('rateado_vl_desconto').AsCurrency := Frateado_vl_desconto;
+      query.ParamByName('rateado_vl_acrescimo').AsCurrency := Frateado_vl_acrescimo;
+      query.ParamByName('vl_contabil').AsCurrency := Fvl_contabil;
       query.ExecSQL;
       query.Connection.Commit;
     except
@@ -247,7 +270,7 @@ begin
       end;
     end;
   finally
-    query.Connection.Rollback;
+//    query.Connection.Rollback;
     query.Free;
   end;
 end;
@@ -391,6 +414,16 @@ begin
   Fqtd_venda := Value;
 end;
 
+procedure TPedido_venda_item.Setrateado_vl_acrescimo(const Value: Currency);
+begin
+  Frateado_vl_acrescimo := Value;
+end;
+
+procedure TPedido_venda_item.Setrateado_vl_desconto(const Value: Currency);
+begin
+  Frateado_vl_desconto := Value;
+end;
+
 procedure TPedido_venda_item.Setseq_item(const Value: Integer);
 begin
   Fseq_item := Value;
@@ -399,6 +432,11 @@ end;
 procedure TPedido_venda_item.Setun_medida(const Value: String);
 begin
   Fun_medida := Value;
+end;
+
+procedure TPedido_venda_item.Setvl_contabil(const Value: Currency);
+begin
+  Fvl_contabil := Value;
 end;
 
 procedure TPedido_venda_item.Setvl_desconto(const Value: Currency);

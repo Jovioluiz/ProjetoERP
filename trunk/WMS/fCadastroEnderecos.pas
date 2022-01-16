@@ -107,7 +107,6 @@ begin
       FRegras.Dados.cdsEnderecoProduto.FieldByName('rua').AsString := edtRuaProdEndereco.Text;
       FRegras.Dados.cdsEnderecoProduto.FieldByName('complemento').AsString := edtComplementoProdEndereco.Text;
       FRegras.Dados.cdsEnderecoProduto.FieldByName('nm_endereco').AsString := FNomeEndereco;
-
       FRegras.Dados.cdsEnderecoProduto.FieldByName('ordem').AsString := edtOrdem.Text;
       FRegras.Dados.cdsEnderecoProduto.Post;
     end

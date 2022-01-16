@@ -48,18 +48,20 @@ type TPedidoVenda = class
     function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: string): Currency;
     procedure EditarPedido(NrPedido: Integer);
     procedure CancelaPedidoVenda(IdPedido: Int64);
+    procedure CalculaValoresRateados(Valor: Currency; TipoValor: string);
+    procedure CalculaValorContabil;
+    constructor Create;
+    destructor Destroy; override;
 
     property Dados: TdmPedidoVenda read FDados write SetDados;
 
-    constructor Create;
-    destructor Destroy; override;
 end;
 
 implementation
 
 uses
   uPedidoVenda, uManipuladorTributacao, uTributacaoICMS, uTributacaoIPI,
-  uConexao;
+  uConexao, System.Math;
 
 
 { TPedidoVenda }
@@ -316,6 +318,63 @@ begin
   if Result.RecordCount = 0 then
     raise Exception.Create('Preço não encontrado para a tabela de preço.');
 
+end;
+
+procedure TPedidoVenda.CalculaValorContabil;
+begin
+
+  FDados.cdsPedidoVendaItem.First;
+  while not FDados.cdsPedidoVendaItem.Eof do
+  begin
+    FDados.cdsPedidoVendaItem.Edit;
+    FDados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency
+                                                                       + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
+                                                                       - FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
+    FDados.cdsPedidoVendaItem.Post;
+    FDados.cdsPedidoVendaItem.Next;
+  end;
+end;
+
+procedure TPedidoVenda.CalculaValoresRateados(Valor: Currency; TipoValor: string);
+var
+  valorTotal,
+  valorItem,
+  pcItem: Currency;
+
+  function GetValorPedido: Currency;
+  begin
+    Result := 0;
+    FDados.cdsPedidoVendaItem.First;
+    while not FDados.cdsPedidoVendaItem.Eof do
+    begin
+      Result := Result + FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
+      FDados.cdsPedidoVendaItem.Next;
+    end;
+  end;
+begin
+  valorTotal := GetValorPedido;
+
+  if valorTotal = 0 then
+    Exit;
+
+  if Valor > 0 then
+  begin
+    FDados.cdsPedidoVendaItem.Loop(
+    procedure
+    begin
+      valorItem := FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
+      pcItem := valorItem / valorTotal;
+
+      FDados.cdsPedidoVendaItem.Edit;
+      if TipoValor.Equals('D') then
+        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := RoundTo(valor * pcItem, -2)
+      else
+        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency :=  RoundTo(valor * pcItem, -2);
+
+      FDados.cdsPedidoVendaItem.Post;
+    end
+    );
+  end;
 end;
 
 function TPedidoVenda.CalculaValorTotalItem(valorUnitario, qtdadeItem: Double): Double;

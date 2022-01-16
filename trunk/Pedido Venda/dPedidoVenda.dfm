@@ -9,7 +9,7 @@ object dmPedidoVenda: TdmPedidoVenda
   end
   object cdsPedidoVendaItem: TClientDataSet
     PersistDataPacket.Data = {
-      D80200009619E0BD010000001800000015000000000003000000D80203736571
+      610300009619E0BD010000001800000018000000000003000000610303736571
       04000100000000000869645F676572616C08000100000000000769645F697465
       6D08000100000000000F69645F70656469646F5F76656E646108000100000000
       000A63645F70726F6475746F0100490000000100055749445448020002001400
@@ -31,7 +31,12 @@ object dmPedidoVenda: TdmPedidoVenda
       7365080004000000010007535542545950450200490006004D6F6E6579001270
       69735F636F66696E735F70635F616C6971080004000000010007535542545950
       450200490006004D6F6E657900107069735F636F66696E735F76616C6F720800
-      04000000010007535542545950450200490006004D6F6E6579000000}
+      04000000010007535542545950450200490006004D6F6E657900137261746561
+      646F5F766C5F646573636F6E746F080004000000010007535542545950450200
+      490006004D6F6E657900147261746561646F5F766C5F616372657363696D6F08
+      0004000000010007535542545950450200490006004D6F6E6579000B766C5F63
+      6F6E746162696C080004000000010007535542545950450200490006004D6F6E
+      6579000000}
     Active = True
     Aggregates = <>
     FieldDefs = <
@@ -120,6 +125,18 @@ object dmPedidoVenda: TdmPedidoVenda
       end
       item
         Name = 'pis_cofins_valor'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'rateado_vl_desconto'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'rateado_vl_acrescimo'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'vl_contabil'
         DataType = ftCurrency
       end>
     IndexDefs = <>
@@ -210,6 +227,18 @@ object dmPedidoVenda: TdmPedidoVenda
     object cdsPedidoVendaItempis_cofins_valor: TCurrencyField
       DisplayLabel = 'Valor PIS/COFINS'
       FieldName = 'pis_cofins_valor'
+    end
+    object cdsPedidoVendaItemrateado_vl_desconto: TCurrencyField
+      FieldName = 'rateado_vl_desconto'
+      Visible = False
+    end
+    object cdsPedidoVendaItemrateado_vl_acrescimo: TCurrencyField
+      FieldName = 'rateado_vl_acrescimo'
+      Visible = False
+    end
+    object cdsPedidoVendaItemvl_contabil: TCurrencyField
+      DisplayLabel = 'Valor Cont'#225'bil'
+      FieldName = 'vl_contabil'
     end
   end
   object dsPedidoVenda: TDataSource

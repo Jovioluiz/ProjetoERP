@@ -157,7 +157,7 @@ begin
         qry.SQL.Add(' or desc_produto ilike ' + QuotedStr('%'+Descricao+'%'));
 
       if bolAtivo then
-        qry.SQL.Add(' and fl_ativo = true');
+        qry.SQL.Add(' and fl_ativo ');
 
       if bolEstoque then
         qry.SQL.Add(' and qt_estoque > 0');

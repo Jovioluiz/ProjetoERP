@@ -82,7 +82,6 @@ type
     procedure dbGridProdutosDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure edtCdProdutoExit(Sender: TObject);
-    procedure edtVlDescTotalPedidoExit(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
     procedure btnConfirmarPedidoClick(Sender: TObject);
     procedure edtVlAcrescimoTotalPedidoExit(Sender: TObject);
@@ -99,6 +98,7 @@ type
     procedure btnAdicionarClick(Sender: TObject);
     procedure edtVlTotalPedidoExit(Sender: TObject);
     procedure edtNrPedidoChange(Sender: TObject);
+    procedure edtVlDescTotalPedidoExit(Sender: TObject);
   private
     FEdicaoItem: Boolean;
     FNumeroPedido: Integer;
@@ -130,6 +130,7 @@ type
     procedure GravaPedidoVenda;
     procedure SetEdicaoPedido(const Value: Boolean);
     procedure BuscarProduto;
+    procedure CalculaValorTotalPedido;
   public
     { Public declarations }
     procedure SetDadosNota;
@@ -266,6 +267,22 @@ begin
     lista.Free;
     pvItem.Free;
   end;
+end;
+
+procedure TfrmPedidoVenda.CalculaValorTotalPedido;
+var
+  valorTotal: Currency;
+begin
+  valorTotal := 0;
+
+  FRegras.Dados.cdsPedidoVendaItem.Loop(
+    procedure
+    begin
+      valorTotal := (valorTotal + FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency);
+    end
+  );
+
+  edtVlTotalPedido.ValueCurrency := valorTotal + edtVlAcrescimoTotalPedido.ValueCurrency - edtVlDescTotalPedido.ValueCurrency;
 end;
 
 procedure TfrmPedidoVenda.CancelaPedidoVenda;
@@ -682,9 +699,14 @@ begin
 end;
 
 procedure TfrmPedidoVenda.edtVlAcrescimoTotalPedidoExit(Sender: TObject);
-//recalcula o valor total se informado um valor de acrescimo no total do pedido
 begin
-  edtVlTotalPedido.ValueCurrency := edtVlTotalPedido.ValueCurrency + edtVlAcrescimoTotalPedido.ValueCurrency;
+  FRegras.Dados.cdsPedidoVenda.Edit;
+  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := edtVlAcrescimoTotalPedido.ValueCurrency;
+  FRegras.Dados.cdsPedidoVenda.Post;
+  CalculaValorTotalPedido;
+
+  FRegras.CalculaValoresRateados(edtVlAcrescimoTotalPedido.ValueCurrency, 'A');
+  FRegras.CalculaValorContabil;
 end;
 
 //altera o valor total ao sair do campo de desconto
@@ -693,41 +715,15 @@ begin
   edtVlTotal.ValueCurrency := (edtVlUnitario.ValueCurrency * edtQtdade.ValueFloat) - edtVlDescontoItem.ValueCurrency;
 end;
 
-//recalcula o valor total se informado um valor de desconto no total do pedido
 procedure TfrmPedidoVenda.edtVlDescTotalPedidoExit(Sender: TObject);
-var
-  valorDesconto, vlTotalPedido, valorTotalItens: Currency;
 begin
-  if edtVlDescTotalPedido.ValueCurrency = 0 then
-  begin
-    valorTotalItens := 0;
+  FRegras.Dados.cdsPedidoVenda.Edit;
+  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := edtVlDescTotalPedido.ValueCurrency;
+  FRegras.Dados.cdsPedidoVenda.Post;
+  CalculaValorTotalPedido;
 
-    //soma os valores totais dos itens
-    FRegras.Dados.cdsPedidoVendaItem.Loop(
-      procedure
-      begin
-        valorTotalItens := (valorTotalItens
-                            + FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency);
-      end
-    );
-
-    edtVlTotalPedido.ValueCurrency := valorTotalItens;
-  end
-  else
-  begin
-    vlTotalPedido := 0;
-
-    valorDesconto := edtVlDescTotalPedido.ValueCurrency;
-
-    FRegras.Dados.cdsPedidoVendaItem.Loop(
-      procedure
-      begin
-        vlTotalPedido := (vlTotalPedido + FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency);
-      end
-    );
-
-    edtVlTotalPedido.ValueCurrency := vlTotalPedido - valorDesconto;
-  end;
+  FRegras.CalculaValoresRateados(edtVlDescTotalPedido.ValueCurrency, 'D');
+  FRegras.CalculaValorContabil;
 end;
 
 procedure TfrmPedidoVenda.edtVlTotalPedidoExit(Sender: TObject);
@@ -1133,6 +1129,9 @@ begin
     end;
 
     FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt := FRegras.GetIdItem(edtCdProduto.Text);
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency
+                                                                              + FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
+                                                                              - FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
     FRegras.Dados.cdsPedidoVendaItem.Post;
 
     SalvaItens(FEdicaoItem);
@@ -1171,6 +1170,7 @@ begin
   edtCdProduto.SetFocus;
   edtVlDescTotalPedido.ValueCurrency := 0;
   edtVlAcrescimoTotalPedido.ValueCurrency := 0;
+  FSeqItem := 1;
 end;
 
 procedure TfrmPedidoVenda.LimpaDados;
@@ -1187,6 +1187,7 @@ begin
   edtVlAcrescimoTotalPedido.Clear;
   edtVlTotalPedido.Clear;
   FRegras.Dados.cdsPedidoVendaItem.EmptyDataSet;
+  FRegras.Dados.cdsPedidoVenda.EmptyDataSet;
 end;
 
 procedure TfrmPedidoVenda.PreencheCabecalhoPedido;
@@ -1197,9 +1198,8 @@ begin
   else
     FRegras.Dados.cdsPedidoVenda.Append;
 
-  FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := ifthen(FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt > 0,
-                                                                            FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt,
-                                                                            FGerador.GeraIdGeral);
+  if FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt = 0 then
+    FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := FGerador.GeraIdGeral;
   FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := NumeroPedido;
   FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := StrToInt(edtCdCliente.Text);
   FRegras.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := StrToInt(edtCdFormaPgto.Text);
