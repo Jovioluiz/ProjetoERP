@@ -213,11 +213,10 @@ end;
 
 procedure TfrmPedidoVenda.BuscarProduto;
 var
-  lista: TFDQuery;
+  dados: TInfProdutosCodBarras;
   pvItem: TPedidoVendaItem;
   codProduto: string;
 begin
-  lista := nil;
   pvItem := TPedidoVendaItem.Create;
   try
     if (Trim(edtCdProduto.Text) = '') and (FRegras.Dados.cdsPedidoVendaItem.RecordCount > 0) then
@@ -239,38 +238,30 @@ begin
       end;
 
       codProduto := FRegras.GetCodProduto(edtCdProduto.Text);
+      dados := FRegras.BuscaProduto(codProduto);
       if (FRegras.IsCodBarrasProduto(edtCdProduto.Text)) and (FRegras.LancaAutoPedidoVenda(codProduto)) then
       begin
-//        pvItem.BuscaProdutoCodBarras(edtCdProduto.Text);
-
-        lista := FRegras.BuscaProduto(codProduto);
-
-        if lista <> nil then
-        begin
-          edtCdProduto.Text := lista.FieldByName('cd_produto').AsString;
-          edtDescProduto.Text := lista.FieldByName('desc_produto').AsString;
-          edtQtdade.ValueInt := 1;
-          edtUnMedida.Text := lista.FieldByName('un_medida').AsString;
-          edtCdtabelaPreco.Text := IntToStr(lista.FieldByName('cd_tabela').AsInteger);
-          edtDescTabelaPreco.Text := lista.FieldByName('nm_tabela').AsString;
-          edtVlUnitario.ValueCurrency := lista.FieldByName('valor').AsCurrency;
-          edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
-          LancaItem;
-        end;
+        edtCdProduto.Text := dados.CodItem;
+        edtDescProduto.Text := dados.DescProduto;
+        edtQtdade.ValueFloat := 1;
+        edtUnMedida.Text := dados.UnMedida;
+        edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
+        edtDescTabelaPreco.Text := dados.DescTabelaPreco;
+        edtVlUnitario.ValueCurrency := dados.Valor;
+        edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
+        LancaItem;
       end
       else
       begin
-        lista := FRegras.BuscaProduto(edtCdProduto.Text);
-        edtDescProduto.Text := lista.FieldByName('desc_produto').AsString;
-        edtUnMedida.Text := lista.FieldByName('un_medida').AsString;
-        edtCdtabelaPreco.Text := IntToStr(lista.FieldByName('cd_tabela').AsInteger);
-        edtDescTabelaPreco.Text := lista.FieldByName('nm_tabela').AsString;
-        edtVlUnitario.ValueCurrency := lista.FieldByName('valor').AsCurrency;
+        edtDescProduto.Text := dados.DescProduto;
+        edtUnMedida.Text := dados.UnMedida;
+        edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
+        edtDescTabelaPreco.Text := dados.DescTabelaPreco;
+        edtVlUnitario.ValueCurrency := dados.Valor;
       end;
     end;
 
   finally
-    lista.Free;
     pvItem.Free;
   end;
 end;

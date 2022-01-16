@@ -11,17 +11,17 @@ uses
   FireDAC.Comp.Client, System.Generics.Collections, dPedidoVenda,
   Datasnap.DBClient, uUtil, uTributacaoGenerica;
 
-type TPedidoVenda = class
+type
+  TInfProdutosCodBarras = record
+    CodItem,
+    DescProduto,
+    UnMedida,
+    DescTabelaPreco: string;
+    CdTabelaPreco: Integer;
+    Valor: Currency;
+  end;
 
-  type
-    TInfProdutosCodBarras = record
-      CodItem,
-      DescProduto,
-      UnMedida,
-      DescTabelaPreco: string;
-      CdTabelaPreco: Integer;
-      Valor: Currency;
-    end;
+type TPedidoVenda = class
 
   private
     FDados: TdmPedidoVenda;
@@ -33,7 +33,7 @@ type TPedidoVenda = class
     function ValidaFormaPgto(CdFormaPgto: Integer): Boolean;
     function ValidaCliente(CdCliente: Integer): Boolean;
     function ValidaCondPgto(CdCond, CdForma: Integer): Boolean;
-    function BuscaProduto(CodProduto: String): TFDQuery;
+    function BuscaProduto(CodProduto: String): TInfProdutosCodBarras;
     function ValidaProduto(CodProduto: String): Boolean;
     function BuscaTabelaPreco(CodTabela: Integer; CodProduto: String): TFDQuery;
     function ValidaTabelaPreco(CodTabela: Integer; CodProduto: String): Boolean;
@@ -269,32 +269,58 @@ begin
   end;
 end;
 
-function TPedidoVenda.BuscaProduto(CodProduto: String): TFDQuery;
+function TPedidoVenda.BuscaProduto(CodProduto: String): TInfProdutosCodBarras;
 const
-  sql = 'select '+
-            'p.cd_produto,                  '+
-            'p.desc_produto,                '+
-            'tpp.un_medida,                 '+
-            'tp.cd_tabela,                  '+
-            'tp.nm_tabela,                  '+
-            'tpp.valor                      '+
-        'from                               '+
-            'produto p                      '+
-        'join tabela_preco_produto tpp on   '+
-            'p.id_item = tpp.id_item        '+
-        'join tabela_preco tp on            '+
-            'tpp.cd_tabela = tp.cd_tabela   '+
-        'where (p.cd_produto = :cd_produto::text) '+
-        'and (p.fl_ativo)';
+  SQL = ' SELECT' +
+        ' 	p.cd_produto,' +
+        ' 	p.desc_produto,' +
+        ' 	tpp.un_medida,' +
+        ' 	tp.cd_tabela,' +
+        ' 	tp.nm_tabela,' +
+        ' 	tpp.valor' +
+        ' FROM' +
+        ' 	produto p' +
+        ' JOIN tabela_preco_produto tpp ON p.id_item = tpp.id_item' +
+        ' JOIN tabela_preco tp ON tpp.cd_tabela = tp.cd_tabela' +
+        ' WHERE' +
+        ' 	p.cd_produto = :cd_produto' +
+        ' 	AND p.fl_ativo' +
+        ' UNION ' +
+        ' SELECT' +
+        ' 	p2.cd_produto,' +
+        ' 	p2.desc_produto,' +
+        ' 	tpp.un_medida,' +
+        ' 	tp.cd_tabela,' +
+        ' 	tp.nm_tabela,' +
+        ' 	tpp.valor' +
+        ' FROM' +
+        ' 	produto_cod_barras pcb' +
+        ' JOIN produto p2 ON p2.id_item = pcb.id_item' +
+        ' JOIN tabela_preco_produto tpp ON p2.id_item = tpp.id_item' +
+        ' JOIN tabela_preco tp ON	tpp.cd_tabela = tp.cd_tabela' +
+        ' WHERE' +
+        ' 	pcb.codigo_barras = :cd_produto' +
+        ' 	AND p2.fl_ativo;';
+var
+  consulta: TFDQuery;
 begin
-  Result := TFDQuery.Create(nil);
-  Result.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
+  try
+    consulta.Open(SQL, [CodProduto]);
 
-  Result.Open(sql, [CodProduto]);
+    if consulta.IsEmpty then
+      raise Exception.Create('Produto não encontrado');
 
-  if Result.RecordCount = 0 then
-    raise Exception.Create('Produto não encontrado');
-
+    Result.CodItem := consulta.FieldByName('cd_produto').AsString;
+    Result.DescProduto := consulta.FieldByName('desc_produto').AsString;
+    Result.UnMedida := consulta.FieldByName('un_medida').AsString;
+    Result.CdTabelaPreco := consulta.FieldByName('cd_tabela').AsInteger;
+    Result.DescTabelaPreco := consulta.FieldByName('nm_tabela').AsString;
+    Result.Valor := consulta.FieldByName('valor').AsCurrency;
+  finally
+    consulta.Free;
+  end;
 end;
 
 function TPedidoVenda.BuscaTabelaPreco(CodTabela: Integer; CodProduto: String): TFDQuery;
@@ -612,13 +638,17 @@ end;
 function TPedidoVenda.GetCodProduto(CodBarras: String): string;
 const
   SQL = ' SELECT ' +
-        ' 	p.cd_produto ' +
+        ' 	p.cd_produto' +
         ' FROM ' +
         ' 	produto_cod_barras pcb ' +
-        ' JOIN produto p ON ' +
-        ' 	p.id_item = pcb.id_item ' +
-        ' WHERE ' +
-        ' 	pcb.codigo_barras = :codigo_barras; ';
+        ' JOIN produto p ON p.id_item = pcb.id_item ' +
+        ' WHERE pcb.codigo_barras = :codigo ' +
+        ' UNION ' +
+        ' SELECT ' +
+        ' 	pr.cd_produto ' +
+        ' FROM ' +
+        ' 	produto pr ' +
+        ' WHERE pr.cd_produto = :codigo ';
 var
   qry: TFDQuery;
 begin
