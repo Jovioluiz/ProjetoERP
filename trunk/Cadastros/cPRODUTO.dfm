@@ -73,7 +73,7 @@ object frmCadProduto: TfrmCadProduto
       end
       object Label7: TLabel
         Left = 3
-        Top = 48
+        Top = 69
         Width = 58
         Height = 13
         Caption = 'Observa'#231#227'o'
@@ -157,9 +157,9 @@ object frmCadProduto: TfrmCadProduto
       end
       object memoObservacao: TMemo
         Left = 3
-        Top = 67
-        Width = 382
-        Height = 54
+        Top = 88
+        Width = 486
+        Height = 80
         CharCase = ecUpperCase
         TabOrder = 4
       end
@@ -229,6 +229,14 @@ object frmCadProduto: TfrmCadProduto
         Height = 21
         CharCase = ecUpperCase
         TabOrder = 6
+      end
+      object cbLancaAutoPedidoVenda: TCheckBox
+        Left = 3
+        Top = 41
+        Width = 200
+        Height = 17
+        Caption = 'Lan'#231'a Automaticamente Pedido Venda'
+        TabOrder = 12
       end
     end
     object TabSheet1: TTabSheet

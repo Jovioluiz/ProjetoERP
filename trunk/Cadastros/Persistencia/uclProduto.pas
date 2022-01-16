@@ -18,6 +18,7 @@ type TProduto = class(TPadrao)
     Fpeso_bruto: Double;
     Ffator_conversao: Integer;
     Fid_item: Int64;
+    Flanca_auto_pedido_venda: Boolean;
     procedure Setcd_produto(const Value: String);
     procedure Setdesc_produto(const Value: string);
     procedure Setfator_conversao(const Value: Integer);
@@ -28,6 +29,7 @@ type TProduto = class(TPadrao)
     procedure Setpeso_liquido(const Value: Double);
     procedure Setun_medida(const Value: string);
     procedure Setid_item(const Value: Int64);
+    procedure Setlanca_auto_pedido_venda(const Value: Boolean);
 
 
   public
@@ -48,6 +50,7 @@ type TProduto = class(TPadrao)
     property observacao: string read Fobservacao write Setobservacao;
     property imagem: Byte read Fimagem write Setimagem;
     property id_item: Int64 read Fid_item write Setid_item;
+    property lanca_auto_pedido_venda: Boolean read Flanca_auto_pedido_venda write Setlanca_auto_pedido_venda;
 end;
 
 type TProdutoCodigoBarras = class(TProduto)
@@ -89,7 +92,8 @@ const
          '  fator_conversao = :fator_conversao,'+
          '  peso_liquido = :peso_liquido,      '+
          '  peso_bruto = :peso_bruto,          '+
-         '  observacao = :observacao           '+
+         '  observacao = :observacao,          '+
+         '  lanca_auto_pedido_venda = :lanca_auto_pedido_venda '+
          'where                                '+
          '  id_item = :id_item';
 var
@@ -111,6 +115,7 @@ begin
       qry.ParamByName('peso_bruto').AsCurrency := Fpeso_bruto;
       qry.ParamByName('observacao').AsString := Fobservacao;
       qry.ParamByName('id_item').AsLargeInt := Fid_item;
+      qry.ParamByName('lanca_auto_pedido_venda').AsBoolean := Flanca_auto_pedido_venda;
 
       qry.ExecSQL;
       qry.Connection.Commit;
@@ -190,7 +195,8 @@ const
                 'peso_liquido,        '+
                 'peso_bruto,          '+
                 'observacao,          '+
-                'id_item)          '+
+                'id_item,             '+
+                'lanca_auto_pedido_venda)  '+
         ' values (:cd_produto,         '+
                 ':fl_ativo,           '+
                 ':desc_produto,       '+
@@ -199,7 +205,8 @@ const
                 ':peso_liquido,       '+
                 ':peso_bruto,         '+
                 ':observacao,         '+
-                ':id_item)';
+                ':id_item,            '+
+                ':lanca_auto_pedido_venda)';
 var
   qry: TFDQuery;
 begin
@@ -219,6 +226,7 @@ begin
       qry.ParamByName('peso_bruto').AsCurrency := Fpeso_bruto;
       qry.ParamByName('observacao').AsString := Fobservacao;
       qry.ParamByName('id_item').AsLargeInt := Fid_item;
+      qry.ParamByName('lanca_auto_pedido_venda').AsBoolean := Flanca_auto_pedido_venda;
 
       qry.ExecSQL;
       qry.Connection.Commit;
@@ -311,6 +319,11 @@ end;
 procedure TProduto.Setimagem(const Value: Byte);
 begin
   Fimagem := Value;
+end;
+
+procedure TProduto.Setlanca_auto_pedido_venda(const Value: Boolean);
+begin
+  Flanca_auto_pedido_venda := Value;
 end;
 
 procedure TProduto.Setobservacao(const Value: string);

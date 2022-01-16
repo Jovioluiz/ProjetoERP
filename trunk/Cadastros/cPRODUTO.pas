@@ -55,6 +55,7 @@ type
     edtUnCodBarras: TEdit;
     Label14: TLabel;
     Label15: TLabel;
+    cbLancaAutoPedidoVenda: TCheckBox;
     procedure btnPRODUTOCANCELARClick(Sender: TObject);
     procedure edtPRODUTOCD_PRODUTOExit(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -189,7 +190,8 @@ const
         '    pt.cd_tributacao_ipi,                          '+
         '    gtipi.nm_tributacao_ipi,                       '+
         '    pt.cd_tributacao_pis_cofins,                   '+
-        '    gtpc.nm_tributacao_pis_cofins                  '+
+        '    gtpc.nm_tributacao_pis_cofins,                 '+
+        '    lanca_auto_pedido_venda                        '+
         'from                                               '+
         '    produto p                                      '+
         'left join produto_tributacao pt on                 '+
@@ -236,6 +238,7 @@ begin
     edtPRODUTOPESO_LIQUIDO.Text := CurrToStr(qry.FieldByName('peso_liquido').AsCurrency);
     edtPRODUTOPESO_BRUTO.Text := CurrToStr(qry.FieldByName('peso_bruto').AsCurrency);
     memoObservacao.Text := qry.FieldByName('observacao').AsString;
+    cbLancaAutoPedidoVenda.Checked := qry.FieldByName('lanca_auto_pedido_venda').AsBoolean;
 
     if qry.FieldByName('cd_tributacao_icms').Value = null then
       edtProdutoGrupoTributacaoICMS.Text := ''
@@ -577,7 +580,7 @@ begin
   edtPRODUTOCD_PRODUTO.SetFocus;
   tImagem.Picture := nil;
   TabSheetCadastroProduto.Show;//se estiver em outra aba, sempre volta para a primeira aba
-
+  cbLancaAutoPedidoVenda.Checked := False;
   FRegra.Dados.cdsBarras.EmptyDataSet;
 end;
 
@@ -693,6 +696,7 @@ begin
     persistencia.peso_liquido := StrToFloat(edtPRODUTOPESO_LIQUIDO.Text);
     persistencia.peso_bruto := StrToFloat(edtPRODUTOPESO_BRUTO.Text);
     persistencia.observacao := memoObservacao.Text;
+    persistencia.lanca_auto_pedido_venda := cbLancaAutoPedidoVenda.Checked;
 
     if not persistencia.Pesquisar(FIdItem) then
     begin

@@ -34,7 +34,6 @@ type TPedidoVenda = class
     function ValidaCliente(CdCliente: Integer): Boolean;
     function ValidaCondPgto(CdCond, CdForma: Integer): Boolean;
     function BuscaProduto(CodProduto: String): TFDQuery;
-
     function ValidaProduto(CodProduto: String): Boolean;
     function BuscaTabelaPreco(CodTabela: Integer; CodProduto: String): TFDQuery;
     function ValidaTabelaPreco(CodTabela: Integer; CodProduto: String): Boolean;
@@ -43,6 +42,8 @@ type TPedidoVenda = class
     function IsCodBarrasProduto(Cod: String): Boolean;
     function GetIdItem(CdItem: string): Int64;
     function GetCdItem(IdItem: Integer): TInfProdutosCodBarras;
+    function LancaAutoPedidoVenda(CodItem: string): Boolean;
+    function GetCodProduto(CodBarras: String): string;
     procedure PreencheDataSet(Info: TArray<TInfProdutosCodBarras>);
     function CarregaPedidoVenda(NroPedido: Integer): Boolean;
     function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: string): Currency;
@@ -608,6 +609,32 @@ begin
   end;
 end;
 
+function TPedidoVenda.GetCodProduto(CodBarras: String): string;
+const
+  SQL = ' SELECT ' +
+        ' 	p.cd_produto ' +
+        ' FROM ' +
+        ' 	produto_cod_barras pcb ' +
+        ' JOIN produto p ON ' +
+        ' 	p.id_item = pcb.id_item ' +
+        ' WHERE ' +
+        ' 	pcb.codigo_barras = :codigo_barras; ';
+var
+  qry: TFDQuery;
+begin
+  qry := TFDQuery.Create(nil);
+  qry.Connection := dm.conexaoBanco;
+
+  try
+    qry.Open(SQL, [CodBarras]);
+
+    Result := qry.FieldByName('cd_produto').AsString;
+
+  finally
+    qry.Free;
+  end;
+end;
+
 function TPedidoVenda.GetIdItem(CdItem: string): Int64;
 const
   SQL = 'select id_item from produto where cd_produto = :cd_produto';
@@ -652,6 +679,23 @@ begin
     Result := not qry.IsEmpty;
   finally
     qry.Free;
+  end;
+end;
+
+function TPedidoVenda.LancaAutoPedidoVenda(CodItem: string): Boolean;
+const
+  SQL = 'select lanca_auto_pedido_venda FROM produto WHERE cd_produto = :cd_produto';
+var
+  consulta: TFDQuery;
+begin
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
+
+  try
+    consulta.Open(SQL, [CodItem]);
+    Result := (not consulta.IsEmpty) and (consulta.FieldByName('lanca_auto_pedido_venda').AsBoolean);
+  finally
+    consulta.Free;
   end;
 end;
 

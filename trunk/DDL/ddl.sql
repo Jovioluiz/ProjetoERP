@@ -1378,3 +1378,5 @@ update
     public.contato for each row execute procedure func_grava_dt_atz();
 	
 ALTER TABLE public.contato ADD nr_documento varchar(15) NULL;
+
+ALTER TABLE produto ADD COLUMN lanca_auto_pedido_venda bool DEFAULT FALSE;

@@ -146,7 +146,7 @@ implementation
 
 uses
   uDataModule, uConfiguracoes, uUtil, System.Math, uMovimentacaoEstoque,
-  uclPedidoVendaItem, uclPedido_venda_item;
+  uclPedidoVendaItem, uclPedido_venda_item, uclProduto;
 
 {$R *.dfm}
 
@@ -213,14 +213,12 @@ end;
 
 procedure TfrmPedidoVenda.BuscarProduto;
 var
-  resposta: Boolean;
   lista: TFDQuery;
   pvItem: TPedidoVendaItem;
+  codProduto: string;
 begin
-  resposta := False;
   lista := nil;
   pvItem := TPedidoVendaItem.Create;
-
   try
     if (Trim(edtCdProduto.Text) = '') and (FRegras.Dados.cdsPedidoVendaItem.RecordCount > 0) then
     begin
@@ -229,38 +227,46 @@ begin
     end;
 
     if edtCdProduto.Text <> '' then
-      resposta := FRegras.ValidaProduto(edtCdProduto.Text);
-
-    if not resposta then
     begin
-      if (Application.MessageBox('Produto sem preço Cadastrado ou Inativo!', 'Verifique', MB_OK) = idOK) then
+      if not FRegras.ValidaProduto(edtCdProduto.Text) then
       begin
-        edtCdtabelaPreco.Text := '';
-        edtCdProduto.SetFocus;
-        Exit;
+        if (Application.MessageBox('Produto sem preço Cadastrado ou Inativo!', 'Verifique', MB_OK) = idOK) then
+        begin
+          edtCdtabelaPreco.Text := '';
+          edtCdProduto.SetFocus;
+          Exit;
+        end;
       end;
-    end;
 
-    if FRegras.IsCodBarrasProduto(edtCdProduto.Text) then
-    begin
-      pvItem.BuscaProdutoCodBarras(edtCdProduto.Text);
+      codProduto := FRegras.GetCodProduto(edtCdProduto.Text);
+      if (FRegras.IsCodBarrasProduto(edtCdProduto.Text)) and (FRegras.LancaAutoPedidoVenda(codProduto)) then
+      begin
+//        pvItem.BuscaProdutoCodBarras(edtCdProduto.Text);
 
-      lista := FRegras.BuscaProduto(edtCdProduto.Text);
-      edtCdProduto.Text := lista.FieldByName('cd_produto').AsString;
-      edtDescProduto.Text := lista.FieldByName('desc_produto').AsString;
-      edtUnMedida.Text := lista.FieldByName('un_medida').AsString;
-      edtCdtabelaPreco.Text := IntToStr(lista.FieldByName('cd_tabela').AsInteger);
-      edtDescTabelaPreco.Text := lista.FieldByName('nm_tabela').AsString;
-      edtVlUnitario.ValueCurrency := lista.FieldByName('valor').AsCurrency;
-    end
-    else
-    begin
-      lista := FRegras.BuscaProduto(edtCdProduto.Text);
-      edtDescProduto.Text := lista.FieldByName('desc_produto').AsString;
-      edtUnMedida.Text := lista.FieldByName('un_medida').AsString;
-      edtCdtabelaPreco.Text := IntToStr(lista.FieldByName('cd_tabela').AsInteger);
-      edtDescTabelaPreco.Text := lista.FieldByName('nm_tabela').AsString;
-      edtVlUnitario.ValueCurrency := lista.FieldByName('valor').AsCurrency;
+        lista := FRegras.BuscaProduto(codProduto);
+
+        if lista <> nil then
+        begin
+          edtCdProduto.Text := lista.FieldByName('cd_produto').AsString;
+          edtDescProduto.Text := lista.FieldByName('desc_produto').AsString;
+          edtQtdade.ValueInt := 1;
+          edtUnMedida.Text := lista.FieldByName('un_medida').AsString;
+          edtCdtabelaPreco.Text := IntToStr(lista.FieldByName('cd_tabela').AsInteger);
+          edtDescTabelaPreco.Text := lista.FieldByName('nm_tabela').AsString;
+          edtVlUnitario.ValueCurrency := lista.FieldByName('valor').AsCurrency;
+          edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
+          LancaItem;
+        end;
+      end
+      else
+      begin
+        lista := FRegras.BuscaProduto(edtCdProduto.Text);
+        edtDescProduto.Text := lista.FieldByName('desc_produto').AsString;
+        edtUnMedida.Text := lista.FieldByName('un_medida').AsString;
+        edtCdtabelaPreco.Text := IntToStr(lista.FieldByName('cd_tabela').AsInteger);
+        edtDescTabelaPreco.Text := lista.FieldByName('nm_tabela').AsString;
+        edtVlUnitario.ValueCurrency := lista.FieldByName('valor').AsCurrency;
+      end;
     end;
 
   finally
