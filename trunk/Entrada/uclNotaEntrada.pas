@@ -7,6 +7,10 @@ uses uDataModule, Data.DB, FireDAC.Stan.Param, FireDAC.Stan.Intf, FireDAC.Stan.O
   FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client, dNotaEntrada;
 
 type TNotaEntrada = class
+
+type
+  TTipoTributacao = (eICMS, eIPI, ePISCOFINS);
+
   private
     FDadosNota: TdmNotaEntrada;
     procedure SetDadosNota(const Value: TdmNotaEntrada);
@@ -19,7 +23,7 @@ type TNotaEntrada = class
     function GravaItens(Conexao: TFDConnection): Boolean;
     function PossuiNotaLancada(Numero, CodFornecedor: Integer; Serie: string): Boolean;
     function GetSerieNfc(Serie: string): string;
-
+    function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: TTipoTributacao): Currency;
     constructor Create;
     destructor Destroy; override;
 
@@ -29,7 +33,8 @@ end;
 implementation
 
 uses
-  System.SysUtils, Vcl.Dialogs, uUtil, uConexao;
+  System.SysUtils, Vcl.Dialogs, uUtil, uConexao, uManipuladorTributacao,
+  uTributacaoICMS, uTributacaoIPI;
 
 { TValidacoesEntrada }
 
@@ -54,6 +59,28 @@ begin
     Result := not qry.IsEmpty;
   finally
     qry.Free;
+  end;
+end;
+
+function TNotaEntrada.CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: TTipoTributacao): Currency;
+var
+  manipulador: TManipuladorTributacao;
+begin
+  Result := 0;
+  if Tributacao = eICMS then
+    manipulador := TManipuladorTributacao.Create(TTributacaoICMS.Create)
+  else if Tributacao = eIPI then
+    manipulador := TManipuladorTributacao.Create(TTributacaoIPI.Create)
+  else
+    manipulador := nil;
+
+  if Assigned(manipulador) then
+  begin
+    try
+      Result := manipulador.CalculaImposto(ValorBase, Aliquota);
+    finally
+      manipulador.Free;
+    end;
   end;
 end;
 

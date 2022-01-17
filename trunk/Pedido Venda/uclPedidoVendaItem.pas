@@ -101,6 +101,9 @@ begin
     pvi.pis_cofins_valor := DataSet.FieldByName('pis_cofins_valor').AsCurrency;
     pvi.un_medida := DataSet.FieldByName('un_medida').AsString;
     pvi.seq_item := DataSet.FieldByName('seq').AsInteger;
+    pvi.rateado_vl_desconto := DataSet.FieldByName('rateado_vl_desconto').AsCurrency;
+    pvi.rateado_vl_acrescimo := DataSet.FieldByName('rateado_vl_acrescimo').AsCurrency;
+    pvi.vl_contabil := DataSet.FieldByName('vl_contabil').AsCurrency;
     pvi.Persistir(not EhEdicao);
 
   finally

@@ -28,7 +28,7 @@ type TPedidoVenda = class
     procedure SetDados(const Value: TdmPedidoVenda);
 
   public
-    function ValidaQtdadeItem(CdItem: String; QtdPedido: Double): Boolean;
+    function ValidaQtdadeItem(IdItem: Integer; QtdPedido: Double): Boolean;
     function CalculaValorTotalItem(valorUnitario, qtdadeItem: Double): Double;
     function ValidaFormaPgto(CdFormaPgto: Integer): Boolean;
     function ValidaCliente(CdCliente: Integer): Boolean;
@@ -366,7 +366,9 @@ procedure TPedidoVenda.CalculaValoresRateados(Valor: Currency; TipoValor: string
 var
   valorTotal,
   valorItem,
-  pcItem: Currency;
+  pcItem,
+  valorDesconto,
+  valorAcrescimo: Currency;
 
   function GetValorPedido: Currency;
   begin
@@ -401,6 +403,40 @@ begin
       FDados.cdsPedidoVendaItem.Post;
     end
     );
+
+    valorDesconto := 0;
+    FDados.cdsPedidoVendaItem.Loop(
+    procedure
+    begin
+      valorDesconto := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
+    end);
+
+    valorAcrescimo := 0;
+    FDados.cdsPedidoVendaItem.Loop(
+    procedure
+    begin
+      valorAcrescimo := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency;
+    end);
+
+    //se sobrou algum centavo joga no ultimo
+    if Abs(Valor - valorDesconto) > 0 then
+    begin
+      FDados.cdsPedidoVendaItem.Last;
+      FDados.cdsPedidoVendaItem.Edit;
+      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency
+                                                                                 + Abs(Valor - valorDesconto);
+      FDados.cdsPedidoVendaItem.Post;
+    end;
+
+    //se sobrou algum centavo joga no ultimo
+    if Abs(Valor - valorAcrescimo) > 0 then
+    begin
+      FDados.cdsPedidoVendaItem.Last;
+      FDados.cdsPedidoVendaItem.Edit;
+      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
+                                                                                 + Abs(Valor - valorAcrescimo);
+      FDados.cdsPedidoVendaItem.Post;
+    end;
   end;
 end;
 
@@ -675,12 +711,8 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(SQL);
-    qry.ParamByName('cd_produto').AsString := CdItem;
-    qry.Open();
-
+    qry.Open(SQL, [CdItem]);
     Result := qry.FieldByName('id_item').AsLargeInt;
-
   finally
     qry.Free;
   end;
@@ -773,7 +805,7 @@ begin
   FDados := Value;
 end;
 
-function TPedidoVenda.ValidaQtdadeItem(CdItem: String; QtdPedido: Double): Boolean;
+function TPedidoVenda.ValidaQtdadeItem(IdItem: Integer; QtdPedido: Double): Boolean;
 const
   SQL = 'select               '+
         '  qt_estoque         '+
@@ -789,9 +821,7 @@ begin
   Result := True;
 
   try
-    qry.SQL.Add(SQL);
-    qry.ParamByName('id_item').AsLargeInt := GetIdItem(CdItem);
-    qry.Open(SQL);
+    qry.Open(SQL, [IdItem]);
 
     if qry.IsEmpty then
       Exit(False);

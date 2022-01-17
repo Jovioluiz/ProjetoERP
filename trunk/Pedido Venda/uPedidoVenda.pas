@@ -688,8 +688,9 @@ begin
   end;
 
   if edtQtdade.ValueFloat > 0 then
-    if not FRegras.ValidaQtdadeItem(edtCdProduto.Text, edtQtdade.ValueFloat) then
+    if not FRegras.ValidaQtdadeItem(FRegras.GetIdItem(edtCdProduto.Text), edtQtdade.ValueFloat) then
     begin
+      ShowMessage('Estoque não encontrado para o item.');
       edtCdProduto.SetFocus;
       Exit;
     end;

@@ -1379,4 +1379,8 @@ update
 	
 ALTER TABLE public.contato ADD nr_documento varchar(15) NULL;
 
+ALTER TABLE pedido_venda_item ADD COLUMN rateado_vl_desconto numeric(12,4);
+ALTER TABLE pedido_venda_item ADD COLUMN rateado_vl_acrescimo numeric(12,4);
+ALTER TABLE pedido_venda_item ADD COLUMN vl_contabil numeric(12,4);
+
 ALTER TABLE produto ADD COLUMN lanca_auto_pedido_venda bool DEFAULT FALSE;
