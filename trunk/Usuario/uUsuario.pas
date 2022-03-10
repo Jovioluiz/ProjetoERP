@@ -53,7 +53,7 @@ uses uDataModule, uUtil;
 
 procedure TfrmUsuario.BuscarUsuario;
 var
-  cripto: TValidaDados;
+  cripto: TUtil;
 begin
   if edtIdUsuario.Text = EmptyStr then
   begin
@@ -62,7 +62,7 @@ begin
   end;
 
 
-  cripto := TValidaDados.Create;
+  cripto := TUtil.Create;
 
   try
     FUsuario.CarregaUsuario(StrToInt(edtIdUsuario.Text));
@@ -143,10 +143,10 @@ end;
 
 procedure TfrmUsuario.Salvar;
 var
-  cripto: TValidaDados;
+  cripto: TUtil;
   novo: Boolean;
 begin
-  cripto := TValidaDados.Create;
+  cripto := TUtil.Create;
 
   try
     ValidaCampos;
@@ -177,9 +177,9 @@ end;
 
 procedure TfrmUsuario.ValidaCampos;
 var
-  validacao: TValidaDados;
+  validacao: TUtil;
 begin
-  validacao := TValidaDados.Create;
+  validacao := TUtil.Create;
   try
     try
       validacao.validaCodigo(StrToInt(edtIdUsuario.Text));

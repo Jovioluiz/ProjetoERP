@@ -1254,16 +1254,29 @@ end;
 
 function TfrmPedidoVenda.RetornaSequencia: Integer;
 begin
-
-  FRegras.Dados.cdsPedidoVendaItem.Loop(
-    procedure
+  FRegras.Dados.cdsPedidoVendaItem.RetornaSoma(function(FRegras.Dados.cdsPedidoVendaItem: TDataSet): Integer
+   begin
+    FRegras.Dados.cdsPedidoVendaItem.First;
+    while not FRegras.Dados.cdsPedidoVendaItem.Eof do
     begin
       if FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger = FSeqItem then
-        FSeqItem := FSeqItem + 1;
-    end
+        Result := FSeqItem + 1;
+    end;
+
+    FRegras.Dados.cdsPedidoVendaItem.Next;
+   end
   );
 
-  Result := FSeqItem;
+
+//  FRegras.Dados.cdsPedidoVendaItem.Loop(
+//    procedure
+//    begin
+//      if FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger = FSeqItem then
+//        FSeqItem := FSeqItem + 1;
+//    end
+//  );
+//
+//  Result := FSeqItem;
 end;
 
 procedure TfrmPedidoVenda.SalvaCabecalho;

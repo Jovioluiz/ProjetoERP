@@ -63,11 +63,11 @@ uses uLogin, uclTabelaPreco, uclTabelaPrecoProduto;
 
 procedure TfrmcadTabelaPreco.btnAdicionarProdutoClick(Sender: TObject);
 var
-  validaAcesso: TValidaDados;
+  validaAcesso: TUtil;
 
 begin
   FAdicionar := True;
-  validaAcesso := TValidaDados.Create;
+  validaAcesso := TUtil.Create;
   frmCadTabelaPrecoProduto := TfrmCadTabelaPrecoProduto.Create(Self);
 
   try

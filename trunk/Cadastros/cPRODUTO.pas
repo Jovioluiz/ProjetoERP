@@ -205,24 +205,23 @@ const
         'where                                              '+
         '    p.cd_produto = :cd_produto';
 var
-  produto: TValidaDados;
+  produto: TUtil;
   qry: TFDQuery;
 begin
-  produto := TValidaDados.Create;
-  qry := TFDQuery.Create(Self);
+  //implementar para gerar o id_item do produto caso esteja cadastrando um novo produto
+  if edtPRODUTOCD_PRODUTO.isEmpty then
+  begin
+    edtPRODUTOCD_PRODUTO.SetFocus;
+    raise Exception.Create('Código não pode ser vazio');
+  end;
 
+  qry := TFDQuery.Create(Self);
+  produto := TUtil.Create;
+  
   try
     FIdItem := GetIdItem(edtPRODUTOCD_PRODUTO.Text);
 
     qry.Connection := dm.conexaoBanco;
-
-    //implementar para gerar o id_item do produto caso esteja cadastrando um novo produto
-    if edtPRODUTOCD_PRODUTO.isEmpty then
-    begin
-      edtPRODUTOCD_PRODUTO.SetFocus;
-      raise Exception.Create('Código não pode ser vazio');
-    end;
-
     qry.Open(sql, [CodItem]);
 
     if (produto.ValidaEdicaoAcao(idUsuario, 2).Equals('N')) and (qry.IsEmpty) then
@@ -239,29 +238,17 @@ begin
     edtPRODUTOPESO_BRUTO.Text := CurrToStr(qry.FieldByName('peso_bruto').AsCurrency);
     memoObservacao.Text := qry.FieldByName('observacao').AsString;
     cbLancaAutoPedidoVenda.Checked := qry.FieldByName('lanca_auto_pedido_venda').AsBoolean;
-
-    if qry.FieldByName('cd_tributacao_icms').Value = null then
-      edtProdutoGrupoTributacaoICMS.Text := ''
-    else
+    if qry.FieldByName('cd_tributacao_icms').AsInteger > 0 then
       edtProdutoGrupoTributacaoICMS.Text := qry.FieldByName('cd_tributacao_icms').Value;
     edtProdutoNomeGrupoTributacaoICMS.Text := qry.FieldByName('nm_tributacao_icms').AsString;
-
-    if qry.FieldByName('cd_tributacao_ipi').Value = null then
-      edtProdutoGrupoTributacaoIPI.Text := ''
-    else
+    if qry.FieldByName('cd_tributacao_ipi').AsInteger > 0 then
       edtProdutoGrupoTributacaoIPI.Text := qry.FieldByName('cd_tributacao_ipi').Value;
     edtProdutoNomeGrupoTributacaoIPI.Text := qry.FieldByName('nm_tributacao_ipi').AsString;
-
-    if qry.FieldByName('cd_tributacao_pis_cofins').Value = null then
-      edtProdutoGrupoTributacaoPISCOFINS.Text := ''
-    else
+    if qry.FieldByName('cd_tributacao_pis_cofins').AsInteger > 0 then
       edtProdutoGrupoTributacaoPISCOFINS.Text := qry.FieldByName('cd_tributacao_pis_cofins').Value;
     edtProdutoNomeGrupoTributacaoPISCOFINS.Text := qry.FieldByName('nm_tributacao_pis_cofins').AsString;
 
-    if qry.FieldByName('imagem').AsBytes = null then
-      tImagem.Picture := nil
-    else
-      carregaImagem(tImagem, TBlobField(qry.FieldByName('imagem')));
+    carregaImagem(tImagem, TBlobField(qry.FieldByName('imagem')));
 
     listarCodBarras;
 

@@ -93,7 +93,7 @@ type
 var
   frmPrincipal: TfrmPrincipal;
   temPermissao : Boolean;
-  acesso : TValidaDados;
+  acesso : TUtil;
 
   //ações
   const
@@ -136,7 +136,7 @@ end;
 procedure TfrmPrincipal.Cadastro2Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
   frmCadastraTributacaoItem := TfrmCadastraTributacaoItem.Create(Self);
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoCadastraTributacaoItem);
@@ -151,7 +151,7 @@ end;
 procedure TfrmPrincipal.CadastroEndereo1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
   frmCadastroEnderecos := TfrmCadastroEnderecos.Create(Self);
 
   try
@@ -172,7 +172,7 @@ end;
 procedure TfrmPrincipal.Cliente1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoCadCliente);
@@ -189,7 +189,7 @@ end;
 procedure TfrmPrincipal.CondicaoPagamento1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoCadCondPgto);
@@ -206,7 +206,7 @@ end;
 procedure TfrmPrincipal.Configuraes1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoConfiguracoes);
@@ -249,7 +249,7 @@ end;
 procedure TfrmPrincipal.ControleAcesso1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoControleAcesso);
@@ -290,7 +290,7 @@ end;
 procedure TfrmPrincipal.FormaPagamento1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoCadFormaPagamento);
@@ -361,7 +361,7 @@ end;
 procedure TfrmPrincipal.NotaEntrada1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoLancamentoNotaEntrada);
@@ -378,7 +378,7 @@ end;
 procedure TfrmPrincipal.PedidodeVenda1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoPedidoVenda);
@@ -395,7 +395,7 @@ end;
 procedure TfrmPrincipal.Produto1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoCadProduto);
@@ -412,7 +412,7 @@ end;
 procedure TfrmPrincipal.Produtos1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoConsultaProdutos);
@@ -440,7 +440,7 @@ end;
 procedure TfrmPrincipal.TabeladePreo1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaocadTabelaPreco);
@@ -465,7 +465,7 @@ end;
 procedure TfrmPrincipal.Usurios1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoUsuario);
@@ -482,7 +482,7 @@ end;
 procedure TfrmPrincipal.VendaDiria1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoRelVendaDiaria);
@@ -499,7 +499,7 @@ end;
 procedure TfrmPrincipal.VisualizarPedidoVenda1Click(Sender: TObject);
 begin
   temPermissao := False;
-  acesso := TValidaDados.Create;
+  acesso := TUtil.Create;
 
   try
     temPermissao := acesso.ValidaAcessoAcao(idUsuario, cdAcaoVisualizaPedidoVenda);

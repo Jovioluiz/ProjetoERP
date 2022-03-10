@@ -97,7 +97,9 @@ uses
   uGrupoTributacaoIPI in 'Cadastros\src\uGrupoTributacaoIPI.pas',
   uGrupoTributacaoISS in 'Cadastros\src\uGrupoTributacaoISS.pas',
   uGrupoTributacaoPISCOFINS in 'Cadastros\src\uGrupoTributacaoPISCOFINS.pas',
-  uclPedido_venda_item in 'Pedido Venda\uclPedido_venda_item.pas';
+  uclPedido_venda_item in 'Pedido Venda\uclPedido_venda_item.pas',
+  uParametrosImpostos in 'Tributacao\uParametrosImpostos.pas',
+  uParametrosImpostosAbstract in 'Tributacao\uParametrosImpostosAbstract.pas';
 
 {$R *.res}
 

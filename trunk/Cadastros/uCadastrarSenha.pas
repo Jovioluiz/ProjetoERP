@@ -84,14 +84,14 @@ var
   qry, qrySeq: TFDQuery;
   cdUsuario: Integer;
   usuario: string;
-  criptoSenha: TValidaDados;
+  criptoSenha: TUtil;
 begin
   qry := TFDQuery.Create(Self);
   qrySeq := TFDQuery.Create(Self);
   qrySeq.Connection := dm.conexaoBanco;
   qry.Connection := dm.conexaoBanco;
   dm.conexaoBanco.StartTransaction;
-  criptoSenha := TValidaDados.Create();
+  criptoSenha := TUtil.Create();
 
   try
     try

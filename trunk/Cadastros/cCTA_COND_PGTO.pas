@@ -241,8 +241,9 @@ end;
 procedure TfrmCadCondPgto.validaCampos;
 begin
    //verifica se o código da condição e forma de pagamento estão vazias ao salvar
-  if (edtCTACONDPGTOCD_COND.Text = EmptyStr) or (edtCTACONDPGTOCD_CTA_FORMA_PGTO.Text = EmptyStr)
-  or (edtCTACONDPGTODESCRICAO.Text = EmptyStr) then
+  if (edtCTACONDPGTOCD_COND.Text = EmptyStr)
+    or (edtCTACONDPGTOCD_CTA_FORMA_PGTO.Text = EmptyStr)
+    or (edtCTACONDPGTODESCRICAO.Text = EmptyStr) then
     raise Exception.Create('Código da Condição e Forma não podem ser vazios');
 end;
 

@@ -108,13 +108,13 @@ end;
 
 procedure TfrmCadCliente.Salvar;
 var
-  cliente: TValidaDados;
+  cliente: TUtil;
   persistencia: TCliente;
   endereco: TClienteEndereco;
 begin
   persistencia := TCliente.Create;
   endereco := TClienteEndereco.Create;
-  cliente := TValidaDados.Create;
+  cliente := TUtil.Create;
   try
     if edtCLIENTENM_CLIENTE.Text <> '' then
     begin
@@ -242,12 +242,12 @@ end;
 
 procedure TfrmCadCliente.edtCLIENTEcd_clienteExit(Sender: TObject);
 var
-  edicao: TValidaDados;
+  edicao: TUtil;
   persistencia: TCliente;
   enderecoPersistencia: TClienteEndereco;
 begin
   FTemCep := False;
-  edicao := TValidaDados.Create;
+  edicao := TUtil.Create;
   persistencia := TCliente.Create;
   enderecoPersistencia := TClienteEndereco.Create;
 

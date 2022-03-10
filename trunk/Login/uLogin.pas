@@ -87,9 +87,9 @@ procedure TfrmLogin.Entrar;
 var
   dados: TDadosLogin;
   login: TLogin;
-  verificaSenha: TValidaDados;
+  verificaSenha: TUtil;
 begin
-  verificaSenha := TValidaDados.Create;
+  verificaSenha := TUtil.Create;
   login := TLogin.Create;
 
   try

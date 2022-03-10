@@ -5,7 +5,7 @@ interface
 uses Winapi.Windows, Winapi.Messages, System.SysUtils, System.UITypes, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls, Data.DB, FireDAC.Stan.Param, IdHashMessageDigest;
 
-type TValidaDados = class
+type TUtil = class
   private
 
   public
@@ -15,7 +15,8 @@ type TValidaDados = class
     function ValidaAcessoAcao(cdUsuario : Integer; cdAcao : Integer) : Boolean; //valida se o usuário pode acessar a ação
     function ValidaEdicaoAcao(cdUsuario : Integer; cdAcao : Integer) : String; //valida se o usuário pode editar um cadastro
     function GetSenhaMD5(Senha: string): string;
-
+    function RetornaSoma: TFunc<TDataSet, string, Currency>; overload;
+    function RetornaSomaDoisCampos: TFunc<TDataSet, string, string, Currency>; overload;
 end;
 
 type TEditDocumento = class helper for TEdit
@@ -26,9 +27,11 @@ end;
 
 type TDataSetHelper = class helper for TDataSet
   public
-
     procedure Loop(Procedimento: TProc); overload;
+
 end;
+
+
 
 implementation
 
@@ -37,7 +40,7 @@ implementation
 uses uDataModule, FireDAC.Comp.Client;
 
 
-function TValidaDados.GetSenhaMD5(Senha: string): string;
+function TUtil.GetSenhaMD5(Senha: string): string;
 var
   md5: TIdHashMessageDigest5;
 begin
@@ -50,7 +53,22 @@ begin
   end;
 end;
 
-function TValidaDados.ValidaAcessoAcao(cdUsuario, cdAcao: Integer): Boolean;
+function TUtil.RetornaSomaDoisCampos: TFunc<TDataSet, string, string, Currency>;
+begin
+  Result := function(DataSet: TDataSet; Campo1, Campo2: string): Currency
+            begin
+              Result := 0;
+              DataSet.First;
+              while not DataSet.Eof do
+              begin
+                Result := Result + DataSet.FieldByName(Campo1).AsCurrency
+                                 + DataSet.FieldByName(Campo2).AsCurrency;
+                DataSet.Next;
+              end;
+            end;
+end;
+
+function TUtil.ValidaAcessoAcao(cdUsuario, cdAcao: Integer): Boolean;
 const
   sql = 'select '+
          '  1 '+
@@ -79,7 +97,7 @@ begin
   end;
 end;
 
-function TValidaDados.validaCodigo(cod: Integer): Integer;
+function TUtil.validaCodigo(cod: Integer): Integer;
 begin
   if cod = null then
   begin
@@ -89,7 +107,7 @@ begin
   Result := 0;
 end;
 
-function TValidaDados.ValidaEdicaoAcao(cdUsuario, cdAcao: Integer): String;
+function TUtil.ValidaEdicaoAcao(cdUsuario, cdAcao: Integer): String;
 const
   sql = 'select '+
          '  fl_permite_edicao '+
@@ -114,9 +132,23 @@ begin
   end;
 end;
 
-function TValidaDados.ValidaNomeCpf(nome: String; cpf : String): Boolean;
+function TUtil.ValidaNomeCpf(nome: String; cpf : String): Boolean;
 begin
   Result := (Trim(nome) <> '') or (Trim(cpf) <> '');
+end;
+
+function TUtil.RetornaSoma: TFunc<TDataSet, string, Currency>;
+begin
+  Result := function(DataSet: TDataSet; Campo: string): Currency
+            begin
+              Result := 0;
+              DataSet.First;
+              while not DataSet.Eof do
+              begin
+                Result := Result + DataSet.FieldByName(Campo).AsCurrency;
+                DataSet.Next;
+              end;
+            end;
 end;
 
 { TEditDocumento }

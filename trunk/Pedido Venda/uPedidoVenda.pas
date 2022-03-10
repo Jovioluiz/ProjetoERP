@@ -10,7 +10,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, System.UITypes, Datasnap.DBClient, Vcl.Mask,
   Vcl.ComCtrls, System.Generics.Collections, Xml.xmldom, Xml.XMLIntf, Xml.XMLDoc, uclPedidoVenda, uGerador,
-  Vcl.NumberBox, uTributacaoGenerica;
+  Vcl.NumberBox, uTributacaoGenerica, FireDAC.VCLUI.Controls;
 
 type
   TAliqItem = record
@@ -131,6 +131,8 @@ type
     procedure SetEdicaoPedido(const Value: Boolean);
     procedure BuscarProduto;
     procedure CalculaValorTotalPedido;
+    function GetValorTotal(Data: TDataSet): Currency; overload;
+    function GetValorTotal(Valor: currency): Currency; overload;
   public
     { Public declarations }
     procedure SetDadosNota;
@@ -266,20 +268,22 @@ begin
   end;
 end;
 
-procedure TfrmPedidoVenda.CalculaValorTotalPedido;
-var
-  valorTotal: Currency;
+function TfrmPedidoVenda.GetValorTotal(Data: TDataSet): Currency;
 begin
-  valorTotal := 0;
+  FRegras.Dados.cdsPedidoVendaItem.First;
+  while not FRegras.Dados.cdsPedidoVendaItem.Eof do
+  begin
+    Result := Result + Data.FieldByName('vl_total_item').AsCurrency;
+    FRegras.Dados.cdsPedidoVendaItem.Next;
+  end;
+end;
 
-  FRegras.Dados.cdsPedidoVendaItem.Loop(
-    procedure
-    begin
-      valorTotal := (valorTotal + FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency);
-    end
-  );
+procedure TfrmPedidoVenda.CalculaValorTotalPedido;
+begin
 
-  edtVlTotalPedido.ValueCurrency := valorTotal + edtVlAcrescimoTotalPedido.ValueCurrency - edtVlDescTotalPedido.ValueCurrency;
+  edtVlTotalPedido.ValueCurrency := GetValorTotal(FRegras.Dados.cdsPedidoVendaItem)
+                                    + edtVlAcrescimoTotalPedido.ValueCurrency
+                                    - edtVlDescTotalPedido.ValueCurrency;
 end;
 
 procedure TfrmPedidoVenda.CancelaPedidoVenda;
@@ -863,6 +867,11 @@ begin
   end;
 end;
 
+function TfrmPedidoVenda.GetValorTotal(Valor: currency): Currency;
+begin
+
+end;
+
 procedure TfrmPedidoVenda.GravaPedidoVenda;
 const
   SQL_UPDATE_CABECALHO = 'update pedido_venda set cd_cliente = :cd_cliente,  '+
@@ -1086,39 +1095,21 @@ begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := edtVlTotal.ValueCurrency;
     end;
 
-    if aliq.AliqIcms = 0 then
-    begin
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency := 0;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsFloat := 0;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency := 0;
-    end
-    else
+    if aliq.AliqIcms > 0 then
     begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_vl_base').AsCurrency := edtVlTotal.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_pc_aliq').AsFloat := aliq.AliqIcms;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('icms_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency,
                                                                                                       aliq.AliqIcms, 'ICMS');
     end;
-    if aliq.AliqIpi = 0 then
-    begin
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency := 0;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsFloat := 0;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency := 0;
-    end
-    else
+    if aliq.AliqIpi > 0 then
     begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_vl_base').AsCurrency := edtVlTotal.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_pc_aliq').AsFloat := aliq.AliqIpi;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('ipi_valor').AsCurrency := FRegras.CalculaImposto(edtVlTotal.ValueCurrency,
                                                                                                      aliq.AliqIpi, 'IPI');
     end;
-    if aliq.AliqPisCofins = 0 then
-    begin
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency := 0;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsFloat := 0;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency := 0;
-    end
-    else
+    if aliq.AliqPisCofins > 0 then
     begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_vl_base').AsCurrency := edtVlTotal.ValueCurrency;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsFloat := aliq.AliqPisCofins;
@@ -1127,9 +1118,9 @@ begin
     end;
 
     FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt := FRegras.GetIdItem(edtCdProduto.Text);
-    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency
-                                                                              + FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
-                                                                              - FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
+//    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency
+//                                                                              + FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
+//                                                                              - FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
     FRegras.Dados.cdsPedidoVendaItem.Post;
 
     SalvaItens(FEdicaoItem);

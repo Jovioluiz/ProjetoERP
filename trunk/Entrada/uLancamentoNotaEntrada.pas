@@ -144,7 +144,6 @@ type
     procedure LimpaOutrosCampos;
     function GetInfoProduto(const CodItem: String): TInfoProdutos;
     function GetAliqProduto(IdItem: Integer): TAliqProduto;
-    function CalculaImposto(ValorBase, Aliquota: Currency): Currency;
     procedure PreencheDatasetNFC;
     procedure ConfirmarNota;
   public
@@ -794,11 +793,6 @@ end;
 procedure TfrmLancamentoNotaEntrada.btnConfirmarClick(Sender: TObject);
 begin
   ConfirmarNota;
-end;
-
-function TfrmLancamentoNotaEntrada.CalculaImposto(ValorBase, Aliquota: Currency): Currency;
-begin
-  Result := (ValorBase * Aliquota) / 100;
 end;
 
 procedure TfrmLancamentoNotaEntrada.CalculaQuantidadeTotalItem;
