@@ -132,7 +132,6 @@ type
     procedure BuscarProduto;
     procedure CalculaValorTotalPedido;
     function GetValorTotal(Data: TDataSet): Currency; overload;
-    function GetValorTotal(Valor: currency): Currency; overload;
   public
     { Public declarations }
     procedure SetDadosNota;
@@ -269,12 +268,17 @@ begin
 end;
 
 function TfrmPedidoVenda.GetValorTotal(Data: TDataSet): Currency;
+var
+  util: TUtil;
 begin
-  FRegras.Dados.cdsPedidoVendaItem.First;
-  while not FRegras.Dados.cdsPedidoVendaItem.Eof do
-  begin
-    Result := Result + Data.FieldByName('vl_total_item').AsCurrency;
-    FRegras.Dados.cdsPedidoVendaItem.Next;
+  util := TUtil.Create;
+
+  var func := util.RetornaSoma;
+
+  try
+    Result := func(Data, 'vl_total_item');
+  finally
+    util.Free;
   end;
 end;
 
@@ -826,18 +830,12 @@ begin
   try
     query.Open(SQL_ALIQ, [IDItem]);
 
-    if not query.IsEmpty then
-    begin
-      Result.AliqIcms := query.FieldByName('aliquota_icms').AsCurrency;
-      Result.AliqIpi := query.FieldByName('aliquota_ipi').AsCurrency;
-      Result.AliqPisCofins := query.FieldByName('aliquota_pis_cofins').AsCurrency;
-    end
-    else
-    begin
-      Result.AliqIcms := 0;
-      Result.AliqIpi := 0;
-      Result.AliqPisCofins := 0;
-    end;
+    if query.IsEmpty then
+      Exit(Default(TAliqItem));
+
+    Result.AliqIcms := query.FieldByName('aliquota_icms').AsCurrency;
+    Result.AliqIpi := query.FieldByName('aliquota_ipi').AsCurrency;
+    Result.AliqPisCofins := query.FieldByName('aliquota_pis_cofins').AsCurrency;
 
   finally
     query.Free;
@@ -865,11 +863,6 @@ begin
   finally
     qry.Free;
   end;
-end;
-
-function TfrmPedidoVenda.GetValorTotal(Valor: currency): Currency;
-begin
-
 end;
 
 procedure TfrmPedidoVenda.GravaPedidoVenda;

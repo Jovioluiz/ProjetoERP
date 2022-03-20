@@ -362,17 +362,17 @@ begin
     FDados.cdsPedidoVendaItem.Post;
     FDados.cdsPedidoVendaItem.Next;
   end;
-  util := TUtil.Create;
-
-  var func := util.RetornaSoma;
-  var func2 := util.RetornaSomaDoisCampos;
-
-  try
-    var valor := func(FDados.cdsPedidoVendaItem, 'vl_total_item');
-    var outroValor := func2(FDados.cdsPedidoVendaItem, 'vl_total_item', 'rateado_vl_acrescimo');
-  finally
-    util.Free;
-  end;
+//  util := TUtil.Create;
+//
+//  var func := util.RetornaSoma;
+//  var func2 := util.RetornaSomaDoisCampos;
+//
+//  try
+//    var valor := func(FDados.cdsPedidoVendaItem, 'vl_total_item');
+//    var outroValor := func2(FDados.cdsPedidoVendaItem, 'vl_total_item', 'rateado_vl_acrescimo');
+//  finally
+//    util.Free;
+//  end;
 end;
 
 procedure TPedidoVenda.CalculaValoresRateados(Valor: Currency; TipoValor: string);

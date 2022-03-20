@@ -15,8 +15,8 @@ type TUtil = class
     function ValidaAcessoAcao(cdUsuario : Integer; cdAcao : Integer) : Boolean; //valida se o usuário pode acessar a ação
     function ValidaEdicaoAcao(cdUsuario : Integer; cdAcao : Integer) : String; //valida se o usuário pode editar um cadastro
     function GetSenhaMD5(Senha: string): string;
-    function RetornaSoma: TFunc<TDataSet, string, Currency>; overload;
-    function RetornaSomaDoisCampos: TFunc<TDataSet, string, string, Currency>; overload;
+    function RetornaSoma: TFunc<TDataSet, string, Currency>;
+    function RetornaSomaDoisCampos: TFunc<TDataSet, string, string, Currency>;
 end;
 
 type TEditDocumento = class helper for TEdit
@@ -35,7 +35,7 @@ end;
 
 implementation
 
-{ TValidaDados }
+{ TUtil }
 
 uses uDataModule, FireDAC.Comp.Client;
 
