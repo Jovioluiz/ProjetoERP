@@ -99,7 +99,8 @@ uses
   uGrupoTributacaoPISCOFINS in 'Cadastros\src\uGrupoTributacaoPISCOFINS.pas',
   uclPedido_venda_item in 'Pedido Venda\uclPedido_venda_item.pas',
   uParametrosImpostos in 'Tributacao\uParametrosImpostos.pas',
-  uParametrosImpostosAbstract in 'Tributacao\uParametrosImpostosAbstract.pas';
+  uParametrosImpostosAbstract in 'Tributacao\uParametrosImpostosAbstract.pas',
+  uclPedido_venda in 'Pedido Venda\Persistencia\uclPedido_venda.pas';
 
 {$R *.res}
 

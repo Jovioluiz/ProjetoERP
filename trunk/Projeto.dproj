@@ -331,6 +331,7 @@
         <DCCReference Include="Pedido Venda\uclPedido_venda_item.pas"/>
         <DCCReference Include="Tributacao\uParametrosImpostos.pas"/>
         <DCCReference Include="Tributacao\uParametrosImpostosAbstract.pas"/>
+        <DCCReference Include="Pedido Venda\Persistencia\uclPedido_venda.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

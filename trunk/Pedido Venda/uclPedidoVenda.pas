@@ -51,6 +51,7 @@ type TPedidoVenda = class
     procedure CancelaPedidoVenda(IdPedido: Int64);
     procedure CalculaValoresRateados(Valor: Currency; TipoValor: string);
     procedure CalculaValorContabil;
+    procedure GravaCabecalho;
     constructor Create;
     destructor Destroy; override;
 
@@ -62,7 +63,7 @@ implementation
 
 uses
   uPedidoVenda, uManipuladorTributacao, uTributacaoICMS, uTributacaoIPI,
-  uConexao, System.Math;
+  uConexao, System.Math, uclPedido_venda;
 
 
 { TPedidoVenda }
@@ -352,16 +353,15 @@ var
   util: TUtil;
 begin
 
-  FDados.cdsPedidoVendaItem.First;
-  while not FDados.cdsPedidoVendaItem.Eof do
+  FDados.cdsPedidoVendaItem.Loop(
+  procedure
   begin
     FDados.cdsPedidoVendaItem.Edit;
     FDados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency
                                                                        + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
                                                                        - FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
     FDados.cdsPedidoVendaItem.Post;
-    FDados.cdsPedidoVendaItem.Next;
-  end;
+  end);
 //  util := TUtil.Create;
 //
 //  var func := util.RetornaSoma;
@@ -417,38 +417,44 @@ begin
     end
     );
 
-    valorDesconto := 0;
-    FDados.cdsPedidoVendaItem.Loop(
-    procedure
+    if TipoValor.Equals('D') then
     begin
-      valorDesconto := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
-    end);
+      valorDesconto := 0;
+      FDados.cdsPedidoVendaItem.Loop(
+      procedure
+      begin
+        valorDesconto := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
+      end);
 
-    valorAcrescimo := 0;
-    FDados.cdsPedidoVendaItem.Loop(
-    procedure
-    begin
-      valorAcrescimo := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency;
-    end);
-
-    //se sobrou algum centavo joga no ultimo
-    if Abs(Valor - valorDesconto) > 0 then
-    begin
-      FDados.cdsPedidoVendaItem.Last;
-      FDados.cdsPedidoVendaItem.Edit;
-      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency
-                                                                                 + Abs(Valor - valorDesconto);
-      FDados.cdsPedidoVendaItem.Post;
+      //se sobrou algum centavo joga no ultimo
+      if Abs(Valor - valorDesconto) > 0 then
+      begin
+        FDados.cdsPedidoVendaItem.Last;
+        FDados.cdsPedidoVendaItem.Edit;
+        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency
+                                                                                   + Abs(Valor - valorDesconto);
+        FDados.cdsPedidoVendaItem.Post;
+      end;
     end;
 
-    //se sobrou algum centavo joga no ultimo
-    if Abs(Valor - valorAcrescimo) > 0 then
+    if TipoValor.Equals('A') then
     begin
-      FDados.cdsPedidoVendaItem.Last;
-      FDados.cdsPedidoVendaItem.Edit;
-      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
-                                                                                 + Abs(Valor - valorAcrescimo);
-      FDados.cdsPedidoVendaItem.Post;
+      valorAcrescimo := 0;
+      FDados.cdsPedidoVendaItem.Loop(
+      procedure
+      begin
+        valorAcrescimo := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency;
+      end);
+
+      //se sobrou algum centavo joga no ultimo
+      if Abs(Valor - valorAcrescimo) > 0 then
+      begin
+        FDados.cdsPedidoVendaItem.Last;
+        FDados.cdsPedidoVendaItem.Edit;
+        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
+                                                                                   + Abs(Valor - valorAcrescimo);
+        FDados.cdsPedidoVendaItem.Post;
+      end;
     end;
   end;
 end;
@@ -525,7 +531,8 @@ const
                ' 	pv.vl_total, ' +
                ' 	pv.fl_cancelado, ' +
                ' 	pv.dt_emissao, ' +
-               ' 	pvi.seq_item ' +
+               ' 	pvi.seq_item, ' +
+               '  pvi.vl_contabil ' +
                ' FROM ' +
                ' 	pedido_venda pv ' +
                ' JOIN pedido_venda_item pvi ON pv.id_geral = pvi.id_pedido_venda ' +
@@ -603,6 +610,7 @@ begin
       FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_pc_aliq').AsCurrency := qry.FieldByName('pis_cofins_pc_aliq').AsCurrency;
       FDados.cdsPedidoVendaItem.FieldByName('pis_cofins_valor').AsCurrency := qry.FieldByName('pis_cofins_valor').AsCurrency;
       FDados.cdsPedidoVendaItem.FieldByName('seq').AsInteger := qry.FieldByName('seq_item').AsInteger;
+      FDados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := qry.FieldByName('vl_contabil').AsCurrency;
       FDados.cdsPedidoVendaItem.Post;
     end
     );
@@ -728,6 +736,34 @@ begin
     Result := qry.FieldByName('id_item').AsLargeInt;
   finally
     qry.Free;
+  end;
+end;
+
+procedure TPedidoVenda.GravaCabecalho;
+var
+  persistencia: TPedido_venda;
+  novo: Boolean;
+begin
+  persistencia := TPedido_venda.Create;
+
+  try
+    novo := not persistencia.Pesquisar(FDados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt);
+
+    persistencia.id_geral := FDados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt;
+    persistencia.cd_cliente := FDados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger;
+    persistencia.cd_cond_pag := FDados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger;
+    persistencia.nr_pedido := FDados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger;
+    persistencia.cd_forma_pag := FDados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger;
+    persistencia.vl_desconto_pedido := FDados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency;
+    persistencia.vl_acrescimo := FDados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency;
+    persistencia.vl_total := FDados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
+    persistencia.fl_orcamento := FDados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean;
+    persistencia.dt_emissao := FDados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime;
+    persistencia.fl_cancelado := FDados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString;
+    persistencia.Persistir(novo);
+
+  finally
+    persistencia.Free;
   end;
 end;
 

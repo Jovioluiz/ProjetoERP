@@ -106,9 +106,7 @@ type
     FGerador: TGerador;
     FEdicaoPedido: Boolean;
     FSeqItem: Integer;
-    { Private declarations }
     function GetAliquotasItem(IDItem: Int64): TAliqItem;
-    procedure AtualizaCabecalho;
     procedure SetRegras(const Value: TPedidoVenda);
     procedure LimpaCampos;
     procedure LimpaDados;
@@ -127,13 +125,12 @@ type
     procedure PreencheCabecalhoPedido;
     procedure LancaItem;
 
-    procedure GravaPedidoVenda;
+    procedure ConfirmaPedidoVenda;
     procedure SetEdicaoPedido(const Value: Boolean);
     procedure BuscarProduto;
     procedure CalculaValorTotalPedido;
     function GetValorTotal(Data: TDataSet): Currency; overload;
   public
-    { Public declarations }
     procedure SetDadosNota;
     property NumeroPedido: Integer read FNumeroPedido write FNumeroPedido;
     property Regras: TPedidoVenda read FRegras write SetRegras;
@@ -153,7 +150,6 @@ uses
 
 
 procedure TfrmPedidoVenda.AlteraSequenciaItem;
-//ajusta a sequencia do item no pedido de venda
 var
   i: Integer;
 begin
@@ -200,15 +196,14 @@ procedure TfrmPedidoVenda.btnCancelarClick(Sender: TObject);
 begin
   if (Application.MessageBox('Deseja realmente Cancelar o pedido?','Atenção', MB_YESNO) = IDYES) then
   begin
-    CancelaPedidoVenda;
+    FRegras.CancelaPedidoVenda(FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt);
     LimpaDados;
   end;
 end;
 
-//grava os dados na pedido_venda e pedido_venda_item
 procedure TfrmPedidoVenda.btnConfirmarPedidoClick(Sender: TObject);
 begin
-  GravaPedidoVenda;
+  ConfirmaPedidoVenda;
   LimpaDados;
 end;
 
@@ -225,6 +220,9 @@ begin
       edtVlDescTotalPedido.SetFocus;
       Exit;
     end;
+
+    if (Trim(edtCdProduto.Text).Equals('')) and (FRegras.Dados.cdsPedidoVendaItem.RecordCount = 0) then
+      ShowMessage('Informe um produto!');
 
     if edtCdProduto.Text <> '' then
     begin
@@ -551,53 +549,7 @@ begin
     PreencheCabecalhoPedido;
 
     if qry.FieldByName('nr_pedido').AsInteger <> NumeroPedido then
-      SalvaCabecalho
-    else
-      AtualizaCabecalho;
-
-  finally
-    qry.Free;
-  end;
-end;
-
-procedure TfrmPedidoVenda.AtualizaCabecalho;
-const
-  SQL_UPDATE_CABECALHO = 'update pedido_venda set cd_cliente = :cd_cliente,  '+
-                         ' cd_forma_pag = :cd_forma_pag, cd_cond_pag = :cd_cond_pag, vl_desconto_pedido = :vl_desconto_pedido,   '+
-                         ' vl_acrescimo = :vl_acrescimo, vl_total = :vl_total, fl_orcamento = :fl_orcamento, dt_emissao = :dt_emissao,'+
-                         ' fl_cancelado = :fl_cancelado where nr_pedido = :nr_pedido';
-var
-  qry: TFDQuery;
-begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
-
-  try
-    try
-      qry.SQL.Add(SQL_UPDATE_CABECALHO);
-      qry.ParamByName('nr_pedido').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger;
-      qry.ParamByName('cd_cliente').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger;
-      qry.ParamByName('cd_forma_pag').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger;
-      qry.ParamByName('cd_cond_pag').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger;
-      qry.ParamByName('vl_desconto_pedido').AsCurrency :=  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency;
-      qry.ParamByName('vl_acrescimo').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency;
-      qry.ParamByName('vl_total').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
-      qry.ParamByName('fl_orcamento').AsBoolean := FRegras.Dados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean;
-      qry.ParamByName('dt_emissao').AsDate := FRegras.Dados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime;
-      qry.ParamByName('fl_cancelado').AsString := FRegras.Dados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString;
-      qry.ExecSQL;
-
-      qry.Connection.Commit;
-
-    except
-      on E : exception do
-        begin
-          qry.Connection.Rollback;
-          ShowMessage('Erro ao gravar os dados do pedido ' + edtNrPedido.Text + E.Message);
-          Exit;
-        end;
-    end;
+      SalvaCabecalho;
 
   finally
     qry.Free;
@@ -689,10 +641,11 @@ end;
 
 procedure TfrmPedidoVenda.edtQtdadeExit(Sender: TObject);
 begin
-  if (edtQtdade.ValueFloat = 0) and (FRegras.Dados.cdsPedidoVendaItem.RecordCount = 0) then
+  if ((edtQtdade.ValueFloat = 0) and (edtCdProduto.Text <> '')) then
   begin
-    ShowMessage('Informe uma quantidade maior que 0');
-    edtCdProduto.SetFocus;
+    ShowMessage('Informe uma quantidade maior que 0.');
+    edtQtdade.SelectAll;
+    edtQtdade.SetFocus;
   end;
 
   if edtQtdade.ValueFloat > 0 then
@@ -706,13 +659,16 @@ end;
 
 procedure TfrmPedidoVenda.edtVlAcrescimoTotalPedidoExit(Sender: TObject);
 begin
-  FRegras.Dados.cdsPedidoVenda.Edit;
-  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := edtVlAcrescimoTotalPedido.ValueCurrency;
-  FRegras.Dados.cdsPedidoVenda.Post;
-  CalculaValorTotalPedido;
+  if edtVlAcrescimoTotalPedido.ValueCurrency <> FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency then
+  begin
+    FRegras.Dados.cdsPedidoVenda.Edit;
+    FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := edtVlAcrescimoTotalPedido.ValueCurrency;
+    FRegras.Dados.cdsPedidoVenda.Post;
+    CalculaValorTotalPedido;
 
-  FRegras.CalculaValoresRateados(edtVlAcrescimoTotalPedido.ValueCurrency, 'A');
-  FRegras.CalculaValorContabil;
+    FRegras.CalculaValoresRateados(edtVlAcrescimoTotalPedido.ValueCurrency, 'A');
+    FRegras.CalculaValorContabil;
+  end;
 end;
 
 //altera o valor total ao sair do campo de desconto
@@ -723,13 +679,16 @@ end;
 
 procedure TfrmPedidoVenda.edtVlDescTotalPedidoExit(Sender: TObject);
 begin
-  FRegras.Dados.cdsPedidoVenda.Edit;
-  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := edtVlDescTotalPedido.ValueCurrency;
-  FRegras.Dados.cdsPedidoVenda.Post;
-  CalculaValorTotalPedido;
+  if edtVlDescTotalPedido.ValueCurrency <> FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency then
+  begin
+    FRegras.Dados.cdsPedidoVenda.Edit;
+    FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := edtVlDescTotalPedido.ValueCurrency;
+    FRegras.Dados.cdsPedidoVenda.Post;
+    CalculaValorTotalPedido;
 
-  FRegras.CalculaValoresRateados(edtVlDescTotalPedido.ValueCurrency, 'D');
-  FRegras.CalculaValorContabil;
+    FRegras.CalculaValoresRateados(edtVlDescTotalPedido.ValueCurrency, 'D');
+    FRegras.CalculaValorContabil;
+  end;
 end;
 
 procedure TfrmPedidoVenda.edtVlTotalPedidoExit(Sender: TObject);
@@ -865,63 +824,33 @@ begin
   end;
 end;
 
-procedure TfrmPedidoVenda.GravaPedidoVenda;
-const
-  SQL_UPDATE_CABECALHO = 'update pedido_venda set cd_cliente = :cd_cliente,  '+
-                         ' cd_forma_pag = :cd_forma_pag, cd_cond_pag = :cd_cond_pag, vl_desconto_pedido = :vl_desconto_pedido,   '+
-                         ' vl_acrescimo = :vl_acrescimo, vl_total = :vl_total, fl_orcamento = :fl_orcamento, dt_emissao = :dt_emissao,'+
-                         ' fl_cancelado = :fl_cancelado where nr_pedido = :nr_pedido';
-var
-  qry: TFDQuery;
+procedure TfrmPedidoVenda.ConfirmaPedidoVenda;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
 
   try
-    try
-      qry.SQL.Add(SQL_UPDATE_CABECALHO);
-      qry.ParamByName('nr_pedido').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger;
-      qry.ParamByName('cd_cliente').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger;
-      qry.ParamByName('cd_forma_pag').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger;
-      qry.ParamByName('cd_cond_pag').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger;
-      qry.ParamByName('vl_desconto_pedido').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency;
-      qry.ParamByName('vl_acrescimo').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency;
-      qry.ParamByName('vl_total').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
-      qry.ParamByName('fl_orcamento').AsBoolean := FRegras.Dados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean;
-      qry.ParamByName('dt_emissao').AsDate := FRegras.Dados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime;
-      qry.ParamByName('fl_cancelado').AsString := FRegras.Dados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString;
-      qry.ExecSQL;
+    FRegras.GravaCabecalho;
+    FRegras.CalculaValorContabil;
+    AlteraSequenciaItem;
 
-      AlteraSequenciaItem;
+    //insert na pedido_venda_item
+    FRegras.Dados.cdsPedidoVendaItem.Loop(
+    procedure
+    begin
+      SalvaItens(True);
+    end);
 
-      //insert na pedido_venda_item
+    //fazer o insert na wms_mvto_estoque
+    InsereWmsMvto;
+    AtualizaEstoqueProduto;
 
-      FRegras.Dados.cdsPedidoVendaItem.Loop(
-      procedure
-      begin
-        SalvaItens(True);
-      end);
+    //setDadosNota;
 
-      //fazer o insert na wms_mvto_estoque
-      InsereWmsMvto;
-      AtualizaEstoqueProduto;
-
-      //setDadosNota;
-
-      qry.Connection.Commit;
-
-      ShowMessage('Pedido ' + FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsString + ' Gravado Com Sucesso');
-    except
-      on E : exception do
-      begin
-        qry.Connection.Rollback;
-        raise Exception.Create('Erro ao gravar os dados do pedido ' + edtNrPedido.Text + E.Message);
-      end;
+    ShowMessage('Pedido ' + FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsString + ' Gravado Com Sucesso');
+  except
+    on E : exception do
+    begin
+      raise Exception.Create('Erro ao gravar os dados do pedido ' + edtNrPedido.Text + E.Message);
     end;
-  finally
-    qry.Connection.Rollback;
-    qry.Free;
   end;
 end;
 
@@ -1215,50 +1144,8 @@ begin
 end;
 
 procedure TfrmPedidoVenda.SalvaCabecalho;
-const
-  sql_Insert_pedido =
-  'insert ' +
-  '    into ' +
-  'pedido_venda (id_geral, nr_pedido, cd_cliente, cd_forma_pag, cd_cond_pag, vl_desconto_pedido, '+
-  '              vl_acrescimo, vl_total, fl_orcamento, dt_emissao, fl_cancelado) ' +
-  'values (:id_geral, :nr_pedido, :cd_cliente, :cd_forma_pag, :cd_cond_pag, :vl_desconto_pedido, '+
-  '        :vl_acrescimo, :vl_total, :fl_orcamento, :dt_emissao, :fl_cancelado)';
-var
-  qry: TFDQuery;
 begin
-  qry := TFDQuery.Create(Self);
-  qry.Connection := dm.conexaoBanco;
-  qry.Connection.StartTransaction;
-
-  try
-
-    try
-      //insert na pedido_venda
-      qry.SQL.Add(sql_Insert_pedido);
-      qry.ParamByName('id_geral').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt;
-      qry.ParamByName('nr_pedido').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger;
-      qry.ParamByName('cd_cliente').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger;
-      qry.ParamByName('cd_forma_pag').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger;
-      qry.ParamByName('cd_cond_pag').AsInteger := FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger;
-      qry.ParamByName('vl_desconto_pedido').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency;
-      qry.ParamByName('vl_acrescimo').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency;
-      qry.ParamByName('vl_total').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
-      qry.ParamByName('fl_orcamento').AsBoolean := FRegras.Dados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean;
-      qry.ParamByName('dt_emissao').AsDate := FRegras.Dados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime;
-      qry.ParamByName('fl_cancelado').AsString := FRegras.Dados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString;
-      qry.ExecSQL;
-      qry.Connection.Commit;
-    except
-    on E : exception do
-      begin
-        qry.Connection.Rollback;
-        raise Exception.Create('Erro ao gravar o cabeçalho do pedido ' + FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsString + E.Message);
-      end;
-    end;
-  finally
-    qry.Connection.Rollback;
-    qry.Free;
-  end;
+  FRegras.GravaCabecalho;
 end;
 
 procedure TfrmPedidoVenda.SalvaItens(EhEdicao: Boolean);
