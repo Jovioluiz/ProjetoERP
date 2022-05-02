@@ -99,6 +99,8 @@ type
     procedure edtVlTotalPedidoExit(Sender: TObject);
     procedure edtNrPedidoChange(Sender: TObject);
     procedure edtVlDescTotalPedidoExit(Sender: TObject);
+    procedure edtCdProdutoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FEdicaoItem: Boolean;
     FNumeroPedido: Integer;
@@ -144,23 +146,24 @@ implementation
 
 uses
   uDataModule, uConfiguracoes, uUtil, System.Math, uMovimentacaoEstoque,
-  uclPedidoVendaItem, uclPedido_venda_item, uclProduto;
+  uclPedidoVendaItem, uclPedido_venda_item, uclProduto, fConsulta;
 
 {$R *.dfm}
 
 
 procedure TfrmPedidoVenda.AlteraSequenciaItem;
 var
-  i: Integer;
+  I: Integer;
 begin
   FRegras.Dados.cdsPedidoVendaItem.First;
   
-  for i := 1 to FRegras.Dados.cdsPedidoVendaItem.RecordCount do
+  for I := 1 to FRegras.Dados.cdsPedidoVendaItem.RecordCount do
   begin
-    if FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger <> i then
+    if FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger <> I then
     begin
       FRegras.Dados.cdsPedidoVendaItem.Edit;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger := i;
+      FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger := I;
+      FRegras.Dados.cdsPedidoVendaItem.Post;
     end;
     FRegras.Dados.cdsPedidoVendaItem.Next;
   end;
@@ -181,7 +184,6 @@ begin
                               'S');
     end
     );
-
   finally
     estoque.Free;
   end;
@@ -203,6 +205,9 @@ end;
 
 procedure TfrmPedidoVenda.btnConfirmarPedidoClick(Sender: TObject);
 begin
+  if edtVlTotalPedido.ValueCurrency < 0  then
+    raise Exception.Create('Valor total do pedido não pode ser negativo');
+
   ConfirmaPedidoVenda;
   LimpaDados;
 end;
@@ -224,40 +229,37 @@ begin
     if (Trim(edtCdProduto.Text).Equals('')) and (FRegras.Dados.cdsPedidoVendaItem.RecordCount = 0) then
       ShowMessage('Informe um produto!');
 
-    if edtCdProduto.Text <> '' then
+    if not FRegras.ValidaProduto(edtCdProduto.Text) then
     begin
-      if not FRegras.ValidaProduto(edtCdProduto.Text) then
+      if (Application.MessageBox('Produto sem preço Cadastrado ou Inativo!', 'Verifique', MB_OK) = idOK) then
       begin
-        if (Application.MessageBox('Produto sem preço Cadastrado ou Inativo!', 'Verifique', MB_OK) = idOK) then
-        begin
-          edtCdtabelaPreco.Text := '';
-          edtCdProduto.SetFocus;
-          Exit;
-        end;
+        edtCdtabelaPreco.Text := '';
+        edtCdProduto.SetFocus;
+        Exit;
       end;
+    end;
 
-      codProduto := FRegras.GetCodProduto(edtCdProduto.Text);
-      dados := FRegras.BuscaProduto(codProduto);
-      if (FRegras.IsCodBarrasProduto(edtCdProduto.Text)) and (FRegras.LancaAutoPedidoVenda(codProduto)) then
-      begin
-        edtCdProduto.Text := dados.CodItem;
-        edtDescProduto.Text := dados.DescProduto;
-        edtQtdade.ValueFloat := 1;
-        edtUnMedida.Text := dados.UnMedida;
-        edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
-        edtDescTabelaPreco.Text := dados.DescTabelaPreco;
-        edtVlUnitario.ValueCurrency := dados.Valor;
-        edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
-        LancaItem;
-      end
-      else
-      begin
-        edtDescProduto.Text := dados.DescProduto;
-        edtUnMedida.Text := dados.UnMedida;
-        edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
-        edtDescTabelaPreco.Text := dados.DescTabelaPreco;
-        edtVlUnitario.ValueCurrency := dados.Valor;
-      end;
+    codProduto := FRegras.GetCodProduto(edtCdProduto.Text);
+    dados := FRegras.BuscaProduto(codProduto);
+    if (FRegras.IsCodBarrasProduto(edtCdProduto.Text)) and (FRegras.LancaAutoPedidoVenda(codProduto)) then
+    begin
+      edtCdProduto.Text := dados.CodItem;
+      edtDescProduto.Text := dados.DescProduto;
+      edtQtdade.ValueFloat := 1;
+      edtUnMedida.Text := dados.UnMedida;
+      edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
+      edtDescTabelaPreco.Text := dados.DescTabelaPreco;
+      edtVlUnitario.ValueCurrency := dados.Valor;
+      edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
+      LancaItem;
+    end
+    else
+    begin
+      edtDescProduto.Text := dados.DescProduto;
+      edtUnMedida.Text := dados.UnMedida;
+      edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
+      edtDescTabelaPreco.Text := dados.DescTabelaPreco;
+      edtVlUnitario.ValueCurrency := dados.Valor;
     end;
 
   finally
@@ -270,7 +272,6 @@ var
   util: TUtil;
 begin
   util := TUtil.Create;
-
   var func := util.RetornaSoma;
 
   try
@@ -282,7 +283,6 @@ end;
 
 procedure TfrmPedidoVenda.CalculaValorTotalPedido;
 begin
-
   edtVlTotalPedido.ValueCurrency := GetValorTotal(FRegras.Dados.cdsPedidoVendaItem)
                                     + edtVlAcrescimoTotalPedido.ValueCurrency
                                     - edtVlDescTotalPedido.ValueCurrency;
@@ -392,18 +392,11 @@ begin
     oOrdenacao := [];
   end;
 
-  // adiciona a ordenação no DataSet, caso não exista
   if FRegras.Dados.cdsPedidoVendaItem.IndexDefs.IndexOf(sIndexName) < 0 then
     FRegras.Dados.cdsPedidoVendaItem.AddIndex(sIndexName, Column.FieldName, oOrdenacao);
-
   FRegras.Dados.cdsPedidoVendaItem.IndexDefs.Update;
-
-  // formata o título da coluna em negrito
   Column.Title.Font.Style := [fsBold];
-
-  // atribui a ordenação selecionada
   FRegras.Dados.cdsPedidoVendaItem.IndexName := sIndexName;
-
   FRegras.Dados.cdsPedidoVendaItem.First;
 end;
 
@@ -480,7 +473,6 @@ end;
 //valida se não foi encontrado nenhuma condição de pagamento
 procedure TfrmPedidoVenda.edtCdCondPgtoExit(Sender: TObject);
 begin
-
   if edtCdCondPgto.isEmpty then
     raise Exception.Create('Informe uma condição de pagamento');
 
@@ -497,7 +489,6 @@ end;
 //busca a forma pgto
 procedure TfrmPedidoVenda.edtCdFormaPgtoChange(Sender: TObject);
 begin
-
   if edtCdFormaPgto.Text = EmptyStr then
   begin
     edtNomeFormaPgto.Text := '';
@@ -505,13 +496,11 @@ begin
   end;
 
   edtNomeFormaPgto.Text := FRegras.BuscaFormaPgto(StrToInt(edtCdFormaPgto.Text));
-
 end;
 
 //valida se não foi encontrado nenhuma forma de pagamento
 procedure TfrmPedidoVenda.edtCdFormaPgtoExit(Sender: TObject);
 begin
-
   if edtCdFormaPgto.isEmpty then
     raise Exception.Create('Informe uma forma de pagamento');
 
@@ -561,12 +550,40 @@ begin
   BuscarProduto;
 end;
 
+procedure TfrmPedidoVenda.edtCdProdutoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+const
+  SQL = ' SELECT ' +
+        ' 	cd_produto, ' +
+        ' 	desc_produto, ' +
+        ' 	un_medida ' +
+        ' FROM ' +
+        ' 	produto ';
+var
+  consulta: TformConsulta;
+begin
+
+  if key = VK_F9 then
+  begin
+    consulta := TformConsulta.Create(Self);
+
+    try
+      consulta.CampoChave := 'cd_produto';
+      consulta.CarregaConsulta(SQl);
+      consulta.ShowModal;
+      edtCdProduto.Text := consulta.RegistroSelecionado.ToString;
+      edtCdProdutoExit(Self);
+    finally
+      consulta.Free;
+    end;
+  end;
+end;
+
 //busca a tabela de preço
 procedure TfrmPedidoVenda.edtCdtabelaPrecoChange(Sender: TObject);
 var
   lista: TFDQuery;
 begin
-
   if edtCdtabelaPreco.Text = EmptyStr then
   begin
     edtDescTabelaPreco.Text := '';
@@ -598,7 +615,6 @@ begin
     else
     begin
       //recalcula o valor total do item ao alterar a tabela de preço
-
       edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
       edtVlDescontoItem.Enabled := True;
     end;
@@ -679,6 +695,9 @@ end;
 
 procedure TfrmPedidoVenda.edtVlDescTotalPedidoExit(Sender: TObject);
 begin
+  if edtVlDescTotalPedido.ValueCurrency > edtVlTotalPedido.ValueCurrency then
+    raise Exception.Create('Valor do desconto maior que o total do pedido');
+
   if edtVlDescTotalPedido.ValueCurrency <> FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency then
   begin
     FRegras.Dados.cdsPedidoVenda.Edit;
@@ -826,7 +845,6 @@ end;
 
 procedure TfrmPedidoVenda.ConfirmaPedidoVenda;
 begin
-
   try
     FRegras.GravaCabecalho;
     FRegras.CalculaValorContabil;
@@ -842,9 +860,6 @@ begin
     //fazer o insert na wms_mvto_estoque
     InsereWmsMvto;
     AtualizaEstoqueProduto;
-
-    //setDadosNota;
-
     ShowMessage('Pedido ' + FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsString + ' Gravado Com Sucesso');
   except
     on E : exception do
@@ -978,13 +993,13 @@ end;
 
 procedure TfrmPedidoVenda.LancaItem;
  var
-  vl_total_itens: Currency;
   lancaProduto: TfrmConfiguracoes;
   aliq: TAliqItem;
 begin
   lancaProduto := TfrmConfiguracoes.Create(Self);
 
   try
+    aliq := Default(TAliqItem);
     aliq := GetAliquotasItem(FRegras.GetIdItem(edtCdProduto.Text));
 
     if ProdutoJaLancado(StrToInt(edtCdProduto.Text)) and (not FEdicaoItem) then
@@ -1040,26 +1055,23 @@ begin
     end;
 
     FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_item').AsLargeInt := FRegras.GetIdItem(edtCdProduto.Text);
-//    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_contabil').AsCurrency := FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency
-//                                                                              + FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
-//                                                                              - FRegras.Dados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
     FRegras.Dados.cdsPedidoVendaItem.Post;
 
     SalvaItens(FEdicaoItem);
 
     //soma os valores totais dos itens e preenche o valor total do pedido
-    vl_total_itens := 0;
-
+    FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := 0;
+    FRegras.Dados.cdsPedidoVenda.Edit;
     FRegras.Dados.cdsPedidoVendaItem.Loop(
     procedure
     begin
-      vl_total_itens := (vl_total_itens + FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency);
+      FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency
+                                                                         + FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
     end);
-
-    edtVlTotalPedido.ValueCurrency := vl_total_itens;
+    FRegras.Dados.cdsPedidoVenda.Post;
+    edtVlTotalPedido.ValueCurrency := FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency;
 
     FSeqItem := FSeqItem + 1;
-
     edtQtdade.ValueFloat := 0;
     FEdicaoItem := False;
   finally
@@ -1117,7 +1129,9 @@ begin
   FRegras.Dados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger := StrToInt(edtCdCondPgto.Text);
   FRegras.Dados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := edtVlDescTotalPedido.ValueCurrency;
   FRegras.Dados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := edtVlAcrescimoTotalPedido.ValueCurrency;
-  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := edtVlTotalPedido.ValueCurrency;
+  FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := edtVlTotalPedido.ValueCurrency
+                                                                     + edtVlAcrescimoTotalPedido.ValueCurrency
+                                                                     - edtVlDescTotalPedido.ValueCurrency;
   FRegras.Dados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean := edtFl_orcamento.Checked;
   FRegras.Dados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime := edtDataEmissao.Date;
   FRegras.Dados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString := 'N';

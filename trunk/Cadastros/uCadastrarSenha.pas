@@ -29,7 +29,7 @@ implementation
 
 {$R *.dfm}
 
-uses uDataModule, uUtil;
+uses uDataModule, uUtil, uSenhaMD5;
 
 { TfrmCadastraSenha }
 
@@ -84,14 +84,14 @@ var
   qry, qrySeq: TFDQuery;
   cdUsuario: Integer;
   usuario: string;
-  criptoSenha: TUtil;
+  senhaMD5: TSenhaMD5;
 begin
   qry := TFDQuery.Create(Self);
   qrySeq := TFDQuery.Create(Self);
   qrySeq.Connection := dm.conexaoBanco;
   qry.Connection := dm.conexaoBanco;
   dm.conexaoBanco.StartTransaction;
-  criptoSenha := TUtil.Create();
+  senhaMD5 := TSenhaMD5.Create;
 
   try
     try
@@ -105,7 +105,7 @@ begin
       begin
         qry.SQL.Clear;
         qry.SQL.Add(SQL_UPDATE);
-        qry.ParamByName('senha').AsString := criptoSenha.GetSenhaMD5(edtSenha.Text); //gera senha criptografada em md5
+        qry.ParamByName('senha').AsString := senhaMD5.GetSenhaMD5(edtSenha.Text);
         qry.ParamByName('id_usuario').AsInteger := cdUsuario;
         qry.ExecSQL;
       end
@@ -117,7 +117,7 @@ begin
         qry.SQL.Add(SQL);
         qry.ParamByName('id_usuario').AsInteger := qrySeq.FieldByName('codigo').AsInteger;
         qry.ParamByName('login').AsString := edtUsuario.Text;
-        qry.ParamByName('senha').AsString := criptoSenha.GetSenhaMD5(edtSenha.Text); //gera senha criptografada em md5
+        qry.ParamByName('senha').AsString := senhaMD5.GetSenhaMD5(edtSenha.Text);
         qry.ExecSQL;
       end;
       dm.conexaoBanco.Commit
@@ -132,7 +132,7 @@ begin
     dm.conexaoBanco.Rollback;
     qry.Free;
     qrySeq.Free;
-    FreeAndNil(criptoSenha);
+    senhaMD5.Free;
   end;
 end;
 

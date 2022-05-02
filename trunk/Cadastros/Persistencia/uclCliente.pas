@@ -166,16 +166,12 @@ const
         '    c.cd_cliente = :cd_cliente ';
 var
   qry: TFDQuery;
-  endereco: TClienteEndereco;
 begin
   qry := TFDQuery.Create(nil);
   qry.Connection := dm.conexaoBanco;
-  qry.SQL.Add(SQL);
-  endereco := TClienteEndereco.Create;
 
   try
-    qry.ParamByName('cd_cliente').AsInteger := CdCliente;
-    qry.Open();
+    qry.Open(SQL, [CdCliente]);
 
     if not qry.IsEmpty then
     begin
@@ -193,7 +189,6 @@ begin
     end;
 
   finally
-    endereco.Free;
     qry.Free;
   end;
 end;

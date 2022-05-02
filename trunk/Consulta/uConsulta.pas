@@ -84,7 +84,7 @@ begin
         end;
         end;
 
-        cdsConsulta.EmptyDataSet; //limpa o dataset
+        cdsConsulta.EmptyDataSet;
         qry.First;
 
         while not qry.Eof do
@@ -117,7 +117,7 @@ begin
 
     Result := '';
 
-    //CloneDatasets(qry, cds);
+//    CloneDatasets(qry, cds);
 
 //    campo := TField.Create(cds);
 //    for var i := 0 to Pred(qry.FieldCount) do

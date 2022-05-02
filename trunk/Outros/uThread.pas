@@ -61,50 +61,26 @@ begin
       begin
         campos[1] := FQuery.FieldByName('nr_pedido').AsString;
         campos[2] := FQuery.FieldByName('nome').AsString;
-        campos[3] := FQuery.FieldByName('vl_total').AsString;
-        campos[4] := FQuery.FieldByName('vl_acrescimo').AsString;
-        campos[5] := FQuery.FieldByName('vl_desconto_pedido').AsString;
-        campos[6] := FQuery.FieldByName('dt_emissao').AsString;
+        campos[3] := StringReplace(FQuery.FieldByName('vl_total').AsString, ',','', []);
+        campos[4] := StringReplace(FQuery.FieldByName('vl_acrescimo').AsString, ',','', []);
+        campos[5] := StringReplace(FQuery.FieldByName('vl_desconto_pedido').AsString, ',','', []);
+        campos[6] := StringReplace(FQuery.FieldByName('dt_emissao').AsString, '/','', [rfReplaceAll]);
         campos[7] := FQuery.FieldByName('cd_produto').AsString;
         campos[8] := FQuery.FieldByName('desc_produto').AsString;
         campos[9] := FQuery.FieldByName('qtd_venda').AsString;
         campos[10] := FQuery.FieldByName('un_medida').AsString;
-        campos[11] := FQuery.FieldByName('vl_unitario').AsString;
-        campos[12] := FQuery.FieldByName('vl_desconto').AsString;
-        campos[13] := FQuery.FieldByName('vl_total_item').AsString;
-        campos[14] := FQuery.FieldByName('icms_vl_base').AsString;
-        campos[15] := FQuery.FieldByName('icms_pc_aliq').AsString;
-        campos[16] := FQuery.FieldByName('icms_valor').AsString;
-        campos[17] := FQuery.FieldByName('ipi_vl_base').AsString;
-        campos[18] := FQuery.FieldByName('ipi_pc_aliq').AsString;
-        campos[19] := FQuery.FieldByName('ipi_valor').AsString;
-        campos[20] := FQuery.FieldByName('pis_cofins_vl_base').AsString;
-        campos[21] := FQuery.FieldByName('pis_cofins_pc_aliq').AsString;
-        campos[22] := FQuery.FieldByName('pis_cofins_valor').AsString;
-
-
-//        FArquivo.Add(FQuery.FieldByName('nr_pedido').AsString +
-//                    '|' + FQuery.FieldByName('nome').AsString +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('vl_total').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('vl_acrescimo').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('vl_desconto_pedido').AsCurrency) +
-//                    '|'+ FormatDateTime('dd/MM/yyyy', FQuery.FieldByName('dt_emissao').AsDateTime) +
-//                    '|'+ FQuery.FieldByName('cd_produto').AsString +
-//                    '|'+ FQuery.FieldByName('desc_produto').AsString +
-//                    '|'+ FormatFloat('#,##0.00', FQuery.FieldByName('qtd_venda').AsFloat) +
-//                    '|'+ FQuery.FieldByName('un_medida').AsString +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('vl_unitario').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('vl_desconto').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('vl_total_item').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('icms_vl_base').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('icms_pc_aliq').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('icms_valor').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('ipi_vl_base').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('ipi_pc_aliq').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('ipi_valor').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('pis_cofins_vl_base').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('pis_cofins_pc_aliq').AsCurrency) +
-//                    '|'+ FormatCurr('#,##0.00', FQuery.FieldByName('pis_cofins_valor').AsCurrency));
+        campos[11] := StringReplace(FQuery.FieldByName('vl_unitario').AsString, ',','', []);
+        campos[12] := StringReplace(FQuery.FieldByName('vl_desconto').AsString, ',','', []);
+        campos[13] := StringReplace(FQuery.FieldByName('vl_total_item').AsString, ',','', []);
+        campos[14] := StringReplace(FQuery.FieldByName('icms_vl_base').AsString, ',','', []);
+        campos[15] := StringReplace(FQuery.FieldByName('icms_pc_aliq').AsString, ',','', []);
+        campos[16] := StringReplace(FQuery.FieldByName('icms_valor').AsString, ',','', []);
+        campos[17] := StringReplace(FQuery.FieldByName('ipi_vl_base').AsString, ',','', []);
+        campos[18] := StringReplace(FQuery.FieldByName('ipi_pc_aliq').AsString, ',','', []);
+        campos[19] := StringReplace(FQuery.FieldByName('ipi_valor').AsString, ',','', []);
+        campos[20] := StringReplace(FQuery.FieldByName('pis_cofins_vl_base').AsString, ',','', []);
+        campos[21] := StringReplace(FQuery.FieldByName('pis_cofins_pc_aliq').AsString, ',','', []);
+        campos[22] := StringReplace(FQuery.FieldByName('pis_cofins_valor').AsString, ',','', []);
         Salvar(campos, 22);
         FQuery.Next;
       end;
@@ -125,7 +101,7 @@ begin
   begin
     linha := linha + campos[I];
   end;
-  linha := linha + sLineBreak;
+  linha := linha;
   FArquivo.Append(linha);
 end;
 

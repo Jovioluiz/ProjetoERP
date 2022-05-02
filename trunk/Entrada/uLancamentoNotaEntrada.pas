@@ -111,14 +111,6 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 
   type
-    TInfoProdutos = record
-      CodItem,
-      DescProduto,
-      UnMedida: string;
-      FatorConversao: Integer;
-    end;
-
-  type
     TAliqProduto = record
      AliqIcms,
      AliqIPI,
@@ -132,7 +124,7 @@ type
     FRegras: TNotaEntrada;
     FSeq: Integer;
     { Private declarations }
-    procedure validaValoresNota;
+    procedure ValidaValoresNota;
     procedure limpaCampos;
     procedure LancaFinanceiro(Conexao: TFDConnection);
     procedure SetIdGeralNFC(const Value: Integer);
@@ -142,7 +134,7 @@ type
     procedure SetRegras(const Value: TNotaEntrada);
     procedure AdicionaItem;
     procedure LimpaOutrosCampos;
-    function GetInfoProduto(const CodItem: String): TInfoProdutos;
+//    function GetInfoProduto(const CodItem: String): TInfoProdutos;
     function GetAliqProduto(IdItem: Integer): TAliqProduto;
     procedure PreencheDatasetNFC;
     procedure ConfirmarNota;
@@ -198,7 +190,7 @@ end;
 
 procedure TfrmLancamentoNotaEntrada.edtCdFornecedorExit(Sender: TObject);
 var
-  cliente: TNotaEntrada;
+  nota: TNotaEntrada;
 begin
   if edtCdFornecedor.Text = EmptyStr then
   begin
@@ -207,10 +199,10 @@ begin
     Exit;
   end;
 
-  cliente := TNotaEntrada.Create;
+  nota := TNotaEntrada.Create;
 
   try
-    if not cliente.BuscaClienteFornecedor(StrToInt(edtCdFornecedor.Text)) then
+    if not nota.BuscaClienteFornecedor(StrToInt(edtCdFornecedor.Text)) then
     begin
       if (Application.MessageBox('Fornecedor/Cliente não Encontrado', 'Atenção', MB_OK) = IDOK) then
       begin
@@ -219,7 +211,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(cliente);
+    FreeAndNil(nota);
   end;
 end;
 
@@ -237,7 +229,7 @@ begin
     Exit;
   end;
 
-  produto := GetInfoProduto(edtCodProduto.Text);
+  produto := FRegras.GetInfoProduto(edtCodProduto.Text);
 
   if not produto.CodItem.IsEmpty then
   begin
@@ -293,47 +285,17 @@ begin
   end;
 end;
 
-//busca o modelo da nota
 procedure TfrmLancamentoNotaEntrada.edtModeloChange(Sender: TObject);
-const
-  SQL = 'select '                    +
-        '    cd_modelo, '            +
-        '    nm_modelo '             +
-        'from '                      +
-        '    modelo_nota_fiscal mfn '+
-        'where '                     +
-        '    cd_modelo = :cd_modelo';
-var
-  query: TFDQuery;
 begin
   if edtModelo.Text = EmptyStr then
   begin
     edtNomeModelo.Clear;
     Exit;
   end;
-
-  query := TFDQuery.Create(Self);
-  query.Connection := dm.conexaoBanco;
-
-  try
-    query.Open(SQL, [edtModelo.Text]);
-    edtNomeModelo.Text := query.FieldByName('nm_modelo').AsString;
-  finally
-    query.Free;
-  end;
+  edtNomeModelo.Text := FRegras.GetNomeModeloNota(edtModelo.Text);
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtModeloExit(Sender: TObject);
-const
-  SQL = 'select '                    +
-        '    cd_modelo, '            +
-        '    nm_modelo '             +
-        'from '                      +
-        '    modelo_nota_fiscal mfn '+
-        'where '                     +
-        '    cd_modelo = :cd_modelo';
-var
-  query: TFDQuery;
 begin
   if edtModelo.isEmpty then
   begin
@@ -341,23 +303,12 @@ begin
     Exit;
   end;
 
-  query := TFDQuery.Create(Self);
-  query.Connection := dm.conexaoBanco;
-
-  try
-    query.Open(SQL, [edtModelo.Text]);
-    if not query.IsEmpty then
-      edtNomeModelo.Text := query.FieldByName('nm_modelo').AsString
-    else
-    begin
-      if (Application.MessageBox('Modelo não Encontrado', 'Atenção', MB_OK) = IDOK) then
-      begin
-        edtModelo.SetFocus;
-        edtNomeModelo.Clear;
-      end;
-    end;
-  finally
-    query.Free;
+  edtNomeModelo.Text := FRegras.GetNomeModeloNota(edtModelo.Text);
+  if edtModelo.isEmpty then
+  begin
+    ShowMessage('Modelo não Encontrado');
+    edtModelo.SetFocus;
+    edtNomeModelo.Clear;
   end;
 end;
 
@@ -394,7 +345,7 @@ const
         '   (op.cd_operacao = :cd_operacao) '+
         '   and (op.fl_ent_sai = ''E'')';
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
   if btnCancelar.MouseInClient then
     Exit;
@@ -411,30 +362,27 @@ begin
     Exit;
   end;
 
-  query := TFDQuery.Create(Self);
-  query.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(Self);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    query.Open(SQL, [StrToInt(edtOperacao.Text)]);
+    consulta.Open(SQL, [StrToInt(edtOperacao.Text)]);
 
-    if not query.IsEmpty then
+    if consulta.IsEmpty then
     begin
-      edtNomeOperacao.Text := query.FieldByName('nm_operacao').AsString;
-      edtModelo.Text := query.FieldByName('cd_modelo_nota_fiscal').AsString;
-      edtNomeModelo.Text := query.FieldByName('nm_modelo').AsString;
-    end
-    else
-    begin
-      if (Application.MessageBox('Operação não encontrada','Atenção', MB_OK) = idOK) then
-      begin
-        edtOperacao.SetFocus;
-        edtNomeOperacao.Clear;
-        edtModelo.Clear;
-        edtNomeModelo.Clear;
-      end;
+      ShowMessage('Operação não encontrada');
+      edtOperacao.SetFocus;
+      edtNomeOperacao.Clear;
+      edtModelo.Clear;
+      edtNomeModelo.Clear;
+      Exit;
     end;
+
+    edtNomeOperacao.Text := consulta.FieldByName('nm_operacao').AsString;
+    edtModelo.Text := consulta.FieldByName('cd_modelo_nota_fiscal').AsString;
+    edtNomeModelo.Text := consulta.FieldByName('nm_modelo').AsString;
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
@@ -483,8 +431,7 @@ begin
   ValorTotalNota;
 end;
 
-procedure TfrmLancamentoNotaEntrada.FormClose(Sender: TObject;
-  var Action: TCloseAction);
+procedure TfrmLancamentoNotaEntrada.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   frmLancamentoNotaEntrada := nil;
 end;
@@ -551,35 +498,6 @@ begin
     Result.AliqIPI := query.FieldByName('aliquota_ipi').AsFloat;
     Result.AliqPisCofins := query.FieldByName('aliquota_pis_cofins').AsFloat;
 
-  finally
-    query.Free;
-  end;
-end;
-
-function TfrmLancamentoNotaEntrada.GetInfoProduto(const CodItem: String): TInfoProdutos;
-const
-  SQL = 'select                 '+
-        '    cd_produto,        '+
-        '    desc_produto,      '+
-        '    un_medida,         '+
-        '    fator_conversao    '+
-        'from                   '+
-        '    produto            '+
-        'where                  '+
-        'cd_produto = :cd_produto';
-var
-  query: TFDQuery;
-begin
-  query := TFDQuery.Create(Self);
-  query.Connection := dm.conexaoBanco;
-
-  try
-    query.Open(SQL, [CodItem]);
-
-    Result.CodItem := query.FieldByName('cd_produto').AsString;
-    Result.DescProduto := query.FieldByName('desc_produto').AsString;
-    Result.UnMedida := query.FieldByName('un_medida').AsString;
-    Result.FatorConversao := query.FieldByName('fator_conversao').AsInteger;
   finally
     query.Free;
   end;
@@ -714,17 +632,17 @@ begin
   idGeral := TGerador.Create;
 
   try
-      qry.SQL.Add(SQL);
-      qry.ParamByName('id_geral').AsInteger := idGeral.GeraIdGeral;
-      qry.ParamByName('id_nota_entrada').AsInteger := FRegras.DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
-      qry.ParamByName('cd_forma_pgto').AsInteger := 1;  //criar campos para informar forma e condição
-      qry.ParamByName('cd_cond_pgto').AsInteger := 1;
-      qry.ParamByName('valor').AsCurrency := edtValorTotalNota.ValueCurrency;
-      qry.ParamByName('cd_usuario').AsInteger := idUsuario;
-      qry.ParamByName('fl_entrada_saida').AsString := 'E';
-      qry.ParamByName('dt_pgto').AsDateTime := Now;
-      qry.ExecSQL;
-
+    qry.SQL.Add(SQL);
+    qry.ParamByName('id_geral').AsInteger := idGeral.GeraIdGeral;
+    qry.ParamByName('id_nota_entrada').AsInteger := FRegras.DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
+    qry.ParamByName('cd_forma_pgto').AsInteger := 1;  //criar campos para informar forma e condição
+    qry.ParamByName('cd_cond_pgto').AsInteger := 1;
+    qry.ParamByName('valor').AsCurrency := edtValorTotalNota.ValueCurrency;
+    qry.ParamByName('cd_usuario').AsInteger := idUsuario;
+    qry.ParamByName('fl_entrada_saida').AsString := 'E';
+    qry.ParamByName('dt_pgto').AsDateTime := Now;
+    qry.ExecSQL;
+    Conexao.Commit;
   finally
     qry.Free;
     idGeral.Free;
@@ -792,6 +710,7 @@ end;
 
 procedure TfrmLancamentoNotaEntrada.btnConfirmarClick(Sender: TObject);
 begin
+  ValidaValoresNota;
   ConfirmarNota;
 end;
 
@@ -820,7 +739,7 @@ begin
   edtFatorConversao.ValueInt := FRegras.DadosNota.cdsNfi.FieldByName('fator_conversao').AsInteger;
   edtQuantidadeTotalProduto.ValueFloat := FRegras.DadosNota.cdsNfi.FieldByName('qtd_total').AsFloat;
   edtValorUnitario.ValueCurrency := FRegras.DadosNota.cdsNfi.FieldByName('vl_unitario').AsCurrency;
-  edtValorTotalProduto.ValueCurrency := FRegras.DadosNota.cdsNfi.FieldByName('vl_total').AsCurrency;
+  edtValorTotalProduto.ValueCurrency := FRegras.DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency;
   FEdicaoItem := True;
 end;
 
@@ -834,34 +753,27 @@ begin
 
   try
     try
-      validaValoresNota;
-
       if FRegras.GravaCabecalho(dm.conexaoBanco) then
       begin
-        FRegras.DadosNota.cdsNfi.Loop(
-        procedure
+        if FRegras.GravaItens(dm.conexaoBanco) then
         begin
-          if FRegras.GravaItens(dm.conexaoBanco) then
-          begin
+          //insere na wms_mvto e atualiza a quantidade em estoque
+          estoque.InsereWmsMvto(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
+                                FRegras.DadosNota.cdsNfi.FieldByName('un_medida').AsString,
+                                FRegras.DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat,
+                                'E');
 
-            //insere na wms_mvto e atualiza a quantidade em estoque
-            estoque.InsereWmsMvto(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
-                                  FRegras.DadosNota.cdsNfi.FieldByName('un_medida').AsString,
+          estoque.AtualizaEstoque(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
                                   FRegras.DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat,
                                   'E');
-
-            estoque.AtualizaEstoque(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
-                                    FRegras.DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat,
-                                    'E');
-          end;
-        end
-        );
+        end;
       end;
 
-      LancaFinanceiro(dm.conexaoBanco);
       dm.conexaoBanco.Commit;
+      LancaFinanceiro(dm.conexaoBanco);
+
       ShowMessage('Nota gravada com sucesso!');
-      limpaCampos; //verificar que não está limpando o grid
+      limpaCampos;
 
     except
       on E : exception do
@@ -933,7 +845,7 @@ begin
   CalculaValorTotalItem;
 end;
 
-procedure TfrmLancamentoNotaEntrada.validaValoresNota;
+procedure TfrmLancamentoNotaEntrada.ValidaValoresNota;
 var
   vlTotalItens : Double;
 begin
@@ -946,7 +858,10 @@ begin
   end
   );
 
-  if vlTotalItens <> edtVlProduto.ValueCurrency then
+  if vlTotalItens <> (edtVlProduto.ValueCurrency
+                      - edtValorDesconto.ValueCurrency
+                      + edtValorAcrescimo.ValueCurrency
+                      + edtValorOutrasDespesas.ValueCurrency) then
     raise Exception.Create(' O valor total dos itens não fecha com o valor total da nota! Verifique');
 end;
 

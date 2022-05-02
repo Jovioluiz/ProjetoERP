@@ -3,7 +3,7 @@ object fThreads: TfThreads
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Form das Threads'
-  ClientHeight = 594
+  ClientHeight = 651
   ClientWidth = 907
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,65 +13,101 @@ object fThreads: TfThreads
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object DBGrid1: TDBGrid
-    Left = 32
-    Top = 80
-    Width = 385
-    Height = 233
+  object pnlTela: TPanel
+    Left = 0
+    Top = 49
+    Width = 907
+    Height = 602
+    Align = alClient
     TabOrder = 0
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
+    DesignSize = (
+      907
+      602)
+    object DBGrid4: TDBGrid
+      Left = 8
+      Top = 288
+      Width = 426
+      Height = 275
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+    end
+    object DBGrid3: TDBGrid
+      Left = 448
+      Top = 288
+      Width = 427
+      Height = 275
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      TabOrder = 1
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+    end
+    object DBGrid2: TDBGrid
+      Left = 448
+      Top = 6
+      Width = 417
+      Height = 256
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      TabOrder = 2
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+    end
+    object pnlGrid1: TPanel
+      Left = 8
+      Top = 6
+      Width = 416
+      Height = 256
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      AutoSize = True
+      TabOrder = 3
+      object DBGrid1: TDBGrid
+        Left = 1
+        Top = 1
+        Width = 414
+        Height = 254
+        Align = alClient
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+      end
+    end
   end
-  object DBGrid2: TDBGrid
-    Left = 472
-    Top = 80
-    Width = 417
-    Height = 233
+  object pnlTopo: TPanel
+    Left = 0
+    Top = 0
+    Width = 907
+    Height = 49
+    Align = alTop
     TabOrder = 1
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-  end
-  object DBGrid3: TDBGrid
-    Left = 472
-    Top = 344
-    Width = 417
-    Height = 233
-    TabOrder = 2
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-  end
-  object DBGrid4: TDBGrid
-    Left = 32
-    Top = 344
-    Width = 385
-    Height = 233
-    TabOrder = 3
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-  end
-  object btnListar: TButton
-    Left = 32
-    Top = 24
-    Width = 75
-    Height = 25
-    Caption = 'Listar'
-    TabOrder = 4
-    OnClick = btnListarClick
+    object btnListar: TButton
+      Left = 24
+      Top = 13
+      Width = 75
+      Height = 25
+      Caption = 'Listar'
+      TabOrder = 0
+      OnClick = btnListarClick
+    end
   end
   object ds1: TDataSource
     DataSet = cds1

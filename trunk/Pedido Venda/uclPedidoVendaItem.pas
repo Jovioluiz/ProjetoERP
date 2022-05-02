@@ -87,7 +87,7 @@ begin
     pvi.id_item := DataSet.FieldByName('id_item').AsLargeInt;
     pvi.vl_unitario := DataSet.FieldByName('vl_unitario').AsCurrency;
     pvi.vl_total_item := DataSet.FieldByName('vl_total_item').AsCurrency;
-    pvi.qtd_venda := DataSet.FieldByName('qtd_venda').AsInteger;
+    pvi.qtd_venda := DataSet.FieldByName('qtd_venda').AsFloat;
     pvi.vl_desconto := DataSet.FieldByName('vl_desconto').AsCurrency;
     pvi.cd_tabela_preco := DataSet.FieldByName('cd_tabela_preco').AsInteger;
     pvi.icms_vl_base := DataSet.FieldByName('icms_vl_base').AsCurrency;

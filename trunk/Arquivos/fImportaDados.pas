@@ -91,42 +91,8 @@ begin
 end;
 
 procedure TfrmImportaDados.btnGravarTesteClick(Sender: TObject);
-const
-  SQL = 'insert into teste (codigo, descricao) values (:codigo, :descricao)';
-var
-  query: TFDQuery;
-  I: Integer;
-  inicio: TDateTime;
 begin
-  query := TFDQuery.Create(Self);
-  query.Connection := dm.conexaoBanco;
-  query.Connection.StartTransaction;
-
-  try
-    query.SQL.Add(SQL);
-    inicio := Now;
-//    query.Params.ArraySize := 1000000;
-//    for I := 0 to 1000000 do
-//    begin
-//      query.ParamByName('codigo').AsIntegers[I-1] := I-1;
-//      query.ParamByName('descricao').AsStrings[I-1] := 'Teste';
-//
-//    end;
-//    query.Execute(query.Params.ArraySize, 0);
-
-    for I := 0 to 1000000 do
-    begin
-      query.ParamByName('codigo').AsInteger := I;
-      query.ParamByName('descricao').AsString := 'Teste';
-      query.ExecSQL;
-    end;
-
-    query.Connection.Commit;
-
-    ShowMessage(FormatDateTime('hh:mm:ss:zzz', Now - inicio))
-  finally
-    query.Free;
-  end;
+  FRegras.ImportarDadosTeste;
 end;
 
 procedure TfrmImportaDados.btnVisualizarClienteClick(Sender: TObject);

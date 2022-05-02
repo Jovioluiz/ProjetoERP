@@ -6,16 +6,28 @@ type TParametros = record
   aliquota: Currency;
 end;
 
-type TICMS = class
+TImposto = class
+  public
+end;
+
+type TICMS = class(TImposto)
   parametros: TParametros;
   public
-    function GetParametros(Id: Integer): TParametros;
+    function GetParametrosICMS(Id: Integer): TParametros;
+end;
+
+type TIPI = class(TImposto)
+  parametros: TParametros;
+  public
+    function GetParametrosIPI(Id: Integer): TParametros;
 end;
 
 type
   TParametrosImpostos = class
 
-  end;
+    function GetAliquotas: TArray<TImposto>;
+
+end;
 
 implementation
 
@@ -25,12 +37,12 @@ uses
 { TICMS }
 
 //tem que pegar todos os grupos de tributaçao e depois ir buscando as aliquotas
-function TICMS.GetParametros(Id: Integer): TParametros;
+function TICMS.GetParametrosICMS(Id: Integer): TParametros;
 const
   SQL = ' SELECT' +
         ' 	aliquota_icms' +
         ' FROM' +
-        ' 	grupo_tributacao_icms gti' +
+        ' 	grupo_tributacao_icms ' +
         ' WHERE' +
         ' 	cd_tributacao = :cd_tributacao';
 var
@@ -47,4 +59,34 @@ begin
   end;
 end;
 
+{ TIPI }
+
+function TIPI.GetParametrosIPI(Id: Integer): TParametros;
+const
+  SQL = ' SELECT' +
+        ' 	aliquota_ipi' +
+        ' FROM' +
+        ' 	grupo_tributacao_ipi ' +
+        ' WHERE' +
+        ' 	cd_tributacao = :cd_tributacao';
+var
+  consulta: TFDquery;
+begin
+  consulta := TFDquery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
+  try
+    consulta.Open(SQL, [Id]);
+    if not consulta.IsEmpty then
+      Result.aliquota := consulta.ParamByName('aliquota_icms').AsCurrency;
+  finally
+    consulta.Free;
+  end;
+end;
+
+{ TParametrosImpostos }
+
+function TParametrosImpostos.GetAliquotas: TArray<TImposto>;
+begin
+
+end;
 end.

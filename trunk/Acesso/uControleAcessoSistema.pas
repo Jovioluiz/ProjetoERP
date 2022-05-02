@@ -117,27 +117,22 @@ begin
 
   try
     Dados.cds.EmptyDataSet;
-    qry.SQL.Add(SQL);
-    qry.ParamByName('cd_usuario').AsInteger := CdUsuario;
-    qry.Open();
+    qry.Open(SQL, [CdUsuario]);
 
-    if not qry.IsEmpty then
+    qry.loop(
+    procedure
     begin
-      qry.loop(
-      procedure
-      begin
-        if (FDados.cds.Active) and (FDados.cds.RecordCount = 1) then
-          book := FDados.cds.GetBookmark;
+      if (FDados.cds.Active) and (FDados.cds.RecordCount = 1) then
+        book := FDados.cds.GetBookmark;
 
-        FDados.cds.Append;
-        FDados.cds.FieldByName('cd_acao').AsInteger := qry.FieldByName('cd_acao').AsInteger;
-        FDados.cds.FieldByName('cd_usuario').AsInteger := qry.FieldByName('cd_usuario').AsInteger;
-        FDados.cds.FieldByName('nm_acao').AsString := qry.FieldByName('nm_acao').AsString;
-        FDados.cds.FieldByName('fl_permite_edicao').AsString := qry.FieldByName('fl_permite_edicao').AsString;
-        FDados.cds.Post;
-      end
-      );
-    end;
+      FDados.cds.Append;
+      FDados.cds.FieldByName('cd_acao').AsInteger := qry.FieldByName('cd_acao').AsInteger;
+      FDados.cds.FieldByName('cd_usuario').AsInteger := qry.FieldByName('cd_usuario').AsInteger;
+      FDados.cds.FieldByName('nm_acao').AsString := qry.FieldByName('nm_acao').AsString;
+      FDados.cds.FieldByName('fl_permite_edicao').AsString := qry.FieldByName('fl_permite_edicao').AsString;
+      FDados.cds.Post;
+    end
+    );
 
   finally
     if FDados.cds.BookmarkValid(book) then

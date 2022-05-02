@@ -67,14 +67,4 @@ object frmUsuario: TfrmUsuario
     TabOrder = 2
     Text = ''
   end
-  object query: TFDQuery
-    Connection = dm.conexaoBanco
-    Left = 376
-    Top = 56
-  end
-  object sql: TFDQuery
-    Connection = dm.conexaoBanco
-    Left = 376
-    Top = 120
-  end
 end

@@ -83,7 +83,6 @@ uses
 procedure TfrmLista.btnAddClick(Sender: TObject);
 const
   SQL = 'select * from cliente where cd_cliente in %s';
-
 var
   qry: TFDQuery;
   lista: TList<String>;

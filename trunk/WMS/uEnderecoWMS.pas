@@ -76,10 +76,17 @@ begin
       Exit;
     end;
 
-    if not qryProduto.IsEmpty then
-      nmProduto := qryProduto.FieldByName('desc_produto').AsString;
+    nmProduto := qryProduto.FieldByName('desc_produto').AsString;
 
     qryEnderecos.Open(SQL_ENDERECO, [GetIdItem(CodProduto)]);
+
+    if qryEnderecos.IsEmpty then
+    begin
+      Dados.cdsEnderecoProduto.Append;
+      Dados.cdsEnderecoProduto.FieldByName('nm_produto').AsString := nmProduto;
+      Dados.cdsEnderecoProduto.Post;
+      Exit;
+    end;
 
     qryEnderecos.Loop(
     procedure
@@ -96,14 +103,6 @@ begin
       Dados.cdsEnderecoProduto.Post;
     end
     );
-
-    if qryEnderecos.IsEmpty then
-    begin
-      Dados.cdsEnderecoProduto.Append;
-      Dados.cdsEnderecoProduto.FieldByName('nm_produto').AsString := nmProduto;
-      Dados.cdsEnderecoProduto.Post;
-    end;
-
   finally
     qryProduto.Free;
     qryEnderecos.Free;
@@ -141,8 +140,8 @@ begin
     qry.SQL.Add(SQL);
     qry.ParamByName('nm_endereco').AsString := NomeEndereco;
     qry.Open(SQL);
-
     Result := qry.FieldByName('id_geral').AsInteger;
+
   finally
     qry.Free;
   end;
@@ -161,7 +160,6 @@ begin
     qry.SQL.Add(SQL);
     qry.ParamByName('cd_produto').AsString := CdItem;
     qry.Open();
-
     Result := qry.FieldByName('id_item').AsLargeInt;
 
   finally
@@ -180,7 +178,6 @@ begin
 
   try
     qry.Open(SQL, [IdItem]);
-
     Result := qry.FieldByName('un_medida').AsString;
 
   finally
@@ -203,8 +200,8 @@ begin
   try
     idItem := GetIdItem(Dados.cdsEnderecoProduto.FieldByName('cd_produto').AsString);
     qry.Open(SQL, [IdEndereco, idItem]);
-
     Result := qry.FieldByName('nm_endereco').AsString = Endereco;
+
   finally
     qry.Free;
   end;

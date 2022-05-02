@@ -6,6 +6,15 @@ uses uDataModule, Data.DB, FireDAC.Stan.Param, FireDAC.Stan.Intf, FireDAC.Stan.O
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async,
   FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client, dNotaEntrada;
 
+
+type
+  TInfoProdutos = record
+    CodItem,
+    DescProduto,
+    UnMedida: string;
+    FatorConversao: Integer;
+end;
+
 type TNotaEntrada = class
 
 type
@@ -24,6 +33,8 @@ type
     function PossuiNotaLancada(Numero, CodFornecedor: Integer; Serie: string): Boolean;
     function GetSerieNfc(Serie: string): string;
     function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: TTipoTributacao): Currency;
+    function GetNomeModeloNota(CodModelo: string): String;
+    function GetInfoProduto(const CodItem: String): TInfoProdutos;
     constructor Create;
     destructor Destroy; override;
 
@@ -34,7 +45,7 @@ implementation
 
 uses
   System.SysUtils, Vcl.Dialogs, uUtil, uConexao, uManipuladorTributacao,
-  uTributacaoICMS, uTributacaoIPI;
+  uTributacaoICMS, uTributacaoIPI, uclNFI;
 
 { TValidacoesEntrada }
 
@@ -137,6 +148,58 @@ begin
   end;
 end;
 
+function TNotaEntrada.GetNomeModeloNota(CodModelo: string): String;
+const
+  SQL = 'select '                    +
+        '    cd_modelo, '            +
+        '    nm_modelo '             +
+        'from '                      +
+        '    modelo_nota_fiscal mfn '+
+        'where '                     +
+        '    cd_modelo = :cd_modelo';
+var
+  consulta: TFDQuery;
+begin
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
+
+  try
+    consulta.Open(SQL, [CodModelo]);
+    Result := consulta.FieldByName('nm_modelo').AsString;
+  finally
+    consulta.Free;
+  end;
+end;
+
+function TNotaEntrada.GetInfoProduto(const CodItem: String): TInfoProdutos;
+const
+  SQL = 'select                 '+
+        '    cd_produto,        '+
+        '    desc_produto,      '+
+        '    un_medida,         '+
+        '    fator_conversao    '+
+        'from                   '+
+        '    produto            '+
+        'where                  '+
+        'cd_produto = :cd_produto';
+var
+  query: TFDQuery;
+begin
+  query := TFDQuery.Create(nil);
+  query.Connection := dm.conexaoBanco;
+
+  try
+    query.Open(SQL, [CodItem]);
+
+    Result.CodItem := query.FieldByName('cd_produto').AsString;
+    Result.DescProduto := query.FieldByName('desc_produto').AsString;
+    Result.UnMedida := query.FieldByName('un_medida').AsString;
+    Result.FatorConversao := query.FieldByName('fator_conversao').AsInteger;
+  finally
+    query.Free;
+  end;
+end;
+
 function TNotaEntrada.GravaCabecalho(Conexao: TFDConnection): Boolean;
 {$REGION 'SQL'}
 const
@@ -211,7 +274,7 @@ begin
       query.ParamByName('valor_total').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency;
 
       query.ExecSQL;
-//      query.Connection.Commit;
+      Conexao.Commit;
       Result := True;
 //    except on E : exception do
 //      begin
@@ -225,110 +288,54 @@ begin
 end;
 
 function TNotaEntrada.GravaItens(Conexao: TFDConnection): Boolean;
-{$REGION 'SQL'}
-const
-  SQL_INSERT_NFI = 'insert                   '+
-                  '    into                  '+
-                  '    nfi (id_geral,        '+
-                  '    id_nfc,               '+
-                  '    id_item,              '+
-                  '    qtd_estoque,          '+
-                  '    icms_vl_base,         '+
-                  '    icms_pc_aliq,         '+
-                  '    icms_valor,           '+
-                  '    ipi_vl_base,          '+
-                  '    ipi_pc_aliq,          '+
-                  '    ipi_valor,            '+
-                  '    pis_cofins_vl_base,   '+
-                  '    pis_cofins_pc_aliq,   '+
-                  '    pis_cofins_valor,     '+
-                  '    un_medida,            '+
-                  '    vl_unitario,          '+
-                  '    vl_frete_rateado,     '+
-                  '    vl_desconto_rateado,  '+
-                  '    vl_acrescimo_rateado, '+
-                  '    seq_item_nfi,         '+
-                  '    valor_total)          '+
-                  'values(:id_geral,         '+
-                  '    :id_nfc,              '+
-                  '    :id_item,             '+
-                  '    :qtd_estoque,         '+
-                  '    :icms_vl_base,        '+
-                  '    :icms_pc_aliq,        '+
-                  '    :icms_valor,          '+
-                  '    :ipi_vl_base,         '+
-                  '    :ipi_pc_aliq,         '+
-                  '    :ipi_valor,           '+
-                  '    :pis_cofins_vl_base,  '+
-                  '    :pis_cofins_pc_aliq,  '+
-                  '    :pis_cofins_valor,    '+
-                  '    :un_medida,           '+
-                  '    :vl_unitario,         '+
-                  '    :vl_frete_rateado,    '+
-                  '    :vl_desconto_rateado, '+
-                  '    :vl_acrescimo_rateado,'+
-                  '    :seq_item_nfi,        '+
-                  '    :valor_total)';
-{$ENDREGION}
 var
   totalItem,
   total,
   pcItem: Double;
-  qryItens: TFDQuery;
+  nfi: TNFI;
 begin
-  qryItens := TFDQuery.Create(nil);
-  qryItens.Connection := Conexao;
+  nfi := TNFI.Create;
 
   try
-    //soma a quantidade dos itens de todos os produtos lançados
-    totalItem := DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency;
-    total := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency
-             + DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency
-             - DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency;
+    DadosNota.cdsNfi.Loop(
+    procedure
+    begin
+      //soma a quantidade dos itens de todos os produtos lançados
+      totalItem := DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency;
+      total := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency
+               + DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency
+               - DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency;
 
-    pcItem := totalItem / total;
+      pcItem := totalItem / total;
 
-    //insert nfi
-    qryItens.SQL.Add(SQL_INSERT_NFI);
+      nfi.id_geral := DadosNota.cdsNfi.FieldByName('id_geral').AsLargeInt;
+      nfi.id_nfc := DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
+      nfi.id_item := DadosNota.cdsNfi.FieldByName('id_item').AsLargeInt;
+      nfi.qtd_estoque := DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat;
+      nfi.un_medida := DadosNota.cdsNfi.FieldByName('un_medida').AsString;
+      nfi.vl_unitario := DadosNota.cdsNfi.FieldByName('vl_unitario').AsCurrency;
+      nfi.vl_frete_rateado := DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency * pcItem;
+      nfi.vl_desconto_rateado := DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency * pcItem;
+      nfi.vl_acrescimo_rateado := DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency * pcItem;
 
-    qryItens.ParamByName('id_geral').AsInteger := DadosNota.cdsNfi.FieldByName('id_geral').AsLargeInt;
-    qryItens.ParamByName('id_nfc').AsInteger := DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
-    qryItens.ParamByName('id_item').AsLargeInt := DadosNota.cdsNfi.FieldByName('id_item').AsLargeInt;
-    qryItens.ParamByName('qtd_estoque').AsFloat := DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat;
-    qryItens.ParamByName('un_medida').AsString := DadosNota.cdsNfi.FieldByName('un_medida').AsString;
-    qryItens.ParamByName('vl_unitario').AsCurrency := DadosNota.cdsNfi.FieldByName('vl_unitario').AsCurrency;
-
-    if DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency > 0 then
-      qryItens.ParamByName('vl_frete_rateado').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency * pcItem
-    else
-      qryItens.ParamByName('vl_frete_rateado').AsCurrency := 0;
-
-    if DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency > 0 then
-      qryItens.ParamByName('vl_desconto_rateado').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency * pcItem
-    else
-      qryItens.ParamByName('vl_desconto_rateado').AsCurrency := 0;
-
-    if DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency > 0 then
-      qryItens.ParamByName('vl_acrescimo_rateado').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency * pcItem
-    else
-      qryItens.ParamByName('vl_acrescimo_rateado').AsCurrency := 0;
-
-    qryItens.ParamByName('seq_item_nfi').AsInteger := DadosNota.cdsNfi.FieldByName('seq_item_nfi').AsInteger;
-    qryItens.ParamByName('icms_vl_base').AsCurrency := DadosNota.cdsNfi.FieldByName('icms_vl_base').AsCurrency;
-    qryItens.ParamByName('icms_pc_aliq').AsFloat := DadosNota.cdsNfi.FieldByName('icms_pc_aliq').AsFloat;
-    qryItens.ParamByName('icms_valor').AsCurrency := DadosNota.cdsNfi.FieldByName('icms_valor').AsCurrency;
-    qryItens.ParamByName('ipi_vl_base').AsCurrency := DadosNota.cdsNfi.FieldByName('ipi_vl_base').AsCurrency;
-    qryItens.ParamByName('ipi_pc_aliq').AsFloat := DadosNota.cdsNfi.FieldByName('ipi_pc_aliq').AsFloat;
-    qryItens.ParamByName('ipi_valor').AsFloat := DadosNota.cdsNfi.FieldByName('ipi_valor').AsCurrency;
-    qryItens.ParamByName('pis_cofins_vl_base').AsCurrency := DadosNota.cdsNfi.FieldByName('pis_cofins_vl_base').AsCurrency;
-    qryItens.ParamByName('pis_cofins_pc_aliq').AsFloat := DadosNota.cdsNfi.FieldByName('pis_cofins_pc_aliq').AsFloat;
-    qryItens.ParamByName('pis_cofins_valor').AsCurrency := DadosNota.cdsNfi.FieldByName('pis_cofins_valor').AsCurrency;
-    qryItens.ParamByName('valor_total').AsCurrency := DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency;
-    qryItens.ExecSQL;
-
+      nfi.seq_item_nfi := DadosNota.cdsNfi.FieldByName('seq_item_nfi').AsInteger;
+      nfi.icms_vl_base := DadosNota.cdsNfi.FieldByName('icms_vl_base').AsCurrency;
+      nfi.icms_pc_aliq := DadosNota.cdsNfi.FieldByName('icms_pc_aliq').AsFloat;
+      nfi.icms_valor := DadosNota.cdsNfi.FieldByName('icms_valor').AsCurrency;
+      nfi.ipi_vl_base := DadosNota.cdsNfi.FieldByName('ipi_vl_base').AsCurrency;
+      nfi.ipi_pc_aliq := DadosNota.cdsNfi.FieldByName('ipi_pc_aliq').AsFloat;
+      nfi.ipi_valor := DadosNota.cdsNfi.FieldByName('ipi_valor').AsCurrency;
+      nfi.pis_cofins_vl_base := DadosNota.cdsNfi.FieldByName('pis_cofins_vl_base').AsCurrency;
+      nfi.pis_cofins_pc_aliq := DadosNota.cdsNfi.FieldByName('pis_cofins_pc_aliq').AsFloat;
+      nfi.pis_cofins_valor := DadosNota.cdsNfi.FieldByName('pis_cofins_valor').AsCurrency;
+      nfi.valor_total := DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency;
+      nfi.Persistir(True);
+    end
+    );
+//    Conexao.Commit;
     Result := True;
   finally
-    qryItens.Free;
+    nfi.Free;
   end;
 end;
 

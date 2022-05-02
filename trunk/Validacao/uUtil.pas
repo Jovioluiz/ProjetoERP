@@ -14,7 +14,6 @@ type TUtil = class
     function validaCodigo(cod : Integer) : Integer;
     function ValidaAcessoAcao(cdUsuario : Integer; cdAcao : Integer) : Boolean; //valida se o usuário pode acessar a ação
     function ValidaEdicaoAcao(cdUsuario : Integer; cdAcao : Integer) : String; //valida se o usuário pode editar um cadastro
-    function GetSenhaMD5(Senha: string): string;
     function RetornaSoma: TFunc<TDataSet, string, Currency>;
     function RetornaSomaDoisCampos: TFunc<TDataSet, string, string, Currency>;
 end;
@@ -27,7 +26,8 @@ end;
 
 type TDataSetHelper = class helper for TDataSet
   public
-    procedure Loop(Procedimento: TProc); overload;
+    procedure Loop(Procedimento: TProc);
+    procedure LoopCompleto(Procedimento: TProc);
 
 end;
 
@@ -39,19 +39,6 @@ implementation
 
 uses uDataModule, FireDAC.Comp.Client;
 
-
-function TUtil.GetSenhaMD5(Senha: string): string;
-var
-  md5: TIdHashMessageDigest5;
-begin
-  md5 := TIdHashMessageDigest5.Create;
-
-  try
-    Result := md5.HashStringAsHex(Senha);
-  finally
-    md5.Free;
-  end;
-end;
 
 function TUtil.RetornaSomaDoisCampos: TFunc<TDataSet, string, string, Currency>;
 begin
@@ -176,6 +163,32 @@ begin
     end;
     Self.First;
   finally
+    Self.EnableControls;
+  end;
+end;
+
+procedure TDataSetHelper.LoopCompleto(Procedimento: TProc);
+var
+  book: TBookmark;
+begin
+  if Self.IsEmpty then
+    Exit;
+
+  Self.DisableControls;
+  book := Self.GetBookmark;
+
+  try
+    Self.First;
+    while not Self.Eof do
+    begin
+      Procedimento;
+      Self.Next;
+    end;
+    Self.First;
+  finally
+    if Self.BookmarkValid(book) then
+      Self.GotoBookmark(book);
+    Self.FreeBookmark(book);
     Self.EnableControls;
   end;
 end;

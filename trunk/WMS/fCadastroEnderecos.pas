@@ -270,7 +270,6 @@ begin
     qry.ParamByName('ala').AsString := Ala;
     qry.ParamByName('rua').AsString := Rua;
     qry.Open(SQL);
-
     Result := not qry.IsEmpty;
 
   finally

@@ -10,7 +10,7 @@ type TConsultaProdutos = class
   private
     FDados: TdmConsultaProduto;
     procedure SetDados(const Value: TdmConsultaProduto);
-
+    procedure PreencheDataset(Dataset: TDataSet);
   public
     constructor Create;
     procedure CarregaUltimaEntrada;
@@ -120,15 +120,15 @@ procedure TConsultaProdutos.CarregaProdutos(Descricao: string; bolCodigo, bolDes
 const
   sql_produto =  'select ' +
                  '  cd_produto,  ' +
-                 '  id_item,     ' +
+                 '  p.id_item,   ' +
                  '  desc_produto,' +
                  '  un_medida,   ' +
                  '  fator_conversao  ' +
                  'from               ' +
-                 '  produto          ';
+                 '  produto p        ' +
+                 ' join wms_estoque we ON we.id_item = p.id_item ';
 var
   qry: TFDQuery;
-  book: TBookmark;
 begin
   FDados.cdsConsultaProduto.EmptyDataSet;
 
@@ -166,26 +166,8 @@ begin
 
       qry.Open();
     end;
-
-    qry.Loop(
-    procedure
-    begin
-      if (FDados.cdsConsultaProduto.Active) and (FDados.cdsConsultaProduto.RecordCount = 1) then
-        book := FDados.cdsConsultaProduto.GetBookmark;
-      FDados.cdsConsultaProduto.Append;
-      FDados.cdsConsultaProduto.FieldByName('cd_produto').AsString := qry.FieldByName('cd_produto').AsString;
-      FDados.cdsConsultaProduto.FieldByName('desc_produto').AsString := qry.FieldByName('desc_produto').AsString;
-      FDados.cdsConsultaProduto.FieldByName('un_medida').AsString := qry.FieldByName('un_medida').AsString;
-      FDados.cdsConsultaProduto.FieldByName('fator_conversao').AsInteger := qry.FieldByName('fator_conversao').AsInteger;
-      FDados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt := qry.FieldByName('id_item').AsLargeInt;
-      FDados.cdsConsultaProduto.Post;
-    end);
-
+   PreencheDataset(qry);
   finally
-    if FDados.cdsConsultaProduto.BookmarkValid(book) then
-      FDados.cdsConsultaProduto.GotoBookmark(book);
-    FDados.cdsConsultaProduto.EnableControls;
-    FDados.cdsConsultaProduto.FreeBookmark(book);
     qry.Free;
   end;
 end;
@@ -231,7 +213,6 @@ begin
 
   try
     qry.Open(sql, [FDados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt]);
-
     if qry.IsEmpty then
       FDados.cdsUltimasEntradas.EmptyDataSet
     else
@@ -270,6 +251,32 @@ destructor TConsultaProdutos.Destroy;
 begin
   FDados.Free;
   inherited;
+end;
+
+procedure TConsultaProdutos.PreencheDataset(Dataset: TDataSet);
+var
+  book: TBookmark;
+begin
+  try
+    Dataset.Loop(
+    procedure
+    begin
+      if (FDados.cdsConsultaProduto.Active) and (FDados.cdsConsultaProduto.RecordCount = 1) then
+        book := FDados.cdsConsultaProduto.GetBookmark;
+      FDados.cdsConsultaProduto.Append;
+      FDados.cdsConsultaProduto.FieldByName('cd_produto').AsString := Dataset.FieldByName('cd_produto').AsString;
+      FDados.cdsConsultaProduto.FieldByName('desc_produto').AsString := Dataset.FieldByName('desc_produto').AsString;
+      FDados.cdsConsultaProduto.FieldByName('un_medida').AsString := Dataset.FieldByName('un_medida').AsString;
+      FDados.cdsConsultaProduto.FieldByName('fator_conversao').AsInteger := Dataset.FieldByName('fator_conversao').AsInteger;
+      FDados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt := Dataset.FieldByName('id_item').AsLargeInt;
+      FDados.cdsConsultaProduto.Post;
+    end );
+  finally
+    if FDados.cdsConsultaProduto.BookmarkValid(book) then
+      FDados.cdsConsultaProduto.GotoBookmark(book);
+    FDados.cdsConsultaProduto.EnableControls;
+    FDados.cdsConsultaProduto.FreeBookmark(book);
+  end;
 end;
 
 procedure TConsultaProdutos.SetDados(const Value: TdmConsultaProduto);

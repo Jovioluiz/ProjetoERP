@@ -45,7 +45,7 @@ implementation
 {$R *.dfm}
 
 uses uTelaInicial, uDataModule, uVersao, uUtil, Vcl.Dialogs,
-  uCadastrarSenha, fConexao, uclLogin;
+  uCadastrarSenha, fConexao, uclLogin, uSenhaMD5;
 
 procedure TfrmLogin.btnCancelarClick(Sender: TObject);
 begin
@@ -87,9 +87,9 @@ procedure TfrmLogin.Entrar;
 var
   dados: TDadosLogin;
   login: TLogin;
-  verificaSenha: TUtil;
+  verificaSenha: TSenhaMD5;
 begin
-  verificaSenha := TUtil.Create;
+  verificaSenha := TSenhaMD5.Create;
   login := TLogin.Create;
 
   try

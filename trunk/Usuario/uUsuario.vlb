@@ -14,14 +14,8 @@ Coordinates=356,232,149,36
 [Label2]
 Coordinates=612,276,53,58
 
-[query]
-Coordinates=134,344,47,58
-
 [dm.queryCodBarraProduto]
 Coordinates=457,10,168,58
-
-[sql]
-Coordinates=562,276,40,58
 
 [edtSenhaUsuario]
 Coordinates=10,344,114,58
@@ -51,5 +45,5 @@ Coordinates=151,276,137,58
 Coordinates=396,276,53,58
 
 []
-Coordinates=543,78,91,36
+Coordinates=562,276,40,58
 

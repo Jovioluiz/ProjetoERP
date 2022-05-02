@@ -20,6 +20,7 @@ type TImportacaoDados = class
   procedure ListaClientes(Caminho: String);
   procedure CarregaProdutos;
   destructor Destroy; override;
+  procedure ImportarDadosTeste;
 
   property Dados: TdmImportaDados read FDados;
 end;
@@ -29,7 +30,7 @@ implementation
 uses
   FireDAC.Comp.Client, uDataModule, uclProduto, System.SysUtils, Vcl.Dialogs,
   Vcl.Samples.Gauges, uUtil, Data.DB, FireDAC.Stan.Param, FireDAC.Phys.Intf,
-  Vcl.ComCtrls;
+  Vcl.ComCtrls, uThreadImportacaoArquivo;
 
 { TImportacaoDados }
 
@@ -73,6 +74,14 @@ begin
   FDados.Free;
   FListaProdutos.Free;
   inherited;
+end;
+
+procedure TImportacaoDados.ImportarDadosTeste;
+var
+  threadImportacao: TThreadImportacaoArquivo;
+begin
+  threadImportacao := TThreadImportacaoArquivo.Create;
+  threadImportacao.Start;
 end;
 
 procedure TImportacaoDados.ListaClientes(Caminho: String);
@@ -121,7 +130,6 @@ begin
   Dados.cdsProdutos.DisableControls;
 
   try
-
     CarregaProdutos;
 
     for I := 0 to Pred(linhas.Count) do
@@ -294,7 +302,6 @@ begin
       FDados.cdsProdutos.First;
       for var I := 0 to Pred(FDados.cdsProdutos.RecordCount) do
       begin
-
         barraProgresso.Position := I;
         barraProgresso.Repaint;
         qry.ParamByName('cd_produto').AsStrings[I] := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
@@ -308,23 +315,6 @@ begin
         FDados.cdsProdutos.Next;
       end;
       qry.Execute(qry.Params.ArraySize, 0);
-
-
-//      FDados.cdsProdutos.Loop(
-//      procedure
-//      begin
-//        qry.ParamByName('cd_produto').AsString := FDados.cdsProdutos.FieldByName('cd_produto').AsString;
-//        qry.ParamByName('fl_ativo').AsBoolean := True;
-//        qry.ParamByName('desc_produto').AsString := FDados.cdsProdutos.FieldByName('desc_produto').AsString;
-//        qry.ParamByName('un_medida').AsString := FDados.cdsProdutos.FieldByName('un_medida').AsString;
-//        qry.ParamByName('fator_conversao').AsInteger := FDados.cdsProdutos.FieldByName('fator_conversao').AsInteger;
-//        qry.ParamByName('peso_liquido').AsFloat := FDados.cdsProdutos.FieldByName('peso_liquido').AsFloat;
-//        qry.ParamByName('peso_bruto').AsFloat := FDados.cdsProdutos.FieldByName('peso_bruto').AsFloat;
-//        qry.ParamByName('id_item').AsLargeInt := produto.GeraIdItem;
-//        qry.ExecSQL;
-//      end
-//      );
-
       qry.Connection.Commit;
 
       ShowMessage('Dados gravados com Sucesso - ' + FormatDateTime('hh:mm:ss:zzz', Now - inicio) + ' ' + qry.RowsAffected.ToString);

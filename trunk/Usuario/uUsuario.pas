@@ -18,8 +18,6 @@ type
     edtIdUsuario: TEdit;
     edtNomeUsuario: TEdit;
     edtSenhaUsuario: TMaskEdit;
-    query: TFDQuery;
-    sql: TFDQuery;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure edtIdUsuarioExit(Sender: TObject);
@@ -49,11 +47,11 @@ implementation
 
 {$R *.dfm}
 
-uses uDataModule, uUtil;
+uses uDataModule, uUtil, uSenhaMD5;
 
 procedure TfrmUsuario.BuscarUsuario;
 var
-  cripto: TUtil;
+  criptografiaSenha: TSenhaMD5;
 begin
   if edtIdUsuario.Text = EmptyStr then
   begin
@@ -61,17 +59,16 @@ begin
     Exit;
   end;
 
-
-  cripto := TUtil.Create;
+  criptografiaSenha := TSenhaMD5.Create;
 
   try
     FUsuario.CarregaUsuario(StrToInt(edtIdUsuario.Text));
 
     edtNomeUsuario.Text := FUsuario.Dados.cdsUsuario.FieldByName('login').AsString;
-    edtSenhaUsuario.Text := cripto.GetSenhaMD5(FUsuario.Dados.cdsUsuario.FieldByName('senha').AsString);
+    edtSenhaUsuario.Text := criptografiaSenha.GetSenhaMD5(FUsuario.Dados.cdsUsuario.FieldByName('senha').AsString);
     edtNomeUsuario.SetFocus;
   finally
-    cripto.Free;
+    criptografiaSenha.Free;
   end;
 end;
 
@@ -107,8 +104,7 @@ begin
   FUsuario.Free;
 end;
 
-procedure TfrmUsuario.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfrmUsuario.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   inherited;
   if key = VK_F3 then //F3
@@ -143,10 +139,10 @@ end;
 
 procedure TfrmUsuario.Salvar;
 var
-  cripto: TUtil;
+  criptografiaSenha: TSenhaMD5;
   novo: Boolean;
 begin
-  cripto := TUtil.Create;
+  criptografiaSenha := TSenhaMD5.Create;
 
   try
     ValidaCampos;
@@ -156,7 +152,7 @@ begin
     FUsuario.Dados.cdsUsuario.Append;
     FUsuario.Dados.cdsUsuario.FieldByName('id_usuario').AsInteger := StrToInt(edtIdUsuario.Text);
     FUsuario.Dados.cdsUsuario.FieldByName('login').AsString := edtNomeUsuario.Text;
-    FUsuario.Dados.cdsUsuario.FieldByName('senha').AsString := cripto.GetSenhaMD5(edtSenhaUsuario.Text);
+    FUsuario.Dados.cdsUsuario.FieldByName('senha').AsString := criptografiaSenha.GetSenhaMD5(edtSenhaUsuario.Text);
     FUsuario.Dados.cdsUsuario.Post;
 
     if novo then
@@ -166,7 +162,7 @@ begin
 
     LimpaCampos;
   finally
-    cripto.Free;
+    criptografiaSenha.Free;
   end;
 end;
 

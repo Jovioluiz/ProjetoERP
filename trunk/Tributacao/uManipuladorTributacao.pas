@@ -34,7 +34,6 @@ end;
 
 function TManipuladorTributacao.CalculaImposto(ValorBase, Aliquota: Currency): Currency;
 begin
-
   Result := FFTributacao.CalculaImposto(ValorBase, Aliquota);
 end;
 

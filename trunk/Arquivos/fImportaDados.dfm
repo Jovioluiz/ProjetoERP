@@ -29,7 +29,7 @@ object frmImportaDados: TfrmImportaDados
       Top = 1
       Width = 633
       Height = 502
-      ActivePage = tbProdutos
+      ActivePage = tbFCI
       Align = alClient
       TabOrder = 0
       object tbProdutos: TTabSheet

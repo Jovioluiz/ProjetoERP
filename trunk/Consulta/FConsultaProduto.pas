@@ -40,6 +40,11 @@ type
   private
     FConsulta: TConsultaProdutos;
     FThread: TThread;
+    procedure Inicializa;
+    procedure CarregaProdutos;
+    procedure VisualizarProduto;
+    procedure VisualizarCodigoBarrasProduto;
+    procedure Consultar;
   public
     { Public declarations }
   end;
@@ -53,34 +58,14 @@ implementation
 
 uses uDataModule, dtmConsultaProduto, cPRODUTO, fVisualizaCodigoBarras;
 
-
-
 procedure TfrmConsultaProdutos.btnPesquisarClick(Sender: TObject);
 begin
-  FConsulta.CarregaProdutos(edtPesquisa.Text,
-                            cbCodigo.Checked,
-                            cbDescricao.Checked,
-                            cbAtivo.Checked,
-                            cbEstoque.Checked);
+  CarregaProdutos;
 end;
 
 procedure TfrmConsultaProdutos.dbGridProdutoCellClick(Column: TColumn);
 begin
-
-  if FConsulta.Dados.cdsConsultaProduto.RecordCount > 0 then
-  begin
-    FThread.CreateAnonymousThread(
-    procedure
-    begin
-      FThread.Synchronize(FThread.CurrentThread,
-                          procedure
-                          begin
-                            FConsulta.CarregaUltimaEntrada;
-                            FConsulta.CarregaPrecos(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
-                            FConsulta.CarregaEstoques(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
-                          end);
-    end).Start;
-  end;
+  Consultar;
 end;
 
 procedure TfrmConsultaProdutos.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -93,13 +78,7 @@ end;
 procedure TfrmConsultaProdutos.FormCreate(Sender: TObject);
 begin
   inherited;
-  cbCodigo.Checked := True;
-  cbDescricao.Checked := True;
-  FConsulta := TConsultaProdutos.Create;
-  dbGridUltimasEntradas.DataSource := FConsulta.Dados.dsUltimaEntrada;
-  dbGridProduto.DataSource := FConsulta.Dados.dsConsultaProduto;
-  dbgriPrecos.DataSource := FConsulta.Dados.dsPrecos;
-  dbGridEstoque.DataSource := FConsulta.Dados.dsEstoque;
+  Inicializa;
 end;
 
 procedure TfrmConsultaProdutos.FormKeyDown(Sender: TObject; var Key: Word;
@@ -122,14 +101,46 @@ begin
 end;
 
 procedure TfrmConsultaProdutos.VisualizarCdigodeBarras1Click(Sender: TObject);
-var
-  visualizaCod: TfVisualizaCodBarras;
 begin
   if FConsulta.Dados.cdsConsultaProduto.RecordCount = 0 then
     Exit;
+  VisualizarCodigoBarrasProduto;
+end;
 
+procedure TfrmConsultaProdutos.Inicializa;
+begin
+  cbCodigo.Checked := True;
+  cbDescricao.Checked := True;
+  FConsulta := TConsultaProdutos.Create;
+  dbGridUltimasEntradas.DataSource := FConsulta.Dados.dsUltimaEntrada;
+  dbGridProduto.DataSource := FConsulta.Dados.dsConsultaProduto;
+  dbgriPrecos.DataSource := FConsulta.Dados.dsPrecos;
+  dbGridEstoque.DataSource := FConsulta.Dados.dsEstoque;
+end;
+
+procedure TfrmConsultaProdutos.CarregaProdutos;
+begin
+  FConsulta.CarregaProdutos(edtPesquisa.Text, cbCodigo.Checked, cbDescricao.Checked, cbAtivo.Checked, cbEstoque.Checked);
+end;
+
+procedure TfrmConsultaProdutos.VisualizarProduto;
+var
+  cadProduto: TfrmCadProduto;
+begin
+  cadProduto := TfrmCadProduto.Create(nil);
+  try
+    cadProduto.edtPRODUTOCD_PRODUTO.Text := FConsulta.Dados.cdsConsultaProduto.FieldByName('cd_produto').AsString;
+    cadProduto.ShowModal;
+  finally
+    cadProduto.Free;
+  end;
+end;
+
+procedure TfrmConsultaProdutos.VisualizarCodigoBarrasProduto;
+var
+  visualizaCod: TfVisualizaCodBarras;
+begin
   visualizaCod := TfVisualizaCodBarras.Create(nil);
-
   try
     visualizaCod.IDItem := FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsInteger;
     visualizaCod.CDItem := FConsulta.Dados.cdsConsultaProduto.FieldByName('cd_produto').AsString;
@@ -140,21 +151,28 @@ begin
   end;
 end;
 
+procedure TfrmConsultaProdutos.Consultar;
+begin
+  if FConsulta.Dados.cdsConsultaProduto.RecordCount > 0 then
+  begin
+    FThread.CreateAnonymousThread(procedure
+    begin
+      FThread.Synchronize(FThread.CurrentThread,
+                          procedure
+                          begin
+                            FConsulta.CarregaUltimaEntrada;
+                            FConsulta.CarregaPrecos(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
+                            FConsulta.CarregaEstoques(FConsulta.Dados.cdsConsultaProduto.FieldByName('id_item').AsLargeInt);
+                          end);
+    end).Start;
+  end;
+end;
+
 procedure TfrmConsultaProdutos.VisualizarProduto1Click(Sender: TObject);
-var
-  cadProduto: TfrmCadProduto;
 begin
   if FConsulta.Dados.cdsConsultaProduto.RecordCount = 0 then
     Exit;
-
-  cadProduto := TfrmCadProduto.Create(nil);
-
-  try
-    cadProduto.edtPRODUTOCD_PRODUTO.Text := FConsulta.Dados.cdsConsultaProduto.FieldByName('cd_produto').AsString;
-    cadProduto.ShowModal;
-  finally
-    cadProduto.Free;
-  end;
+  VisualizarProduto;
 end;
 
 end.

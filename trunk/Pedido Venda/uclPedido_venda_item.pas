@@ -25,7 +25,7 @@ type TPedido_venda_item = class
     Fpis_cofins_pc_aliq: Currency;
     Fpis_cofins_valor: Currency;
     Fpis_cofins_vl_base: Currency;
-    Fqtd_venda: Integer;
+    Fqtd_venda: Double;
     Fseq_item: Integer;
     Fun_medida: String;
     Fvl_desconto: Currency;
@@ -48,7 +48,7 @@ type TPedido_venda_item = class
     procedure Setpis_cofins_pc_aliq(const Value: Currency);
     procedure Setpis_cofins_valor(const Value: Currency);
     procedure Setpis_cofins_vl_base(const Value: Currency);
-    procedure Setqtd_venda(const Value: Integer);
+    procedure Setqtd_venda(const Value: Double);
     procedure Setseq_item(const Value: Integer);
     procedure Setun_medida(const Value: String);
     procedure Setvl_desconto(const Value: Currency);
@@ -79,7 +79,7 @@ type TPedido_venda_item = class
     property pis_cofins_pc_aliq: Currency read Fpis_cofins_pc_aliq write Setpis_cofins_pc_aliq;
     property pis_cofins_valor: Currency read Fpis_cofins_valor write Setpis_cofins_valor;
     property pis_cofins_vl_base: Currency read Fpis_cofins_vl_base write Setpis_cofins_vl_base;
-    property qtd_venda: Integer read Fqtd_venda write Setqtd_venda;
+    property qtd_venda: Double read Fqtd_venda write Setqtd_venda;
     property seq_item: Integer read Fseq_item write Setseq_item;
     property un_medida: String read Fun_medida write Setun_medida;
     property vl_desconto: Currency read Fvl_desconto write Setvl_desconto;
@@ -173,7 +173,7 @@ begin
       query.ParamByName('pis_cofins_pc_aliq').AsCurrency := Fpis_cofins_pc_aliq;
       query.ParamByName('pis_cofins_valor').AsCurrency := Fpis_cofins_valor;
       query.ParamByName('pis_cofins_vl_base').AsCurrency := Fpis_cofins_vl_base;
-      query.ParamByName('qtd_venda').AsInteger := Fqtd_venda;
+      query.ParamByName('qtd_venda').AsFloat := Fqtd_venda;
       query.ParamByName('seq_item').AsInteger := Fseq_item;
       query.ParamByName('un_medida').AsString := Fun_medida;
       query.ParamByName('vl_desconto').AsCurrency := Fvl_desconto;
@@ -251,7 +251,7 @@ begin
       query.ParamByName('pis_cofins_pc_aliq').AsCurrency := Fpis_cofins_pc_aliq;
       query.ParamByName('pis_cofins_valor').AsCurrency := Fpis_cofins_valor;
       query.ParamByName('pis_cofins_vl_base').AsCurrency := Fpis_cofins_vl_base;
-      query.ParamByName('qtd_venda').AsInteger := Fqtd_venda;
+      query.ParamByName('qtd_venda').AsFloat := Fqtd_venda;
       query.ParamByName('seq_item').AsInteger := Fseq_item;
       query.ParamByName('un_medida').AsString := Fun_medida;
       query.ParamByName('vl_desconto').AsCurrency := Fvl_desconto;
@@ -409,7 +409,7 @@ begin
   Fpis_cofins_vl_base := Value;
 end;
 
-procedure TPedido_venda_item.Setqtd_venda(const Value: Integer);
+procedure TPedido_venda_item.Setqtd_venda(const Value: Double);
 begin
   Fqtd_venda := Value;
 end;

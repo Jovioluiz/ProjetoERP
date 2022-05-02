@@ -209,6 +209,7 @@ object frmPedidoVenda: TfrmPedidoVenda
       TabOrder = 3
       OnEnter = edtCdProdutoEnter
       OnExit = edtCdProdutoExit
+      OnKeyDown = edtCdProdutoKeyDown
     end
     object edtDescProduto: TEdit
       Left = 117

@@ -106,12 +106,12 @@ object frmConsulta: TfrmConsulta
     IndexDefs = <>
     Params = <>
     StoreDefs = True
-    Left = 616
-    Top = 184
+    Left = 608
+    Top = 208
   end
   object ds: TDataSource
     DataSet = cds
-    Left = 544
-    Top = 192
+    Left = 552
+    Top = 200
   end
 end

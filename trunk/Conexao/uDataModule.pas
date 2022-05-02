@@ -27,7 +27,7 @@ type
   private
     { Private declarations }
   public
-    { Public declarations }
+    function FGetConexao: TFDConnection;
   end;
 
 var
@@ -81,5 +81,10 @@ begin
   inherited;
 end;
 
+
+function Tdm.FGetConexao: TFDConnection;
+begin
+  Result := conexaoBanco;
+end;
 
 end.

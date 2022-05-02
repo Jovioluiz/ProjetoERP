@@ -100,7 +100,12 @@ uses
   uclPedido_venda_item in 'Pedido Venda\uclPedido_venda_item.pas',
   uParametrosImpostos in 'Tributacao\uParametrosImpostos.pas',
   uParametrosImpostosAbstract in 'Tributacao\uParametrosImpostosAbstract.pas',
-  uclPedido_venda in 'Pedido Venda\Persistencia\uclPedido_venda.pas';
+  uclPedido_venda in 'Pedido Venda\Persistencia\uclPedido_venda.pas',
+  fConsulta in 'Consulta\fConsulta.pas' {formConsulta},
+  uclNFI in 'Entrada\Persistencia\uclNFI.pas',
+  uSenhaMD5 in 'Outros\uSenhaMD5.pas',
+  uThreadGrids in 'Outros\uThreadGrids.pas',
+  uThreadImportacaoArquivo in 'Arquivos\Thread\uThreadImportacaoArquivo.pas';
 
 {$R *.res}
 
