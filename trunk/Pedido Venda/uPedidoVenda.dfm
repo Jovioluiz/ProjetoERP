@@ -24,7 +24,6 @@ object frmPedidoVenda: TfrmPedidoVenda
     0000000000000000000000000000000000000000000000000000000000000000
     000000000000000000000000000000000000000000000000000000000000}
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Visible = True
   OnClose = FormClose
@@ -32,7 +31,6 @@ object frmPedidoVenda: TfrmPedidoVenda
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
@@ -42,6 +40,8 @@ object frmPedidoVenda: TfrmPedidoVenda
     Align = alClient
     BorderStyle = bsSingle
     TabOrder = 1
+    ExplicitWidth = 865
+    ExplicitHeight = 621
     object Label1: TLabel
       Left = 24
       Top = 32

@@ -350,8 +350,8 @@ begin
 end;
 
 procedure TPedidoVenda.CalculaValorContabil;
-var
-  util: TUtil;
+//var
+//  util: TUtil;
 begin
 
   FDados.cdsPedidoVendaItem.Loop(
@@ -396,66 +396,60 @@ var
   end;
 begin
   valorTotal := GetValorPedido;
-
-  if valorTotal = 0 then
+  if valorTotal <= 0 then
     Exit;
 
-  if Valor > 0 then
+  FDados.cdsPedidoVendaItem.Loop(
+  procedure
   begin
+    valorItem := FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
+    pcItem := valorItem / valorTotal;
+
+    FDados.cdsPedidoVendaItem.Edit;
+    if TipoValor.Equals('D') then
+      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := RoundTo(valor * pcItem, -2)
+    else
+      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := RoundTo(valor * pcItem, -2);
+    FDados.cdsPedidoVendaItem.Post;
+  end
+  );
+
+  if TipoValor.Equals('D') then
+  begin
+    valorDesconto := 0;
     FDados.cdsPedidoVendaItem.Loop(
     procedure
     begin
-      valorItem := FDados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency;
-      pcItem := valorItem / valorTotal;
+      valorDesconto := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
+    end);
 
+    //se sobrou algum centavo joga no ultimo
+    if Abs(Valor - valorDesconto) > 0 then
+    begin
+      FDados.cdsPedidoVendaItem.Last;
       FDados.cdsPedidoVendaItem.Edit;
-      if TipoValor.Equals('D') then
-        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := RoundTo(valor * pcItem, -2)
-      else
-        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := RoundTo(valor * pcItem, -2);
-
+      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency
+                                                                                 + Abs(Valor - valorDesconto);
       FDados.cdsPedidoVendaItem.Post;
-    end
-    );
-
-    if TipoValor.Equals('D') then
-    begin
-      valorDesconto := 0;
-      FDados.cdsPedidoVendaItem.Loop(
-      procedure
-      begin
-        valorDesconto := valorDesconto + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
-      end);
-
-      //se sobrou algum centavo joga no ultimo
-      if Abs(Valor - valorDesconto) > 0 then
-      begin
-        FDados.cdsPedidoVendaItem.Last;
-        FDados.cdsPedidoVendaItem.Edit;
-        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency
-                                                                                   + Abs(Valor - valorDesconto);
-        FDados.cdsPedidoVendaItem.Post;
-      end;
     end;
-
-    if TipoValor.Equals('A') then
+  end
+  else
+  begin
+    valorAcrescimo := 0;
+    FDados.cdsPedidoVendaItem.Loop(
+    procedure
     begin
-      valorAcrescimo := 0;
-      FDados.cdsPedidoVendaItem.Loop(
-      procedure
-      begin
-        valorAcrescimo := valorAcrescimo + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency;
-      end);
+      valorAcrescimo := valorAcrescimo + FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency;
+    end);
 
-      //se sobrou algum centavo joga no ultimo
-      if Abs(Valor - valorAcrescimo) > 0 then
-      begin
-        FDados.cdsPedidoVendaItem.Last;
-        FDados.cdsPedidoVendaItem.Edit;
-        FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
-                                                                                   + Abs(Valor - valorAcrescimo);
-        FDados.cdsPedidoVendaItem.Post;
-      end;
+    //se sobrou algum centavo joga no ultimo
+    if Abs(Valor - valorAcrescimo) > 0 then
+    begin
+      FDados.cdsPedidoVendaItem.Last;
+      FDados.cdsPedidoVendaItem.Edit;
+      FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency := FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_acrescimo').AsCurrency
+                                                                                 + Abs(Valor - valorAcrescimo);
+      FDados.cdsPedidoVendaItem.Post;
     end;
   end;
 end;

@@ -92,7 +92,12 @@ end;
 
 procedure TfrmImportaDados.btnGravarTesteClick(Sender: TObject);
 begin
-  FRegras.ImportarDadosTeste;
+  btnGravarTeste.Enabled := False;
+  try
+    FRegras.ImportarDadosTeste;
+  finally
+    btnGravarTeste.Enabled := True;
+  end;
 end;
 
 procedure TfrmImportaDados.btnVisualizarClienteClick(Sender: TObject);

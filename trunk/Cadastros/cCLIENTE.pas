@@ -112,51 +112,50 @@ var
   persistencia: TCliente;
   endereco: TClienteEndereco;
 begin
+  if edtCLIENTENM_CLIENTE.Text = '' then
+    Exit;
+  cliente := TUtil.Create;
+  if not cliente.ValidaNomeCpf(edtCLIENTENM_CLIENTE.Text, edtCLIENTECPF_CNPJ.Text) then
+  begin
+    ShowMessage('Nome e ou CPF não podem ser vazios');
+    Exit;
+  end;
+
   persistencia := TCliente.Create;
   endereco := TClienteEndereco.Create;
-  cliente := TUtil.Create;
+
   try
-    if edtCLIENTENM_CLIENTE.Text <> '' then
+    cliente.validaCodigo(StrToInt(edtCLIENTEcd_cliente.Text));
+    persistencia.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
+    persistencia.nome := edtCLIENTENM_CLIENTE.Text;
+    persistencia.fl_ativo := edtCLIENTEFL_ATIVO.Checked;
+    persistencia.tp_pessoa := ifThen(edtCLIENTETP_PESSOA.ItemIndex = 0, 'F', 'J');
+    persistencia.fl_fornecedor := edtCLIENTEFL_FORNECEDOR.Checked;
+    persistencia.telefone := edtCLIENTEFONE.Text;
+    persistencia.celular := edtCLIENTECELULAR.Text;
+    persistencia.email := edtCLIENTEEMAIL.Text;
+    persistencia.cpf_cnpj := edtCLIENTECPF_CNPJ.Text;
+    persistencia.rg_ie := edtCLIENTERG.Text;
+    persistencia.dt_nasc_fundacao := StrToDate(edtCLIENTEDATANASCIMENTO.Text);
+    endereco.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
+    endereco.logradouro := edtCLIENTEENDERECO_LOGRADOURO.Text;
+    endereco.numero := edtCLIENTEENDERECO_NUMERO.Text;
+    endereco.bairro := edtCLIENTEENDERECO_BAIRRO.Text;
+    endereco.cidade := edtCLIENTEENDERECO_CIDADE.Text;
+    endereco.uf := edtEstado.Text;
+    endereco.cep := edtCep.Text;
+
+    if not persistencia.Pesquisar(StrToInt(edtCLIENTEcd_cliente.Text)) then
     begin
-      if not cliente.ValidaNomeCpf(edtCLIENTENM_CLIENTE.Text, edtCLIENTECPF_CNPJ.Text) then
-      begin
-        ShowMessage('Nome e ou CPF não podem ser vazios');
-        Exit;
-      end;
-
-      cliente.validaCodigo(StrToInt(edtCLIENTEcd_cliente.Text));
-      persistencia.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
-      persistencia.nome := edtCLIENTENM_CLIENTE.Text;
-      persistencia.fl_ativo := edtCLIENTEFL_ATIVO.Checked;
-      persistencia.tp_pessoa := ifThen(edtCLIENTETP_PESSOA.ItemIndex = 0, 'F', 'J');
-      persistencia.fl_fornecedor := edtCLIENTEFL_FORNECEDOR.Checked;
-      persistencia.telefone := edtCLIENTEFONE.Text;
-      persistencia.celular := edtCLIENTECELULAR.Text;
-      persistencia.email := edtCLIENTEEMAIL.Text;
-      persistencia.cpf_cnpj := edtCLIENTECPF_CNPJ.Text;
-      persistencia.rg_ie := edtCLIENTERG.Text;
-      persistencia.dt_nasc_fundacao := StrToDate(edtCLIENTEDATANASCIMENTO.Text);
-      endereco.cd_cliente := StrToInt(edtCLIENTEcd_cliente.Text);
-      endereco.logradouro := edtCLIENTEENDERECO_LOGRADOURO.Text;
-      endereco.numero := edtCLIENTEENDERECO_NUMERO.Text;
-      endereco.bairro := edtCLIENTEENDERECO_BAIRRO.Text;
-      endereco.cidade := edtCLIENTEENDERECO_CIDADE.Text;
-      endereco.uf := edtEstado.Text;
-      endereco.cep := edtCep.Text;
-
-      if not persistencia.Pesquisar(StrToInt(edtCLIENTEcd_cliente.Text)) then
-      begin
-        persistencia.Inserir;
-        endereco.Inserir;
-        LimpaCampos;
-      end
-      else
-      begin
-        persistencia.Atualizar;
-        endereco.Atualizar;
-        LimpaCampos;
-      end;
+      persistencia.Inserir;
+      endereco.Inserir;
+    end
+    else
+    begin
+      persistencia.Atualizar;
+      endereco.Atualizar;
     end;
+    LimpaCampos;
   finally
     cliente.Free;
     persistencia.Free;

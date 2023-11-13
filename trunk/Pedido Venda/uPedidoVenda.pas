@@ -132,6 +132,7 @@ type
     procedure BuscarProduto;
     procedure CalculaValorTotalPedido;
     function GetValorTotal(Data: TDataSet): Currency; overload;
+    function ValidaProdutoDigitado: Boolean;
   public
     procedure SetDadosNota;
     property NumeroPedido: Integer read FNumeroPedido write FNumeroPedido;
@@ -218,61 +219,63 @@ var
   pvItem: TPedidoVendaItem;
   codProduto: string;
 begin
+  if not ValidaProdutoDigitado then
+    Exit;
   pvItem := TPedidoVendaItem.Create;
   try
-    if (Trim(edtCdProduto.Text) = '') and (FRegras.Dados.cdsPedidoVendaItem.RecordCount > 0) then
-    begin
-      edtVlDescTotalPedido.SetFocus;
-      Exit;
-    end;
-
-    if (Trim(edtCdProduto.Text).Equals('')) and (FRegras.Dados.cdsPedidoVendaItem.RecordCount = 0) then
-      ShowMessage('Informe um produto!');
-
-    if not FRegras.ValidaProduto(edtCdProduto.Text) then
-    begin
-      if (Application.MessageBox('Produto sem preço Cadastrado ou Inativo!', 'Verifique', MB_OK) = idOK) then
-      begin
-        edtCdtabelaPreco.Text := '';
-        edtCdProduto.SetFocus;
-        Exit;
-      end;
-    end;
 
     codProduto := FRegras.GetCodProduto(edtCdProduto.Text);
     dados := FRegras.BuscaProduto(codProduto);
-    if (FRegras.IsCodBarrasProduto(edtCdProduto.Text)) and (FRegras.LancaAutoPedidoVenda(codProduto)) then
+    edtDescProduto.Text := dados.DescProduto;
+    edtUnMedida.Text := dados.UnMedida;
+    edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
+    edtDescTabelaPreco.Text := dados.DescTabelaPreco;
+    edtVlUnitario.ValueCurrency := dados.Valor;
+    if (FRegras.IsCodBarrasProduto(edtCdProduto.Text))
+      and (FRegras.LancaAutoPedidoVenda(codProduto)) then
     begin
       edtCdProduto.Text := dados.CodItem;
-      edtDescProduto.Text := dados.DescProduto;
       edtQtdade.ValueFloat := 1;
-      edtUnMedida.Text := dados.UnMedida;
-      edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
-      edtDescTabelaPreco.Text := dados.DescTabelaPreco;
-      edtVlUnitario.ValueCurrency := dados.Valor;
-      edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency, edtQtdade.ValueFloat);
+      edtVlTotal.ValueCurrency := FRegras.CalculaValorTotalItem(edtVlUnitario.ValueCurrency,
+                                                                edtQtdade.ValueFloat);
       LancaItem;
-    end
-    else
-    begin
-      edtDescProduto.Text := dados.DescProduto;
-      edtUnMedida.Text := dados.UnMedida;
-      edtCdtabelaPreco.Text := IntToStr(dados.CdTabelaPreco);
-      edtDescTabelaPreco.Text := dados.DescTabelaPreco;
-      edtVlUnitario.ValueCurrency := dados.Valor;
     end;
-
   finally
     pvItem.Free;
   end;
 end;
+
+function TfrmPedidoVenda.ValidaProdutoDigitado: Boolean;
+begin
+  Result := True;
+  if (Trim(edtCdProduto.Text) = '') and (FRegras.Dados.cdsPedidoVendaItem.RecordCount > 0) then
+  begin
+    edtVlDescTotalPedido.SetFocus;
+    Exit(False);
+  end;
+  if (Trim(edtCdProduto.Text).Equals('')) and (FRegras.Dados.cdsPedidoVendaItem.RecordCount = 0) then
+  begin
+    ShowMessage('Informe um produto!');
+    Exit(False);
+  end;
+  if not FRegras.ValidaProduto(edtCdProduto.Text) then
+  begin
+    if (Application.MessageBox('Produto sem preço Cadastrado ou Inativo!', 'Verifique', MB_OK) = idOK) then
+    begin
+      edtCdtabelaPreco.Text := '';
+      edtCdProduto.SetFocus;
+      Exit(False);
+    end;
+  end;
+end;
+
 
 function TfrmPedidoVenda.GetValorTotal(Data: TDataSet): Currency;
 var
   util: TUtil;
 begin
   util := TUtil.Create;
-  var func := util.RetornaSoma;
+  var func:= util.RetornaSoma;
 
   try
     Result := func(Data, 'vl_total_item');
@@ -993,10 +996,8 @@ end;
 
 procedure TfrmPedidoVenda.LancaItem;
  var
-  lancaProduto: TfrmConfiguracoes;
   aliq: TAliqItem;
 begin
-  lancaProduto := TfrmConfiguracoes.Create(Self);
 
   try
     aliq := Default(TAliqItem);
@@ -1060,8 +1061,9 @@ begin
     SalvaItens(FEdicaoItem);
 
     //soma os valores totais dos itens e preenche o valor total do pedido
-    FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := 0;
     FRegras.Dados.cdsPedidoVenda.Edit;
+    FRegras.Dados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := 0;
+
     FRegras.Dados.cdsPedidoVendaItem.Loop(
     procedure
     begin
@@ -1076,7 +1078,6 @@ begin
     FEdicaoItem := False;
   finally
     LimpaCampos;
-    lancaProduto.Free;
   end;
 end;
 

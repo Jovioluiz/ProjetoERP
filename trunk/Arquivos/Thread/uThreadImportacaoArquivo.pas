@@ -3,9 +3,10 @@ unit uThreadImportacaoArquivo;
 interface
 
 uses
-  System.Classes, FireDAC.Comp.Client, Firedac.Stan.Param, System.SysUtils, Vcl.Dialogs;
+  System.Classes, FireDAC.Comp.Client, Firedac.Stan.Param, System.SysUtils, Vcl.Dialogs,
+  uThreadGenerica;
 
-type TThreadImportacaoArquivo = class(TThread)
+type TThreadImportacaoArquivo = class(TThreadGenerica)
   private
     procedure SalvarDados;
   public
@@ -23,8 +24,7 @@ uses
 
 constructor TThreadImportacaoArquivo.Create;
 begin
-  inherited Create(True);
-  FreeOnTerminate := True;
+  inherited Create;
 end;
 
 procedure TThreadImportacaoArquivo.Execute;

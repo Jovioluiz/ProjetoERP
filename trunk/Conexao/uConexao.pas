@@ -9,6 +9,7 @@ type TConexao = class(TFDQuery)
   private
     FConexao: TFDConnection;
     FQuery: TFDQuery;
+    procedure Conectar;
   public
 
     //função que retorna a conexão com o banco de dados
@@ -30,27 +31,35 @@ uses
 
 
 constructor TConexao.Create(Owner: TComponent);
+begin
+  inherited Create(Owner);
+  Conectar;
+end;
+
+destructor TConexao.Destroy;
+begin
+  FConexao.Free;
+  inherited;
+end;
+
+procedure TConexao.Conectar;
 var
   conexaoIni: TIniFile;
 begin
-  inherited Create(Owner);
-
   conexaoIni := TIniFile.Create(GetCurrentDir + '\conexao\conexao.ini');
   FConexao := TFDConnection.Create(nil);
   try
     FConexao.DriverName := 'PG';
-
     FConexao.Params.Values['Server'] := conexaoIni.ReadString('configuracoes', 'servidor', FConexao.Params.Values['Server']);
     FConexao.Params.Database := conexaoIni.ReadString('configuracoes', 'banco', FConexao.Params.Database);
     FConexao.Params.UserName := conexaoIni.ReadString('configuracoes', 'usuario', FConexao.Params.UserName);
     FConexao.Params.Password := conexaoIni.ReadString('configuracoes', 'senha', FConexao.Params.Password);
     FConexao.Params.Values['Port'] := conexaoIni.ReadString('configuracoes', 'porta', FConexao.Params.Values['Port']);
-
     try
-      FConexao.Open();
+      FConexao.Open;
       FConexao.StartTransaction;
     except
-      on e:Exception do
+      on e: Exception do
       begin
         ShowMessage('Não foi possível efetuar a conexão. Erro: ' + e.Message);
         FConexao := nil;
@@ -59,12 +68,6 @@ begin
   finally
     conexaoIni.Free;
   end;
-end;
-
-destructor TConexao.Destroy;
-begin
-  FConexao.Free;
-  inherited;
 end;
 
 function TConexao.GetConexao: TFDConnection;

@@ -53,7 +53,11 @@ type
   private
     { Private declarations }
     procedure limpaCampos;
-    procedure salvar;
+    procedure Salvar;
+    procedure SalvarTributacaoICMS;
+    procedure SalvarTributacaoIPI;
+    procedure SalvarTributacaoISS;
+    procedure SalvarTributacaoPisCofins;
   public
     { Public declarations }
   end;
@@ -202,94 +206,107 @@ begin
   edtAliqPISCOFINS.Clear;
 end;
 
-procedure TfrmCadastraTributacaoItem.salvar;
+procedure TfrmCadastraTributacaoItem.Salvar;
+begin
+  try
+    SalvarTributacaoICMS;
+    SalvarTributacaoIPI;
+    SalvarTributacaoISS;
+    SalvarTributacaoPisCofins;
+  except on E: exception do
+    raise Exception.Create('Ocorreu o seguinte erro ao gravar os dados ' + E.Message);
+  end;
+end;
+
+procedure TfrmCadastraTributacaoItem.SalvarTributacaoICMS;
 var
   tributacao: TGrupoTributacao;
   novo: Boolean;
 begin
-  try
-    if edtCdGrupoTributacaoICMS.Text <> '' then//ICMS
-    begin
-      tributacao := TGrupoTributacaoICMS.Create;
-
-      try
-        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoICMS.Text));
-
-        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoICMS.Text);
-        tributacao.NomeTributacao := edtNomeGrupoTributacaoICMS.Text;
-        tributacao.Aliquota := StrToCurr(edtAliqICMS.Text);
-
-        tributacao.Persistir(novo);
-
-        edtCdGrupoTributacaoICMS.Clear;
-        edtNomeGrupoTributacaoICMS.Clear;
-        edtAliqICMS.Clear;
-      finally
-        tributacao.Free;
-      end;
+  if edtCdGrupoTributacaoICMS.Text <> '' then
+  begin
+    tributacao := TGrupoTributacaoICMS.Create;
+    try
+      novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoICMS.Text));
+      tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoICMS.Text);
+      tributacao.NomeTributacao := edtNomeGrupoTributacaoICMS.Text;
+      tributacao.Aliquota := StrToCurr(edtAliqICMS.Text);
+      tributacao.Persistir(novo);
+      edtCdGrupoTributacaoICMS.Clear;
+      edtNomeGrupoTributacaoICMS.Clear;
+      edtAliqICMS.Clear;
+    finally
+      tributacao.Free;
     end;
+  end;
+end;
 
-    if edtCdGrupoTributacaoIPI.Text <> '' then //IPI
-    begin
-      tributacao := TGrupoTributacaoIPI.Create;
-
-      try
-        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoIPI.Text));
-
-        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoIPI.Text);
-        tributacao.NomeTributacao := edtNomeGrupoTributacaoIPI.Text;
-        tributacao.Aliquota := StrToCurr(edtAliqIPI.Text);
-
-        tributacao.Persistir(novo);
-        edtCdGrupoTributacaoIPI.Clear;
-        edtNomeGrupoTributacaoIPI.Clear;
-        edtAliqIPI.Clear;
-      finally
-        tributacao.Free;
-      end;
+procedure TfrmCadastraTributacaoItem.SalvarTributacaoIPI;
+var
+  tributacao: TGrupoTributacao;
+  novo: Boolean;
+begin
+  if edtCdGrupoTributacaoIPI.Text <> '' then
+  begin
+    tributacao := TGrupoTributacaoIPI.Create;
+    try
+      novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoIPI.Text));
+      tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoIPI.Text);
+      tributacao.NomeTributacao := edtNomeGrupoTributacaoIPI.Text;
+      tributacao.Aliquota := StrToCurr(edtAliqIPI.Text);
+      tributacao.Persistir(novo);
+      edtCdGrupoTributacaoIPI.Clear;
+      edtNomeGrupoTributacaoIPI.Clear;
+      edtAliqIPI.Clear;
+    finally
+      tributacao.Free;
     end;
+  end;
+end;
 
-    if edtCdGrupoTributacaoISS.Text <> '' then //ISS
-    begin
-      tributacao := TGrupoTributacaoISS.Create;
-
-      try
-        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoISS.Text));
-
-        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoISS.Text);
-        tributacao.NomeTributacao := edtNomeGrupoTributacaoISS.Text;
-        tributacao.Aliquota := StrToCurr(edtAliqISS.Text);
-
-        tributacao.Persistir(novo);
-        edtCdGrupoTributacaoISS.Clear;
-        edtNomeGrupoTributacaoISS.Clear;
-        edtAliqISS.Clear;
-      finally
-        tributacao.Free;
-      end;
+procedure TfrmCadastraTributacaoItem.SalvarTributacaoISS;
+var
+  tributacao: TGrupoTributacao;
+  novo: Boolean;
+begin
+  if edtCdGrupoTributacaoISS.Text <> '' then
+  begin
+    tributacao := TGrupoTributacaoISS.Create;
+    try
+      novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoISS.Text));
+      tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoISS.Text);
+      tributacao.NomeTributacao := edtNomeGrupoTributacaoISS.Text;
+      tributacao.Aliquota := StrToCurr(edtAliqISS.Text);
+      tributacao.Persistir(novo);
+      edtCdGrupoTributacaoISS.Clear;
+      edtNomeGrupoTributacaoISS.Clear;
+      edtAliqISS.Clear;
+    finally
+      tributacao.Free;
     end;
+  end;
+end;
 
-    if edtCdGrupoTributacaoISS.Text <> '' then //PIS/COFINS
-    begin
-      tributacao := TGrupoTributacaoPISCOFINS.Create;
-
-      try
-        novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoPISCOFINS.Text));
-
-        tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
-        tributacao.NomeTributacao := edtNomeGrupoTributacaoPISCOFINS.Text;
-        tributacao.Aliquota := StrToCurr(edtAliqPISCOFINS.Text);
-
-        tributacao.Persistir(novo);
-        edtCdGrupoTributacaoPISCOFINS.Clear;
-        edtNomeGrupoTributacaoPISCOFINS.Clear;
-        edtAliqPISCOFINS.Clear;
-      finally
-        tributacao.Free;
-      end;
+procedure TfrmCadastraTributacaoItem.SalvarTributacaoPisCofins;
+var
+  tributacao: TGrupoTributacao;
+  novo: Boolean;
+begin
+  if edtCdGrupoTributacaoISS.Text <> '' then
+  begin
+    tributacao := TGrupoTributacaoPISCOFINS.Create;
+    try
+      novo := not tributacao.Pesquisar(StrToInt(edtCdGrupoTributacaoPISCOFINS.Text));
+      tributacao.CodTributacao := StrToInt(edtCdGrupoTributacaoPISCOFINS.Text);
+      tributacao.NomeTributacao := edtNomeGrupoTributacaoPISCOFINS.Text;
+      tributacao.Aliquota := StrToCurr(edtAliqPISCOFINS.Text);
+      tributacao.Persistir(novo);
+      edtCdGrupoTributacaoPISCOFINS.Clear;
+      edtNomeGrupoTributacaoPISCOFINS.Clear;
+      edtAliqPISCOFINS.Clear;
+    finally
+      tributacao.Free;
     end;
-  except on E: exception do
-    raise Exception.Create('Ocorreu o seguinte erro ao gravar os dados ' + E.Message);
   end;
 end;
 

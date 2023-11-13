@@ -5,7 +5,16 @@ interface
 uses
   dtmConsultaProduto, uUtil, FireDAC.Stan.Param, Data.DB;
 
-type TConsultaProdutos = class
+type
+  TParametrosConsulta = record
+    DescricaoProduto: string;
+    Codigo,
+    Descricao,
+    Ativo,
+    Estoque: Boolean;
+  end;
+
+  TConsultaProdutos = class
 
   private
     FDados: TdmConsultaProduto;
@@ -14,7 +23,7 @@ type TConsultaProdutos = class
   public
     constructor Create;
     procedure CarregaUltimaEntrada;
-    procedure CarregaProdutos(Descricao: string; bolCodigo, bolDescricao, bolAtivo, bolEstoque: Boolean);
+    procedure CarregaProdutos(Parametros: TParametrosConsulta);
     procedure CarregaPrecos(IDItem: Int64);
     procedure CarregaEstoques(IDItem: Int64);
     destructor Destroy; override;
@@ -116,7 +125,7 @@ begin
   end;
 end;
 
-procedure TConsultaProdutos.CarregaProdutos(Descricao: string; bolCodigo, bolDescricao, bolAtivo, bolEstoque: Boolean);
+procedure TConsultaProdutos.CarregaProdutos(Parametros: TParametrosConsulta);
 const
   sql_produto =  'select ' +
                  '  cd_produto,  ' +
@@ -139,34 +148,28 @@ begin
   FDados.cdsConsultaProduto.DisableControls;
 
   try
-    if Trim(Descricao) = '' then
+    if Trim(Parametros.DescricaoProduto).Equals('') then
     begin
       ShowMessage('Informe algo para pesquisar');
       Exit;
     end;
 
-    if Descricao = '*' then
-      qry.Open(sql_produto);
-
-    if Descricao <> '*' then
+    if Parametros.DescricaoProduto.Equals('*') then
+      qry.Open(sql_produto)
+    else
     begin
-      if bolCodigo then
-        qry.SQL.Add(' where cd_produto ilike ' + QuotedStr('%'+Descricao+'%'));
-
-      if bolDescricao then
-        qry.SQL.Add(' or desc_produto ilike ' + QuotedStr('%'+Descricao+'%'));
-
-      if bolAtivo then
+      if Parametros.Codigo then
+        qry.SQL.Add(' where cd_produto ilike ' + QuotedStr('%'+Parametros.DescricaoProduto+'%'));
+      if Parametros.Descricao then
+        qry.SQL.Add(' or desc_produto ilike ' + QuotedStr('%'+Parametros.DescricaoProduto+'%'));
+      if Parametros.Ativo then
         qry.SQL.Add(' and fl_ativo ');
-
-      if bolEstoque then
+      if Parametros.Estoque then
         qry.SQL.Add(' and qt_estoque > 0');
-
       qry.SQL.Add(' order by cd_produto');
-
       qry.Open();
     end;
-   PreencheDataset(qry);
+    PreencheDataset(qry);
   finally
     qry.Free;
   end;

@@ -21,13 +21,13 @@ type
     cdsClientesseq: TIntegerField;
     cdsClientescd_cliente: TIntegerField;
     cdsClientesnm_cliente: TStringField;
-    cdsClientestp_pessoa: TBooleanField;
     cdsClientescelular: TStringField;
     cdsClientesemail: TStringField;
     cdsClientestelefone: TStringField;
     cdsClientescpf_cnpj: TStringField;
     cdsClientesrg_ie: TStringField;
     cdsClientesdt_nasc_fundacao: TDateField;
+    cdsClientestp_pessoa: TStringField;
   private
     { Private declarations }
   public

@@ -119,8 +119,16 @@ begin
 end;
 
 procedure TfrmConsultaProdutos.CarregaProdutos;
+var
+  parametros: TParametrosConsulta;
 begin
-  FConsulta.CarregaProdutos(edtPesquisa.Text, cbCodigo.Checked, cbDescricao.Checked, cbAtivo.Checked, cbEstoque.Checked);
+  parametros := Default(TParametrosConsulta);
+  parametros.DescricaoProduto := edtPesquisa.Text;
+  parametros.Codigo := cbCodigo.Checked;
+  parametros.Descricao := cbDescricao.Checked;
+  parametros.Ativo := cbAtivo.Checked;
+  parametros.Estoque := cbEstoque.Checked;
+  FConsulta.CarregaProdutos(parametros);
 end;
 
 procedure TfrmConsultaProdutos.VisualizarProduto;

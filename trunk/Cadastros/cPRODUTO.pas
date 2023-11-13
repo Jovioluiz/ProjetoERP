@@ -220,7 +220,6 @@ begin
   
   try
     FIdItem := GetIdItem(edtPRODUTOCD_PRODUTO.Text);
-
     qry.Connection := dm.conexaoBanco;
     qry.Open(sql, [CodItem]);
 
@@ -249,9 +248,7 @@ begin
     edtProdutoNomeGrupoTributacaoPISCOFINS.Text := qry.FieldByName('nm_tributacao_pis_cofins').AsString;
 
     carregaImagem(tImagem, TBlobField(qry.FieldByName('imagem')));
-
     listarCodBarras;
-
     if produto.ValidaEdicaoAcao(idUsuario, 2).Equals('N') then
       desabilitaCampos;
   finally
@@ -280,7 +277,6 @@ begin
 end;
 
 procedure TfrmCadProduto.desabilitaCampos;
-//desabilita os campos quando o usuário não possui permissão de edição
 begin
   edtPRODUTOCD_PRODUTO.Enabled := false;
   edtPRODUTODESCRICAO.Enabled := false;
@@ -516,9 +512,7 @@ begin
       tImagem.Picture := nil;
       dm.conexaoBanco.ExecSQL('update produto set imagem = NULL where cd_produto = :cd_produto',
                                                       [StrToInt(edtPRODUTOCD_PRODUTO.Text)]);
-    end
-    else
-        Exit;
+    end;
   end;
 end;
 
@@ -545,7 +539,6 @@ begin
     btnCarregarImagem.Enabled := true;
     memoObservacao.Enabled := true;
     edtUnCodBarras.Enabled := true;
-
     camposDesabilitados := false;
   end;
 

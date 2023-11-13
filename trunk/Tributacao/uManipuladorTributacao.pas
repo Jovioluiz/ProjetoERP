@@ -8,14 +8,14 @@ uses
 type
   TManipuladorTributacao = class
   private
-    FFTributacao: ITributacaoGenerica;
+    FTributacao: ITributacaoGenerica;
     procedure SetFTributacao(const Value: ITributacaoGenerica);
 
   public
     function CalculaImposto(ValorBase, Aliquota: Currency): Currency;
     constructor Create(Tributacao: ITributacaoGenerica);
 
-    property FTributacao: ITributacaoGenerica read FFTributacao write SetFTributacao;
+    property Tributacao: ITributacaoGenerica read FTributacao write SetFTributacao;
   end;
 
 implementation
@@ -24,17 +24,17 @@ implementation
 
 constructor TManipuladorTributacao.Create(Tributacao: ITributacaoGenerica);
 begin
-  FFTributacao := Tributacao;
+  FTributacao := Tributacao;
 end;
 
 procedure TManipuladorTributacao.SetFTributacao(const Value: ITributacaoGenerica);
 begin
-  FFTributacao := Value;
+  FTributacao := Value;
 end;
 
 function TManipuladorTributacao.CalculaImposto(ValorBase, Aliquota: Currency): Currency;
 begin
-  Result := FFTributacao.CalculaImposto(ValorBase, Aliquota);
+  Result := FTributacao.CalculaImposto(ValorBase, Aliquota);
 end;
 
 end.

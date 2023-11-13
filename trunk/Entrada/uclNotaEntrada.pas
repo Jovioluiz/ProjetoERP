@@ -251,37 +251,30 @@ begin
   query.Connection := Conexao;
 
   try
-    //try
-      query.SQL.Add(SQL_INSERT_NFC);
-      query.ParamByName('id_geral').AsLargeInt := DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
-      query.ParamByName('dcto_numero').AsInteger := DadosNota.cdsNfc.FieldByName('dcto_numero').AsInteger;
-      query.ParamByName('serie').AsString := DadosNota.cdsNfc.FieldByName('serie').AsString;
-      query.ParamByName('cd_fornecedor').AsInteger := DadosNota.cdsNfc.FieldByName('cd_fornecedor').AsInteger;
-      query.ParamByName('dt_emissao').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_emissao').AsDateTime;
-      query.ParamByName('dt_recebimento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_recebimento').AsDateTime;
-      query.ParamByName('dt_lancamento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_lancamento').AsDateTime;
-      query.ParamByName('cd_operacao').AsInteger := DadosNota.cdsNfc.FieldByName('cd_operacao').AsInteger;
-      query.ParamByName('cd_modelo').AsString := DadosNota.cdsNfc.FieldByName('cd_modelo').AsString;
-      query.ParamByName('valor_servico').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_servico').AsCurrency;
-      query.ParamByName('vl_base_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('vl_base_icms').AsCurrency;
-      query.ParamByName('valor_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_icms').AsCurrency;
-      query.ParamByName('valor_frete').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency;
-      query.ParamByName('valor_ipi').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_ipi').AsCurrency;
-      query.ParamByName('valor_iss').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_iss').AsCurrency;
-      query.ParamByName('valor_desconto').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency;
-      query.ParamByName('valor_acrescimo').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency;
-      query.ParamByName('valor_outras_despesas').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_outras_despesas').AsCurrency;
-      query.ParamByName('valor_total').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency;
+    query.SQL.Add(SQL_INSERT_NFC);
+    query.ParamByName('id_geral').AsLargeInt := DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
+    query.ParamByName('dcto_numero').AsInteger := DadosNota.cdsNfc.FieldByName('dcto_numero').AsInteger;
+    query.ParamByName('serie').AsString := DadosNota.cdsNfc.FieldByName('serie').AsString;
+    query.ParamByName('cd_fornecedor').AsInteger := DadosNota.cdsNfc.FieldByName('cd_fornecedor').AsInteger;
+    query.ParamByName('dt_emissao').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_emissao').AsDateTime;
+    query.ParamByName('dt_recebimento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_recebimento').AsDateTime;
+    query.ParamByName('dt_lancamento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_lancamento').AsDateTime;
+    query.ParamByName('cd_operacao').AsInteger := DadosNota.cdsNfc.FieldByName('cd_operacao').AsInteger;
+    query.ParamByName('cd_modelo').AsString := DadosNota.cdsNfc.FieldByName('cd_modelo').AsString;
+    query.ParamByName('valor_servico').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_servico').AsCurrency;
+    query.ParamByName('vl_base_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('vl_base_icms').AsCurrency;
+    query.ParamByName('valor_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_icms').AsCurrency;
+    query.ParamByName('valor_frete').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency;
+    query.ParamByName('valor_ipi').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_ipi').AsCurrency;
+    query.ParamByName('valor_iss').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_iss').AsCurrency;
+    query.ParamByName('valor_desconto').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency;
+    query.ParamByName('valor_acrescimo').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency;
+    query.ParamByName('valor_outras_despesas').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_outras_despesas').AsCurrency;
+    query.ParamByName('valor_total').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency;
 
-      query.ExecSQL;
-      Conexao.Commit;
-      Result := True;
-//    except on E : exception do
-//      begin
-////        query.Connection.Rollback;
-//        raise Exception.Create('Erro ao gravar os dados do pedido ' + DadosNota.cdsNfc.FieldByName('dcto_numero').ToString + E.Message);
-//      end;
-//    end;
+    query.ExecSQL;
+    Conexao.Commit;
+    Result := True;
   finally
     query.Free;
   end;

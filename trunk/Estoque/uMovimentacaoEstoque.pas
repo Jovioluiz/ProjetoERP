@@ -118,7 +118,6 @@ begin
 
   try
     qrySelect.Open(SQL_SELECT, [IdItem]);
-
     qry.SQL.Add(SQL_INSERT);
     qry.ParamByName('id_geral').AsFloat := IdGeral.GeraIdGeral;
     qry.ParamByName('id_endereco_produto').AsInteger := qrySelect.FieldByName('id_geral').AsInteger;
@@ -126,7 +125,6 @@ begin
     qry.ParamByName('qt_estoque').AsFloat := Qtdade;
     qry.ParamByName('un_estoque').AsString := UnMedida;
     qry.ParamByName('fl_entrada_saida').AsString := EntSai;
-
     qry.ExecSQL;
 
   finally

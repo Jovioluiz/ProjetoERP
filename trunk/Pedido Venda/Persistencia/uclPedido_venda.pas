@@ -6,7 +6,7 @@ uses
  FireDAC.Stan.Intf, FireDAC.Stan.Option, 
  FireDAC.Stan.Error, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.Phys.Intf,   
  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.Comp.Client, FireDAC.DApt,  
- FireDAC.Comp.DataSet, Data.DB;
+ FireDAC.Comp.DataSet, Data.DB, System.Generics.Collections, uclPedido_venda_item;
 
 type TPedido_venda = class 
 
@@ -25,6 +25,7 @@ type TPedido_venda = class
     Fvl_acrescimo: Currency;
     Fvl_desconto_pedido: Currency;
     Fvl_total: Currency;
+    FPedidoVendaItem: TList<TPedido_venda_item>;
     procedure Setcd_cliente(const Value: Integer);
     procedure Setcd_cond_pag(const Value: Integer);
     procedure Setcd_forma_pag(const Value: Integer);
@@ -61,6 +62,7 @@ type TPedido_venda = class
     property vl_acrescimo: Currency read Fvl_acrescimo write Setvl_acrescimo;
     property vl_desconto_pedido: Currency read Fvl_desconto_pedido write Setvl_desconto_pedido;
     property vl_total: Currency read Fvl_total write Setvl_total;
+    property PedidoVendaItem: TList<TPedido_venda_item> read FPedidoVendaItem write FPedidoVendaItem;
 
 end;
 

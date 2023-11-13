@@ -62,6 +62,8 @@ type
     procedure SetRegras(const Value: TEnderecoWMS);
     procedure MontaNomeEndereco;
     procedure Adicionar;
+    function ValidaCamposEndereco: Boolean;
+    function ValidaCamposEnderecoProduto: Boolean;
   public
     { Public declarations }
     procedure SalvaEnderecoProduto;
@@ -348,27 +350,32 @@ end;
 function TfrmCadastroEnderecos.ValidaCampos: Boolean;
 begin
   Result := True;
-
   if tbsEndereco.Showing then
-  begin
-    if edtCodDeposito.isEmpty then
-      Exit(False);
-    if edtAla.isEmpty then
-      Exit(False);
-    if edtRua.isEmpty then
-      Exit(False);
-  end
+    ValidaCamposEndereco
   else
-  begin
-    if edtCodDepositoProdEndereco.isEmpty then
-      Exit(False);
-    if edtAlaProdEndereco.isEmpty then
-      Exit(False);
-    if edtRuaProdEndereco.isEmpty then
-      Exit(False);
-    if edtOrdem.isEmpty then
-      Exit(False);
-  end;
+    ValidaCamposEnderecoProduto;
+end;
+
+function TfrmCadastroEnderecos.ValidaCamposEndereco: Boolean;
+begin
+  Result := True;
+  if edtCodDeposito.isEmpty then
+    Exit(False);
+  if edtAla.isEmpty then
+    Exit(False);
+  if edtRua.isEmpty then
+    Exit(False) ;
+end;
+
+function TfrmCadastroEnderecos.ValidaCamposEnderecoProduto: Boolean;
+begin
+  Result := True;
+  if edtCodDeposito.isEmpty then
+    Exit(False);
+  if edtAla.isEmpty then
+    Exit(False);
+  if edtRua.isEmpty then
+    Exit(False) ;
 end;
 
 end.

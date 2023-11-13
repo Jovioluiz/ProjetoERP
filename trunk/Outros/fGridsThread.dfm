@@ -101,7 +101,7 @@ object fThreads: TfThreads
     TabOrder = 1
     object btnListar: TButton
       Left = 24
-      Top = 13
+      Top = 18
       Width = 75
       Height = 25
       Caption = 'Listar'

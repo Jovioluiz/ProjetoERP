@@ -10,10 +10,8 @@ object frmLista: TfrmLista
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 13
   object Edit1: TEdit
     Left = 32
@@ -132,9 +130,9 @@ object frmLista: TfrmLista
     OnClick = Button4Click
   end
   object dbgridtable: TDBGrid
-    Left = 784
+    Left = 783
     Top = 143
-    Width = 473
+    Width = 218
     Height = 201
     DataSource = dstable
     TabOrder = 13
@@ -188,6 +186,33 @@ object frmLista: TfrmLista
     Lines.Strings = (
       '')
     TabOrder = 18
+  end
+  object btnGerarJson: TButton
+    Left = 1064
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = 'Gerar Json'
+    TabOrder = 19
+    OnClick = btnGerarJsonClick
+  end
+  object memoJson: TMemo
+    Left = 1007
+    Top = 143
+    Width = 338
+    Height = 201
+    Lines.Strings = (
+      '')
+    TabOrder = 20
+  end
+  object Button8: TButton
+    Left = 1120
+    Top = 391
+    Width = 153
+    Height = 25
+    Caption = 'Complexidade Ciclomatica'
+    TabOrder = 21
+    OnClick = Button8Click
   end
   object ds: TDataSource
     DataSet = cds
@@ -296,10 +321,10 @@ object frmLista: TfrmLista
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
-    Left = 1152
-    Top = 248
+    Left = 871
+    Top = 208
     Content = {
-      414442530F00000039010000FF00010001FF02FF030400100000006300640073
+      414442531000000039010000FF00010001FF02FF030400100000006300640073
       007400610062006C00650005000A0000005400610062006C0065000600000000
       00070000080032000000090000FF0AFF0B040014000000630064005F0063006C
       00690065006E0074006500050014000000630064005F0063006C00690065006E
@@ -337,7 +362,7 @@ object frmLista: TfrmLista
   end
   object dstable: TDataSource
     DataSet = cdstable
-    Left = 1080
-    Top = 248
+    Left = 808
+    Top = 216
   end
 end

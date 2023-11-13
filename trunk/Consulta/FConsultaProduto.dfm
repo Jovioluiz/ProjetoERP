@@ -13,14 +13,12 @@ object frmConsultaProdutos: TfrmConsultaProdutos
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Visible = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
@@ -29,6 +27,8 @@ object frmConsultaProdutos: TfrmConsultaProdutos
     Height = 746
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 1194
+    ExplicitHeight = 745
     DesignSize = (
       1198
       746)
@@ -61,7 +61,7 @@ object frmConsultaProdutos: TfrmConsultaProdutos
       ParentFont = False
     end
     object btnPesquisar: TButton
-      Left = 1096
+      Left = 1092
       Top = 58
       Width = 89
       Height = 26
@@ -102,7 +102,7 @@ object frmConsultaProdutos: TfrmConsultaProdutos
     object dbGridProduto: TDBGrid
       Left = 16
       Top = 94
-      Width = 713
+      Width = 709
       Height = 315
       Anchors = [akLeft, akTop, akRight]
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -150,11 +150,13 @@ object frmConsultaProdutos: TfrmConsultaProdutos
       Height = 19
       AutoHint = True
       Panels = <>
+      ExplicitTop = 725
+      ExplicitWidth = 1192
     end
     object edtPesquisa: TEdit
       Left = 16
       Top = 58
-      Width = 1074
+      Width = 1070
       Height = 26
       Anchors = [akLeft, akTop, akRight]
       CharCase = ecUpperCase
@@ -165,11 +167,12 @@ object frmConsultaProdutos: TfrmConsultaProdutos
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      ExplicitWidth = 1066
     end
     object dbGridUltimasEntradas: TDBGrid
       Left = 16
       Top = 616
-      Width = 1169
+      Width = 1165
       Height = 104
       Anchors = [akLeft, akTop, akRight, akBottom]
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -181,7 +184,7 @@ object frmConsultaProdutos: TfrmConsultaProdutos
       TitleFont.Style = []
     end
     object dbgriPrecos: TDBGrid
-      Left = 743
+      Left = 739
       Top = 94
       Width = 442
       Height = 315
@@ -197,7 +200,7 @@ object frmConsultaProdutos: TfrmConsultaProdutos
     object dbGridEstoque: TDBGrid
       Left = 16
       Top = 448
-      Width = 1169
+      Width = 1165
       Height = 127
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 10

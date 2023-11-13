@@ -74,20 +74,18 @@ begin
     qry.ParamByName('cd_forma_pag').AsInteger := StrToInt(edtCTA_FORMA_PGTOCODIGO.Text);
     qry.Open();
 
-    if not qry.IsEmpty then
-      begin
-        edtCTA_FORMA_PGTODESCRICAO.Text := qry.FieldByName('nm_forma_pag').AsString;
-        edtCTA_FORMA_PGTOFL_ATIVO.Checked := qry.FieldByName('fl_ativo').AsBoolean;
-
-        case qry.FieldByName('tp_classificacao').AsInteger of
-          0: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 0;
-          1: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 1;
-          2: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 2;
-          3: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 3;
-        end;
-      end
-    else
+    if qry.IsEmpty then
       Exit;
+
+    edtCTA_FORMA_PGTODESCRICAO.Text := qry.FieldByName('nm_forma_pag').AsString;
+    edtCTA_FORMA_PGTOFL_ATIVO.Checked := qry.FieldByName('fl_ativo').AsBoolean;
+
+    case qry.FieldByName('tp_classificacao').AsInteger of
+      0: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 0;
+      1: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 1;
+      2: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 2;
+      3: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 3;
+    end;
   finally
     qry.Free;
   end;

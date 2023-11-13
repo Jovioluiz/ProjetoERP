@@ -125,16 +125,25 @@ begin
 end;
 
 function TUtil.RetornaSoma: TFunc<TDataSet, string, Currency>;
+var
+  valor: Currency;
 begin
   Result := function(DataSet: TDataSet; Campo: string): Currency
             begin
-              Result := 0;
-              DataSet.First;
-              while not DataSet.Eof do
+              valor := 0;
+              DataSet.Loop(
+              procedure
               begin
-                Result := Result + DataSet.FieldByName(Campo).AsCurrency;
-                DataSet.Next;
-              end;
+                valor := valor + DataSet.FieldByName(Campo).AsCurrency;
+              end
+              );
+
+              Result := valor;
+//              while not DataSet.Eof do
+//              begin
+//                Result := Result + DataSet.FieldByName(Campo).AsCurrency;
+//                DataSet.Next;
+//              end;
             end;
 end;
 

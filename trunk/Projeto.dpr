@@ -35,7 +35,8 @@ uses
   uVersao in 'Validacao\uVersao.pas',
   uConsulta in 'Consulta\uConsulta.pas' {frmConsulta},
   uclNotaEntrada in 'Entrada\uclNotaEntrada.pas',
-  uGerador in 'Outros\uGerador.pas' {$R *.res},
+  uGerador in 'Outros\uGerador.pas' {,
+  fCadastroEnderecos in 'WMS\fCadastroEnderecos.pas' {frmCadastroEnderecos},
   fCadastroEnderecos in 'WMS\fCadastroEnderecos.pas' {frmCadastroEnderecos},
   uCadastrarSenha in 'Cadastros\uCadastrarSenha.pas' {frmCadastraSenha},
   uSplash in 'Inicio\uSplash.pas' {frmSplash},
@@ -105,7 +106,11 @@ uses
   uclNFI in 'Entrada\Persistencia\uclNFI.pas',
   uSenhaMD5 in 'Outros\uSenhaMD5.pas',
   uThreadGrids in 'Outros\uThreadGrids.pas',
-  uThreadImportacaoArquivo in 'Arquivos\Thread\uThreadImportacaoArquivo.pas';
+  uThreadImportacaoArquivo in 'Arquivos\Thread\uThreadImportacaoArquivo.pas',
+  uThreadGenerica in 'Utils\uThreadGenerica.pas',
+  uThreadImportacaoCliente in 'Arquivos\Thread\uThreadImportacaoCliente.pas',
+  uJSONConvert in 'Outros\uJSONConvert.pas',
+  uComplexidadeCiclomatica in 'Outros\uComplexidadeCiclomatica.pas';
 
 {$R *.res}
 

@@ -66,24 +66,16 @@ begin
 
       try
         case rgFiltros.ItemIndex of
-        0:
-        begin
-          qry.SQL.Add('where nome ilike '+ QuotedStr('%'+edtBusca.Text+'%'));
-          qry.Open();
-        end;
-        1:
-        begin
-          qry.SQL.Add('where cd_cliente = :cd_cliente');
-          qry.ParamByName('cd_cliente').AsInteger := StrToInt(edtBusca.Text);
-          qry.Open();
-        end;
-        2:
-        begin
-          qry.SQL.Add('where cpf_cnpj ilike'+ QuotedStr('%'+edtBusca.Text+'%'));
-          qry.Open();
-        end;
+          0: qry.SQL.Add('where nome ilike '+ QuotedStr('%'+edtBusca.Text+'%'));
+          1:
+          begin
+            qry.SQL.Add('where cd_cliente = :cd_cliente');
+            qry.ParamByName('cd_cliente').AsInteger := StrToInt(edtBusca.Text);
+          end;
+          2: qry.SQL.Add('where cpf_cnpj ilike'+ QuotedStr('%'+edtBusca.Text+'%'));
         end;
 
+        qry.Open();
         cdsConsulta.EmptyDataSet;
         qry.First;
 
