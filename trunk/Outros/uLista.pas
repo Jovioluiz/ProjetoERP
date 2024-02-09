@@ -595,7 +595,7 @@ var
   consulta: TFDQuery;
   idPedido: Int64;
   listaPedidoItem: TList<TPedido_venda_item>;
-  jsonValue: TJsonValue;
+//  jsonValue: TJsonValue;
 begin
 
   consulta := TFDQuery.Create(Self);
@@ -659,10 +659,10 @@ begin
 
     pedidoVenda.PedidoVendaItem := listaPedidoItem;
     var json := TJSONConvert.ObjectToJsonString(pedidoVenda);
-    jsonValue := TJSONObject.ParseJSONValue(json);
+//    jsonValue := TJSONObject.ParseJSONValue(json);
     memoJson.Lines.Add(json);
 
-    var classe := TJSONConvert.JsonToObject<TPedido_venda>(json);
+//    var classe := TJSONConvert.JsonToObject<TPedido_venda>(json);
   finally
     consulta.Free;
     pedidoVenda.PedidoVendaItem.Free;

@@ -44,7 +44,6 @@ type TPedidoVenda = class
     function GetCdItem(IdItem: Integer): TInfProdutosCodBarras;
     function LancaAutoPedidoVenda(CodItem: string): Boolean;
     function GetCodProduto(CodBarras: String): string;
-    procedure PreencheDataSet(Info: TArray<TInfProdutosCodBarras>);
     function CarregaPedidoVenda(NroPedido: Integer): Boolean;
     function CarregaItensPedidoVenda(DataSet: TDataSet): Boolean;
     function CalculaImposto(ValorBase, Aliquota: Currency; Tributacao: string): Currency;
@@ -809,45 +808,6 @@ begin
     Result := (not consulta.IsEmpty) and (consulta.FieldByName('lanca_auto_pedido_venda').AsBoolean);
   finally
     consulta.Free;
-  end;
-end;
-
-procedure TPedidoVenda.PreencheDataSet(Info: TArray<TInfProdutosCodBarras>);
-var
-  dataset: TClientDataSet;
-  dataSource: TDataSource;
-begin
-  dataset := TClientDataSet.Create(nil);
-  dataSource := TDataSource.Create(nil);
-
-  //fiz isso somente para praticar
-  try
-    dataSource.DataSet := dataset;
-
-    dataset.FieldDefs.Clear;
-    dataset.FieldDefs.Add('cd_produto', ftString, 50);
-    dataset.FieldDefs.Add('desc_produto', ftString, 50);
-    dataset.FieldDefs.Add('un_medida', ftString, 5);
-    dataset.FieldDefs.Add('cd_tabela', ftInteger);
-    dataset.FieldDefs.Add('nm_tabela', ftString, 50);
-    dataset.FieldDefs.Add('valor', ftCurrency);
-    dataset.CreateDataSet;
-
-    for var i := 0 to Length(Info) - 1 do
-    begin
-      dataset.Append;
-      dataset.FieldByName('cd_produto').AsString := Info[i].CodItem;
-      dataset.FieldByName('desc_produto').AsString := Info[i].DescProduto;
-      dataset.FieldByName('un_medida').AsString := Info[i].UnMedida;
-      dataset.FieldByName('cd_tabela').AsInteger := Info[i].CdTabelaPreco;
-      dataset.FieldByName('nm_tabela').AsString := Info[i].DescTabelaPreco;
-      dataset.FieldByName('valor').AsCurrency := Info[i].Valor;
-      dataset.Post;
-    end;
-
-  finally
-    dataset.Free;
-    dataSource.Free;
   end;
 end;
 
