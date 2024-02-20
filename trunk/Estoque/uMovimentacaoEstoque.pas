@@ -34,19 +34,19 @@ uses
 
 procedure TMovimentacaoEstoque.AtualizaEstoque(IdItem: Integer; Qtdade: Double; EntradaSaida: string);
 const
-  SQL_UPDATE = 'update '+
-                    'wms_estoque '+
-              'set '+
-                    'qt_estoque = :qt_estoque '+
-              'where id_wms_endereco_produto = :id';
+  SQL_UPDATE = ' update '+
+               ' wms_estoque '+
+               ' set '+
+               ' qt_estoque = :qt_estoque '+
+               ' where id_wms_endereco_produto = :id';
 
-  SQL = 'select ' +
-            'qt_estoque, ' +
-            'id_wms_endereco_produto ' +
-        'from ' +
-            'wms_estoque ' +
-        'where ' +
-            'id_item = :id_item';
+  SQL = ' select ' +
+        ' qt_estoque, ' +
+        ' id_wms_endereco_produto ' +
+        ' from ' +
+        ' wms_estoque ' +
+        ' where ' +
+        ' id_item = :id_item';
 var
   qry: TFDQuery;
   qtEstoque, qttotal: Double;

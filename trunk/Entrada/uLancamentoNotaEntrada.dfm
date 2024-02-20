@@ -4,8 +4,8 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Lan'#231'amento Nota Entrada'
-  ClientHeight = 720
-  ClientWidth = 857
+  ClientHeight = 719
+  ClientWidth = 853
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,22 +13,22 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Visible = True
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
-  PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 857
-    Height = 720
+    Width = 853
+    Height = 719
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 857
+    ExplicitHeight = 720
     object Label1: TLabel
       Left = 216
       Top = 85

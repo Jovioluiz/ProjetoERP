@@ -51,13 +51,13 @@ uses
 
 function TNotaEntrada.BuscaClienteFornecedor(CodCliente: Integer): Boolean;
 const
-  sql = 'select                       '+
-          'cd_cliente,                '+
-          'nome                       '+
-        'from                         '+
-           'cliente                   '+
-        'where                        '+
-            'cd_cliente = :cd_cliente';
+  sql = ' select            '+
+        '    cd_cliente,    '+
+        '    nome           '+
+        ' from              '+
+        '   cliente         '+
+        ' where             '+
+        '   cd_cliente = :cd_cliente';
 var
   qry: TFDQuery;
 begin
@@ -78,12 +78,11 @@ var
   manipulador: TManipuladorTributacao;
 begin
   Result := 0;
+  manipulador := nil;
   if Tributacao = eICMS then
     manipulador := TManipuladorTributacao.Create(TTributacaoICMS.Create)
   else if Tributacao = eIPI then
-    manipulador := TManipuladorTributacao.Create(TTributacaoIPI.Create)
-  else
-    manipulador := nil;
+    manipulador := TManipuladorTributacao.Create(TTributacaoIPI.Create);
 
   if Assigned(manipulador) then
   begin

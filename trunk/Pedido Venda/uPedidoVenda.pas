@@ -853,14 +853,12 @@ begin
     FRegras.CalculaValorContabil;
     AlteraSequenciaItem;
 
-    //insert na pedido_venda_item
     FRegras.Dados.cdsPedidoVendaItem.Loop(
     procedure
     begin
       SalvaItens(True);
     end);
 
-    //fazer o insert na wms_mvto_estoque
     InsereWmsMvto;
     AtualizaEstoqueProduto;
     ShowMessage('Pedido ' + FRegras.Dados.cdsPedidoVenda.FieldByName('nr_pedido').AsString + ' Gravado Com Sucesso');
