@@ -462,27 +462,23 @@ procedure TPedidoVenda.CancelaPedidoVenda(IdPedido: Int64);
 const
   SQL = 'update pedido_venda set fl_cancelado = ''S'' where id_geral = :id_geral';
 var
-  qry: TConexao;
+  update: TConexao;
 begin
-  qry := TConexao.Create(nil);
-  qry.Connection := qry.GetConexao;
+  update := TConexao.Create(nil);
 
   try
     try
-      qry.SQL.Add(SQL);
-      qry.ParamByName('id_geral').AsLargeInt := IdPedido;
-      qry.ExecSQL;
-      qry.Conexao.Commit;
-
+      update.ExecSQL(SQL, [IdPedido]);
+      update.Conexao.Commit;
     except on E:Exception do
       begin
-        qry.Conexao.Rollback;
+        update.Conexao.Rollback;
         raise Exception.Create('Erro ao cancelar o pedido'+ E.Message);
       end;
     end;
   finally
-    qry.Connection.Rollback;
-    qry.Free;
+    update.Connection.Rollback;
+    update.Free;
   end;
 end;
 

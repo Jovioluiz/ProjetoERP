@@ -34,6 +34,7 @@ constructor TConexao.Create(Owner: TComponent);
 begin
   inherited Create(Owner);
   Conectar;
+  Connection := GetConexao;
 end;
 
 destructor TConexao.Destroy;
