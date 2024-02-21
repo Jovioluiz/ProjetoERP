@@ -12,12 +12,10 @@ object frmCadFormaPagamento: TfrmCadFormaPagamento
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
-  PixelsPerInch = 96
   TextHeight = 13
   object tpCadFormaPgto: TPanel
     Left = 0
@@ -27,6 +25,7 @@ object frmCadFormaPagamento: TfrmCadFormaPagamento
     Align = alTop
     BorderStyle = bsSingle
     TabOrder = 0
+    ExplicitWidth = 460
     object Label1: TLabel
       Left = 8
       Top = 16

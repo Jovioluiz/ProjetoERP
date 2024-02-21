@@ -56,43 +56,40 @@ const
 var
   qry: TFDQuery;
 begin
-  if edtBusca.Text <> EmptyStr then
-  begin
-    if Key = 13 then
-    begin
-      qry := TFDQuery.Create(Self);
-      qry.Connection := dm.conexaoBanco;
-      qry.SQL.Add(sql);
+  if (edtBusca.Text = EmptyStr) or (Key <> 13) then
+    Exit;
 
-      try
-        case rgFiltros.ItemIndex of
-          0: qry.SQL.Add('where nome ilike '+ QuotedStr('%'+edtBusca.Text+'%'));
-          1:
-          begin
-            qry.SQL.Add('where cd_cliente = :cd_cliente');
-            qry.ParamByName('cd_cliente').AsInteger := StrToInt(edtBusca.Text);
-          end;
-          2: qry.SQL.Add('where cpf_cnpj ilike'+ QuotedStr('%'+edtBusca.Text+'%'));
-        end;
+  qry := TFDQuery.Create(Self);
+  qry.Connection := dm.conexaoBanco;
+  qry.SQL.Add(sql);
 
-        qry.Open();
-        cdsConsulta.EmptyDataSet;
-        qry.First;
-
-        while not qry.Eof do
-        begin
-          cdsConsulta.Append;
-          cdsConsulta.FieldByName('cd_cliente').AsInteger := qry.FieldByName('cd_cliente').AsInteger;
-          cdsConsulta.FieldByName('nm_cliente').AsString := qry.FieldByName('nome').AsString;
-          cdsConsulta.FieldByName('cpf_cnpj').AsString := qry.FieldByName('cpf_cnpj').AsString;
-          cdsConsulta.Post;
-          qry.Next;
-        end;
-
-      finally
-        qry.Free;
+  try
+    case rgFiltros.ItemIndex of
+      0: qry.SQL.Add('where nome ilike '+ QuotedStr('%'+edtBusca.Text+'%'));
+      1:
+      begin
+        qry.SQL.Add('where cd_cliente = :cd_cliente');
+        qry.ParamByName('cd_cliente').AsInteger := StrToInt(edtBusca.Text);
       end;
+      2: qry.SQL.Add('where cpf_cnpj ilike'+ QuotedStr('%'+edtBusca.Text+'%'));
     end;
+
+    qry.Open();
+    cdsConsulta.EmptyDataSet;
+    qry.First;
+
+    while not qry.Eof do
+    begin
+      cdsConsulta.Append;
+      cdsConsulta.FieldByName('cd_cliente').AsInteger := qry.FieldByName('cd_cliente').AsInteger;
+      cdsConsulta.FieldByName('nm_cliente').AsString := qry.FieldByName('nome').AsString;
+      cdsConsulta.FieldByName('cpf_cnpj').AsString := qry.FieldByName('cpf_cnpj').AsString;
+      cdsConsulta.Post;
+      qry.Next;
+    end;
+
+  finally
+    qry.Free;
   end;
 end;
 

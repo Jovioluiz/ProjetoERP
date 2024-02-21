@@ -11,9 +11,7 @@ object frmConsulta: TfrmConsulta
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
-  PixelsPerInch = 96
   TextHeight = 13
   object pnl1: TPanel
     Left = 0
@@ -22,6 +20,8 @@ object frmConsulta: TfrmConsulta
     Height = 386
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 722
+    ExplicitHeight = 385
     object dbgrd1: TDBGrid
       Left = 0
       Top = 1
