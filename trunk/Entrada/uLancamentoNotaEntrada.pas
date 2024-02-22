@@ -329,7 +329,6 @@ begin
   end;
 end;
 
-//busca a operação da nota e modelo caso possua alguma vinculada
 procedure TfrmLancamentoNotaEntrada.edtOperacaoExit(Sender: TObject);
 const
   SQL = ' select                          '+
@@ -409,7 +408,6 @@ begin
   end;
 end;
 
-//valida se foi informado valor de serviço ou produto ou os dois
 procedure TfrmLancamentoNotaEntrada.edtVlProdutoExit(Sender: TObject);
 begin
   if (edtVlServico.ValueCurrency = 0) and (edtVlProduto.ValueCurrency = 0) then
