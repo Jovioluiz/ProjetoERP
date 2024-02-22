@@ -146,32 +146,29 @@ end;
 function TfrmCadProduto.carregaImagem(Aimagem: TImage; ABlobField: TBlobField): Boolean;
 var
   JpgImg: TJPEGImage;
-  StMem: TMemoryStream;
+  memoryStream: TMemoryStream;
 begin
+  Result := True;
   if ABlobField.DataSet.IsEmpty then
-  begin
-    Result := False;
-    Exit;
-  end;
+    Exit(False);
 
   Aimagem.Picture.Assign(nil);
 
   if not (ABlobField.IsNull) and not (ABlobField.AsString = '') then
   begin
     jpgImg := TJPEGImage.Create;
-    stMem := TMemoryStream.Create;
+    memoryStream := TMemoryStream.Create;
     try
-      ABlobField.SaveToStream(StMem);
-      StMem.Position := 0;
-      JpgImg.LoadFromStream(StMem);
+      ABlobField.SaveToStream(memoryStream);
+      memoryStream.Position := 0;
+      memoryStream.Seek(0,0);
+      JpgImg.LoadFromStream(memoryStream);
       Aimagem.Picture.Assign(JpgImg);
     finally
-      StMem.Free;
+      memoryStream.Free;
       JpgImg.Free;
     end;
   end;
-
-  Result := True;
 end;
 
 procedure TfrmCadProduto.CarregaProduto(const CodItem: String);

@@ -78,7 +78,6 @@ begin
     edtCTA_FORMA_PGTODESCRICAO.Text := qry.FieldByName('nm_forma_pag').AsString;
     edtCTA_FORMA_PGTOFL_ATIVO.Checked := qry.FieldByName('fl_ativo').AsBoolean;
     edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := qry.FieldByName('tp_classificacao').AsInteger;
-
   finally
     qry.Free;
   end;

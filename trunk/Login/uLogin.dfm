@@ -13,14 +13,12 @@ object frmLogin: TfrmLogin
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   DesignSize = (
     528
     236)
-  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 16
