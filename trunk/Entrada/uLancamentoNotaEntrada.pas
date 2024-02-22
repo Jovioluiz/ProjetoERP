@@ -755,7 +755,6 @@ begin
       begin
         if FRegras.GravaItens(dm.conexaoBanco) then
         begin
-          //insere na wms_mvto e atualiza a quantidade em estoque
           estoque.InsereWmsMvto(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
                                 FRegras.DadosNota.cdsNfi.FieldByName('un_medida').AsString,
                                 FRegras.DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat,
@@ -860,7 +859,7 @@ begin
                       - edtValorDesconto.ValueCurrency
                       + edtValorAcrescimo.ValueCurrency
                       + edtValorOutrasDespesas.ValueCurrency) then
-    raise Exception.Create(' O valor total dos itens não fecha com o valor total da nota! Verifique');
+    raise Exception.Create(' O valor total dos itens não fecha com o valor total da nota! Verifique.');
 end;
 
 procedure TfrmLancamentoNotaEntrada.ValorTotalNota;
