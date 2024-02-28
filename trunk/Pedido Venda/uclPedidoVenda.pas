@@ -723,16 +723,16 @@ function TPedidoVenda.GetIdItem(CdItem: string): Int64;
 const
   SQL = 'select id_item from produto where cd_produto = :cd_produto';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(SQL, [CdItem]);
-    Result := qry.FieldByName('id_item').AsLargeInt;
+    consulta.Open(SQL, [CdItem]);
+    Result := consulta.FieldByName('id_item').AsLargeInt;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
