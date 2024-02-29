@@ -1005,15 +1005,7 @@ begin
       raise Exception.Create('O produto já está lançado');
 
     if FEdicaoItem then
-    begin
-      FRegras.Dados.cdsPedidoVendaItem.Edit;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString := edtCdProduto.Text;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsFloat := edtQtdade.ValueFloat;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := edtUnMedida.Text;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := edtVlUnitario.ValueCurrency;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := edtVlDescontoItem.ValueCurrency;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := edtVlTotal.ValueCurrency;
-    end
+      FRegras.Dados.cdsPedidoVendaItem.Edit
     else
     begin
       RetornaSequencia;
@@ -1021,15 +1013,16 @@ begin
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_geral').AsLargeInt := FGerador.GeraIdGeral;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('id_pedido_venda').AsLargeInt := FRegras.Dados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger := FSeqItem;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString := edtCdProduto.Text;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('descricao').AsString := edtDescProduto.Text;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsFloat := edtQtdade.ValueFloat;
       FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_tabela_preco').AsInteger := StrToInt(edtCdtabelaPreco.Text);
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := edtUnMedida.Text;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := edtVlUnitario.ValueCurrency;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := edtVlDescontoItem.ValueCurrency;
-      FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := edtVlTotal.ValueCurrency;
     end;
+
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('cd_produto').AsString := edtCdProduto.Text;
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('qtd_venda').AsFloat := edtQtdade.ValueFloat;
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('un_medida').AsString := edtUnMedida.Text;
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_unitario').AsCurrency := edtVlUnitario.ValueCurrency;
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_desconto').AsCurrency := edtVlDescontoItem.ValueCurrency;
+    FRegras.Dados.cdsPedidoVendaItem.FieldByName('vl_total_item').AsCurrency := edtVlTotal.ValueCurrency;
 
     if aliq.AliqIcms > 0 then
     begin
