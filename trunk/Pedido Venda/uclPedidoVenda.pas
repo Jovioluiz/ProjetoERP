@@ -80,17 +80,17 @@ const
                 '   c.cd_cliente = :cd_cliente '+
                 '   and c.fl_ativo ';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql_cliente, [CdCliente]);
+    consulta.Open(sql_cliente, [CdCliente]);
 
-    Result := not qry.IsEmpty;
+    Result := not consulta.IsEmpty;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -127,16 +127,16 @@ const
                  'cfp.cd_forma_pag = :cd_forma_pag and         '+
                  'ccp.fl_ativo';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql_condPgto, [CdCond, CdForma]);
-    Result := not qry.IsEmpty;
+    consulta.Open(sql_condPgto, [CdCond, CdForma]);
+    Result := not consulta.IsEmpty;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -150,16 +150,16 @@ const
                     '   (cd_forma_pag = :cd_forma_pag) and '+
                     '   fl_ativo';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql_forma_pgto, [CdFormaPgto]);
-    Result := not qry.IsEmpty;
+    consulta.Open(sql_forma_pgto, [CdFormaPgto]);
+    Result := not consulta.IsEmpty;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -192,31 +192,31 @@ const
         '    and (p.fl_ativo = True) ' +
         'limit 1 ';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(SQL_COD);
-    qry.ParamByName('cd_produto').AsString := CodProduto;
-    qry.Open(SQL_COD);
+    consulta.SQL.Add(SQL_COD);
+    consulta.ParamByName('cd_produto').AsString := CodProduto;
+    consulta.Open(SQL_COD);
 
-    if not qry.IsEmpty then
+    if not consulta.IsEmpty then
       Exit(True);
 
     Result := True;
-    qry.Close;
-    qry.SQL.Clear;
-    qry.SQL.Add(SQL_BARRAS);
-    qry.ParamByName('codigo_barras').AsString := CodProduto;
-    qry.Open(SQL_BARRAS);
+    consulta.Close;
+    consulta.SQL.Clear;
+    consulta.SQL.Add(SQL_BARRAS);
+    consulta.ParamByName('codigo_barras').AsString := CodProduto;
+    consulta.Open(SQL_BARRAS);
 
-    if not qry.IsEmpty then
+    if not consulta.IsEmpty then
       Exit(True);
 
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -231,18 +231,18 @@ const
        '(cfp.cd_forma_pag = :cd_forma_pag) and         '+
        '    (ccp.fl_ativo = true)';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodCond, CodForma]);
+    consulta.Open(sql, [CodCond, CodForma]);
 
-    Result := qry.FieldByName('nm_cond_pag').AsString;
+    Result := consulta.FieldByName('nm_cond_pag').AsString;
 
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -256,17 +256,17 @@ const
         '   cd_forma_pag = :cd_forma_pag and '+
         '   fl_ativo';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodForma]);
+    consulta.Open(sql, [CodForma]);
 
-    Result := qry.FieldByName('nm_forma_pag').AsString;
+    Result := consulta.FieldByName('nm_forma_pag').AsString;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -579,42 +579,42 @@ const
                ' JOIN endereco_cliente e ON c.cd_cliente = e.cd_cliente ' +
                ' WHERE pv.nr_pedido = :nr_pedido ';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
   Result := True;
 
   try
     FDados.cdsPedidoVendaItem.EmptyDataSet;
 
-    qry.Open(SQL_PEDIDO, [NroPedido]);
+    consulta.Open(SQL_PEDIDO, [NroPedido]);
 
-    if qry.IsEmpty then
+    if consulta.IsEmpty then
       Exit(False);
 
     FDados.cdsPedidoVenda.Append;
-    FDados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := qry.FieldByName('id_geral').AsLargeInt;
-    FDados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := qry.FieldByName('nr_pedido').AsInteger;
-    FDados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean := qry.FieldByName('fl_orcamento').AsBoolean;
-    FDados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := qry.FieldByName('cd_cliente').AsInteger;
-    FDados.cdsPedidoVenda.FieldByName('nm_cliente').AsString := qry.FieldByName('nome').AsString;
-    FDados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := qry.FieldByName('cd_forma_pag').AsInteger;
-    FDados.cdsPedidoVenda.FieldByName('nm_forma_pgto').AsString := qry.FieldByName('nm_forma_pag').AsString;
-    FDados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger := qry.FieldByName('cd_cond_pag').AsInteger;
-    FDados.cdsPedidoVenda.FieldByName('nm_cond_pgto').AsString := qry.FieldByName('nm_cond_pag').AsString;
-    FDados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := qry.FieldByName('vl_desconto_pedido').AsCurrency;
-    FDados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := qry.FieldByName('vl_acrescimo').AsCurrency;
-    FDados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := qry.FieldByName('vl_total').AsCurrency;
-    FDados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime := qry.FieldByName('dt_emissao').AsDateTime;
-    FDados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString := qry.FieldByName('fl_cancelado').AsString;
-    FDados.cdsPedidoVenda.FieldByName('cidade').AsString := qry.FieldByName('cidade').AsString + '/' + qry.FieldByName('uf').AsString;
+    FDados.cdsPedidoVenda.FieldByName('id_geral').AsLargeInt := consulta.FieldByName('id_geral').AsLargeInt;
+    FDados.cdsPedidoVenda.FieldByName('nr_pedido').AsInteger := consulta.FieldByName('nr_pedido').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('fl_orcamento').AsBoolean := consulta.FieldByName('fl_orcamento').AsBoolean;
+    FDados.cdsPedidoVenda.FieldByName('cd_cliente').AsInteger := consulta.FieldByName('cd_cliente').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('nm_cliente').AsString := consulta.FieldByName('nome').AsString;
+    FDados.cdsPedidoVenda.FieldByName('cd_forma_pag').AsInteger := consulta.FieldByName('cd_forma_pag').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('nm_forma_pgto').AsString := consulta.FieldByName('nm_forma_pag').AsString;
+    FDados.cdsPedidoVenda.FieldByName('cd_cond_pag').AsInteger := consulta.FieldByName('cd_cond_pag').AsInteger;
+    FDados.cdsPedidoVenda.FieldByName('nm_cond_pgto').AsString := consulta.FieldByName('nm_cond_pag').AsString;
+    FDados.cdsPedidoVenda.FieldByName('vl_desconto_pedido').AsCurrency := consulta.FieldByName('vl_desconto_pedido').AsCurrency;
+    FDados.cdsPedidoVenda.FieldByName('vl_acrescimo').AsCurrency := consulta.FieldByName('vl_acrescimo').AsCurrency;
+    FDados.cdsPedidoVenda.FieldByName('vl_total').AsCurrency := consulta.FieldByName('vl_total').AsCurrency;
+    FDados.cdsPedidoVenda.FieldByName('dt_emissao').AsDateTime := consulta.FieldByName('dt_emissao').AsDateTime;
+    FDados.cdsPedidoVenda.FieldByName('fl_cancelado').AsString := consulta.FieldByName('fl_cancelado').AsString;
+    FDados.cdsPedidoVenda.FieldByName('cidade').AsString := consulta.FieldByName('cidade').AsString + '/' + consulta.FieldByName('uf').AsString;
     FDados.cdsPedidoVenda.Post;
 
-    CarregaItensPedidoVenda(qry);
+    CarregaItensPedidoVenda(consulta);
 
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -633,23 +633,23 @@ procedure TPedidoVenda.EditarPedido(NrPedido: Integer);
 const
   SQL = 'select fl_cancelado from pedido_venda where nr_pedido = :nr_pedido';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
   frmPedidoVenda: TfrmPedidoVenda;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
   frmPedidoVenda := nil;
 
   try
-    qry.Open(SQL, [NrPedido]);
+    consulta.Open(SQL, [NrPedido]);
 
-    if qry.FieldByName('fl_cancelado').AsString.Equals('S') then
+    if consulta.FieldByName('fl_cancelado').AsString.Equals('S') then
     begin
       MessageDlg('O pedido não pode ser editado, pois está cancelado.', mtWarning, [mbOK],0);
       Exit;
     end;
 
-    if not qry.IsEmpty then
+    if not consulta.IsEmpty then
     begin
       frmPedidoVenda := TfrmPedidoVenda.Create(nil);
       frmPedidoVenda.edtNrPedido.Text := NrPedido.ToString;
@@ -658,7 +658,7 @@ begin
       frmPedidoVenda.ShowModal;
     end;
   finally
-    qry.Free;
+    consulta.Free;
     frmPedidoVenda.Free;
   end;
 end;
@@ -673,19 +673,19 @@ const
         'where ' +
         '    id_item = :id_item ';
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
-  query := TFDQuery.Create(nil);
-  query.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    query.Open(SQL, [IdItem]);
+    consulta.Open(SQL, [IdItem]);
 
-    Result.CodItem := query.FieldByName('cd_produto').AsString;
-    Result.DescProduto := query.FieldByName('desc_produto').AsString;
+    Result.CodItem := consulta.FieldByName('cd_produto').AsString;
+    Result.DescProduto := consulta.FieldByName('desc_produto').AsString;
 
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
@@ -704,18 +704,18 @@ const
         ' 	produto pr ' +
         ' WHERE pr.cd_produto = :codigo ';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(SQL, [CodBarras]);
+    consulta.Open(SQL, [CodBarras]);
 
-    Result := qry.FieldByName('cd_produto').AsString;
+    Result := consulta.FieldByName('cd_produto').AsString;
 
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -774,19 +774,19 @@ const
     'where ' +
     '    codigo_barras = :codigo_barras ';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(SQL);
-    qry.ParamByName('codigo_barras').AsString := Cod;
-    qry.Open();
+    consulta.SQL.Add(SQL);
+    consulta.ParamByName('codigo_barras').AsString := Cod;
+    consulta.Open();
 
-    Result := not qry.IsEmpty;
+    Result := not consulta.IsEmpty;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -821,27 +821,27 @@ const
         'where                '+
         '  id_item = :id_item';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
   Result := True;
 
   try
-    qry.Open(SQL, [IdItem]);
+    consulta.Open(SQL, [IdItem]);
 
-    if qry.IsEmpty then
+    if consulta.IsEmpty then
       Exit(False);
 
-    if QtdPedido > qry.FieldByName('qt_estoque').AsFloat then
+    if QtdPedido > consulta.FieldByName('qt_estoque').AsFloat then
     begin
       ShowMessage('Quantidade informada maior que a disponível.'
-                  + #13 + 'Quantidade disponível: ' + FloatToStr(qry.FieldByName('qt_estoque').AsFloat));
+                  + #13 + 'Quantidade disponível: ' + FloatToStr(consulta.FieldByName('qt_estoque').AsFloat));
       Result := False;
     end;
 
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -858,16 +858,16 @@ const
         '  where tp.cd_tabela = :cd_tabela  '+
         '  and p.cd_produto = :cd_produto::text';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodTabela, CodProduto]);
-    Result := not qry.IsEmpty;
+    consulta.Open(sql, [CodTabela, CodProduto]);
+    Result := not consulta.IsEmpty;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
