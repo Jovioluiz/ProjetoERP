@@ -1,0 +1,23 @@
+name: Delphi Code Quality (FixInsight)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    # Usa o runner que você configurou no Passo 1
+    runs-on: self-hosted 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run FixInsight Analysis
+        shell: cmd
+        run: |
+          # Executa a análise e gera um arquivo XML de resultados
+          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "SeuProjeto.dproj" --fixinsight-settings="SeuProjeto.fixinsight" --output-format=xml --output-file=fixinsight_results.xml
+        # Substitua "C:\Path\To\..." pelo caminho real do FixInsightCL.exe
