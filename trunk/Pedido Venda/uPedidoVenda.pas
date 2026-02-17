@@ -754,7 +754,7 @@ end;
 procedure TfrmPedidoVenda.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if key = VK_ESCAPE then //ESC
+  if key = VK_ESCAPE then
   begin
     if (edtNrPedido.Text = '') and (FRegras.Dados.cdsPedidoVendaItem.RecordCount = 0) then
     begin
@@ -1132,8 +1132,7 @@ begin
     begin
       if FRegras.Dados.cdsPedidoVendaItem.FieldByName('seq').AsInteger = FSeqItem then
         FSeqItem := FSeqItem + 1;
-    end
-  );
+    end);
 
   Result := FSeqItem;
 end;
