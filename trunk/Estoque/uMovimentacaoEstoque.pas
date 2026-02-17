@@ -53,7 +53,7 @@ var
   qtEstoque, qttotal: Double;
   id: Int64;
 begin
-  qry := TFDQuery.Create(nil);
+
   qry.Connection := dm.conexaoBanco;
 
   try
@@ -111,7 +111,7 @@ var
   qry, qrySelect: TFDQuery;
   IdGeral: TGerador;
 begin
-  qry := TFDQuery.Create(nil);
+
   qry.Connection := dm.conexaoBanco;
   qrySelect := TFDQuery.Create(nil);
   qrySelect.Connection := dm.conexaoBanco;
