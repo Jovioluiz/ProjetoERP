@@ -40,8 +40,6 @@ object frmPedidoVenda: TfrmPedidoVenda
     Align = alClient
     BorderStyle = bsSingle
     TabOrder = 1
-    ExplicitWidth = 865
-    ExplicitHeight = 621
     object Label1: TLabel
       Left = 24
       Top = 32

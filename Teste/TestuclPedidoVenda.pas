@@ -18,7 +18,7 @@ uses
   FireDAC.Stan.Error, Vcl.Graphics, FireDAC.Phys.Intf, FireDAC.Comp.Client,
   Winapi.Windows, System.Variants, uDataModule, Vcl.Dialogs, FireDAC.Stan.Async,
   FireDAC.DApt, Vcl.Forms, System.SysUtils, Data.DB, Vcl.Controls, Vcl.Mask,
-  FireDAC.Comp.DataSet, Winapi.Messages, DUnitX.TestFramework;
+  FireDAC.Comp.DataSet, Winapi.Messages, DUnitX.TestFramework, Delphi.Mocks;
 
 type
   // Test methods for class TPedidoVenda

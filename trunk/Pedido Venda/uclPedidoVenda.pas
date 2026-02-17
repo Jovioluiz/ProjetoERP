@@ -70,7 +70,7 @@ uses
 
 function TPedidoVenda.ValidaCliente(CdCliente: Integer): Boolean;
 const
-  sql_cliente = 'select '+
+  SQL_CLIENTE = 'select '+
                 '  1 '+
                 'from '+
                 '   cliente c '+
@@ -86,7 +86,7 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql_cliente, [CdCliente]);
+    qry.Open(SQL_CLIENTE, [CdCliente]);
 
     Result := not qry.IsEmpty;
   finally
@@ -118,7 +118,7 @@ end;
 
 function TPedidoVenda.ValidaCondPgto(CdCond, CdForma: Integer): Boolean;
 const
-  sql_condPgto = 'select                                '+
+  SQL_CONDPGTO = 'select                                '+
                  '    1                                 '+
                  'from cta_cond_pagamento ccp           '+
                  '    join cta_forma_pagamento cfp on   '+
@@ -133,7 +133,7 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql_condPgto, [CdCond, CdForma]);
+    qry.Open(SQL_CONDPGTO, [CdCond, CdForma]);
     Result := not qry.IsEmpty;
   finally
     qry.Free;
@@ -142,7 +142,7 @@ end;
 
 function TPedidoVenda.ValidaFormaPgto(CdFormaPgto: Integer): Boolean;
 const
-  sql_forma_pgto =  'select                                '+
+  SQL_FORMA_PGTO =  'select                                '+
                     '   1                                  '+
                     'from                                  '+
                     '   cta_forma_pagamento                '+
@@ -156,7 +156,7 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql_forma_pgto, [CdFormaPgto]);
+    qry.Open(SQL_FORMA_PGTO, [CdFormaPgto]);
     Result := not qry.IsEmpty;
   finally
     qry.Free;
@@ -222,7 +222,7 @@ end;
 
 function TPedidoVenda.BuscaCondicaoPgto(CodCond, CodForma: Integer): string;
 const
-  sql = 'select                                        '+
+  SQL = 'select                                        '+
        '    ccp.nm_cond_pag                            '+
        'from cta_cond_pagamento ccp                    '+
        '    join cta_forma_pagamento cfp on            '+
@@ -237,7 +237,7 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodCond, CodForma]);
+    qry.Open(SQL, [CodCond, CodForma]);
 
     Result := qry.FieldByName('nm_cond_pag').AsString;
 
@@ -248,7 +248,7 @@ end;
 
 function TPedidoVenda.BuscaFormaPgto(CodForma: Integer): string;
 const
-  sql = 'select                                '+
+  SQL = 'select                                '+
         '   nm_forma_pag                       '+
         'from                                  '+
         '   cta_forma_pagamento                '+
@@ -262,7 +262,7 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodForma]);
+    qry.Open(SQL, [CodForma]);
 
     Result := qry.FieldByName('nm_forma_pag').AsString;
   finally
@@ -326,7 +326,7 @@ end;
 
 function TPedidoVenda.BuscaTabelaPreco(CodTabela: Integer; CodProduto: String): TFDQuery;
 const
-  sql = 'select                           '+
+  SQL = 'select                           '+
         '   tp.nm_tabela,                 '+
         '   tpp.valor                     '+
         'from                             '+
@@ -341,7 +341,7 @@ begin
   Result := TFDQuery.Create(nil);
   Result.Connection := dm.conexaoBanco;
 
-  Result.Open(sql, [CodTabela, CodProduto]);
+  Result.Open(SQL, [CodTabela, CodProduto]);
 
   if Result.RecordCount = 0 then
     raise Exception.Create('Preço não encontrado para a tabela de preço.');
@@ -847,7 +847,7 @@ end;
 
 function TPedidoVenda.ValidaTabelaPreco(CodTabela: Integer; CodProduto: String): Boolean;
 const
-  sql = ' select                          '+
+  SQL = ' select                          '+
         '  1                              '+
         '  from                           '+
         '  tabela_preco tp                '+
@@ -864,7 +864,7 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodTabela, CodProduto]);
+    qry.Open(SQL, [CodTabela, CodProduto]);
     Result := not qry.IsEmpty;
   finally
     qry.Free;

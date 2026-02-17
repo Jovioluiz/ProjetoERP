@@ -315,7 +315,6 @@ begin
   CarregaItensEdicao;
 end;
 
-//Faz a linha zebrada no grid dos itens
 procedure TfrmPedidoVenda.dbGridProdutosDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
@@ -403,7 +402,6 @@ begin
   FRegras.Dados.cdsPedidoVendaItem.First;
 end;
 
-//busca o cliente
 procedure TfrmPedidoVenda.edtCdClienteChange(Sender: TObject);
 const
   sql_cliente = 'select '+
@@ -448,7 +446,6 @@ begin
   end;
 end;
 
-//valida se não foi encontrado nenhum cliente
 procedure TfrmPedidoVenda.edtCdClienteExit(Sender: TObject);
 begin
   if not edtCdCliente.isEmpty then
@@ -461,7 +458,6 @@ begin
   end;
 end;
 
-//busca a condição de pgto
 procedure TfrmPedidoVenda.edtCdCondPgtoChange(Sender: TObject);
 begin
   if edtCdCondPgto.Text = EmptyStr then
@@ -473,7 +469,6 @@ begin
   edtNomeCondPgto.Text := FRegras.BuscaCondicaoPgto(StrToInt(edtCdCondPgto.Text), StrToInt(edtCdFormaPgto.Text));
 end;
 
-//valida se não foi encontrado nenhuma condição de pagamento
 procedure TfrmPedidoVenda.edtCdCondPgtoExit(Sender: TObject);
 begin
   if edtCdCondPgto.isEmpty then
@@ -489,7 +484,6 @@ begin
   end;
 end;
 
-//busca a forma pgto
 procedure TfrmPedidoVenda.edtCdFormaPgtoChange(Sender: TObject);
 begin
   if edtCdFormaPgto.Text = EmptyStr then
@@ -501,7 +495,6 @@ begin
   edtNomeFormaPgto.Text := FRegras.BuscaFormaPgto(StrToInt(edtCdFormaPgto.Text));
 end;
 
-//valida se não foi encontrado nenhuma forma de pagamento
 procedure TfrmPedidoVenda.edtCdFormaPgtoExit(Sender: TObject);
 begin
   if edtCdFormaPgto.isEmpty then
@@ -582,7 +575,6 @@ begin
   end;
 end;
 
-//busca a tabela de preço
 procedure TfrmPedidoVenda.edtCdtabelaPrecoChange(Sender: TObject);
 var
   lista: TFDQuery;
@@ -642,7 +634,6 @@ begin
   end;
 end;
 
-//calcula o valor total do item ao alterar a quantidade
 procedure TfrmPedidoVenda.edtQtdadeChange(Sender: TObject);
 begin
   if edtQtdade.ValueFloat = 0 then
@@ -690,7 +681,6 @@ begin
   end;
 end;
 
-//altera o valor total ao sair do campo de desconto
 procedure TfrmPedidoVenda.edtVlDescontoItemExit(Sender: TObject);
 begin
   edtVlTotal.ValueCurrency := (edtVlUnitario.ValueCurrency * edtQtdade.ValueFloat) - edtVlDescontoItem.ValueCurrency;
@@ -753,7 +743,6 @@ end;
 
 procedure TfrmPedidoVenda.FormCreate(Sender: TObject);
 begin
-//seta a data atual na data de emissão
   edtDataEmissao.Date := Date();
   edtDataEmissao.Enabled := False;
   FSeqItem := 1;

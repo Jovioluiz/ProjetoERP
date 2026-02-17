@@ -22,10 +22,9 @@ uses
   TestfCadastroEnderecos in 'TestfCadastroEnderecos.pas',
   TestcCLIENTE in 'TestcCLIENTE.pas',
   TestuclPedidoVenda in 'TestuclPedidoVenda.pas',
-  uUsuario in '..\trunk\Usuario\uUsuario.pas' {$R *.RES},
+  uUsuario in '..\trunk\Usuario\uUsuario.pas',
   uDataModule in '..\trunk\Conexao\uDataModule.pas' {dm: TDataModule},
   uUtil in '..\trunk\Validacao\uUtil.pas',
-  uGerador in '..\trunk\uGerador.pas',
   uValidaDcto in '..\trunk\Validacao\uValidaDcto.pas',
   uTelaInicial in '..\trunk\Inicio\uTelaInicial.pas' {frmPrincipal},
   cCTA_FORMA_PAGAMENTO in '..\trunk\Cadastros\cCTA_FORMA_PAGAMENTO.pas' {frmCadFormaPagamento},
@@ -75,7 +74,6 @@ uses
   uControleAcessoSistema in '..\trunk\Acesso\uControleAcessoSistema.pas',
   dControleAcesso in '..\trunk\Acesso\dControleAcesso.pas' {dmControleAcesso: TDataModule},
   uConsultaProdutos in '..\trunk\Consulta\uConsultaProdutos.pas',
-  uThread in '..\trunk\Outros\uThread.pas',
   dTabelaPreco in '..\trunk\Cadastros\dTabelaPreco.pas' {dmProdutosTabelaPreco: TDataModule},
   fGridsThread in '..\trunk\Outros\fGridsThread.pas' {fThreads},
   dWMS in '..\trunk\WMS\dWMS.pas' {dmWMS: TDataModule},
@@ -84,7 +82,7 @@ uses
   uMovimentacaoEstoque in '..\trunk\Estoque\uMovimentacaoEstoque.pas',
   fCadastroPadrao in '..\trunk\Outros\fCadastroPadrao.pas' {frmCadastroPadrao},
   uclPedidoVendaItem in '..\trunk\Pedido Venda\uclPedidoVendaItem.pas',
-  uSet in '..\trunk\Outros\uSet.pas' {$R *.res},
+  uSet in '..\trunk\Outros\uSet.pas',
   uclLogin in '..\trunk\Login\uclLogin.pas',
   uclUsuario in '..\trunk\Usuario\uclUsuario.pas',
   dUsuario in '..\trunk\Usuario\dUsuario.pas' {dmUsuario: TDataModule},
@@ -112,7 +110,17 @@ uses
   uManipuladorContato in '..\trunk\Cadastros\Contato\src\uManipuladorContato.pas',
   cContato in '..\trunk\Cadastros\Contato\view\cContato.pas' {frmCadContato},
   fConsultaContatos in '..\trunk\Cadastros\Contato\view\fConsultaContatos.pas' {frmConsultaContatos},
-  fVisualizaCodigoBarras in '..\trunk\Outros\fVisualizaCodigoBarras.pas' {fVisualizaCodBarras};
+  fVisualizaCodigoBarras in '..\trunk\Outros\fVisualizaCodigoBarras.pas' {fVisualizaCodBarras},
+  uSenhaMD5 in '..\trunk\Outros\uSenhaMD5.pas',
+  uGerador in '..\trunk\Outros\uGerador.pas',
+  uclNFI in '..\trunk\Entrada\Persistencia\uclNFI.pas',
+  uJSONConvert in '..\trunk\Outros\uJSONConvert.pas',
+  uComplexidadeCiclomatica in '..\trunk\Outros\uComplexidadeCiclomatica.pas',
+  uThreadImportacaoArquivo in '..\trunk\Arquivos\Thread\uThreadImportacaoArquivo.pas',
+  uThreadImportacaoCliente in '..\trunk\Arquivos\Thread\uThreadImportacaoCliente.pas',
+  uThreadGenerica in '..\trunk\Utils\uThreadGenerica.pas',
+  uThread in '..\trunk\Outros\uThread.pas',
+  uThreadGrids in '..\trunk\Outros\uThreadGrids.pas';
 
 {$R *.RES}
 

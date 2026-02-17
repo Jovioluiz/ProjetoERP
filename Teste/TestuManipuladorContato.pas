@@ -14,9 +14,15 @@ interface
 uses
   TestFramework, uManipuladorContato, uContato;
 
-type
-  // Test methods for class TManipuladorContato
 
+type
+  IManipuladorContato = interface
+  ['{56ECC7A4-8A40-40C9-9913-54D935EDF447}']
+    procedure TestSalvarContato;
+    procedure TestExcluirContato;
+  end;
+
+type
   TestTManipuladorContato = class(TTestCase)
   strict private
     FManipuladorContato: TManipuladorContato;
