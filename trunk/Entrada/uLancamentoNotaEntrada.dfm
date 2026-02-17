@@ -27,8 +27,6 @@ object frmLancamentoNotaEntrada: TfrmLancamentoNotaEntrada
     Height = 719
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 857
-    ExplicitHeight = 720
     object Label1: TLabel
       Left = 216
       Top = 85

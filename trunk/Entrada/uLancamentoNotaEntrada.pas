@@ -866,8 +866,6 @@ procedure TfrmLancamentoNotaEntrada.ValorTotalNota;
 var
   vlTotal: Currency;
 begin
-  vlTotal := 0;
-
   if edtVlServico.ValueCurrency > 0 then
     vlTotal := vlTotal + edtVlServico.ValueCurrency
   else if edtVlProduto.ValueCurrency > 0 then
