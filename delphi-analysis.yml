@@ -20,6 +20,8 @@ jobs:
         with:
           sarif_file: results.sarif
 
+      --min-severity=W
+
       - name: Run FixInsight Analysis
         shell: cmd
         run: |
