@@ -329,7 +329,6 @@ begin
   end;
 end;
 
-//busca a operação da nota e modelo caso possua alguma vinculada
 procedure TfrmLancamentoNotaEntrada.edtOperacaoExit(Sender: TObject);
 const
   SQL = ' select                          '+
@@ -409,7 +408,6 @@ begin
   end;
 end;
 
-//valida se foi informado valor de serviço ou produto ou os dois
 procedure TfrmLancamentoNotaEntrada.edtVlProdutoExit(Sender: TObject);
 begin
   if (edtVlServico.ValueCurrency = 0) and (edtVlProduto.ValueCurrency = 0) then
@@ -757,7 +755,6 @@ begin
       begin
         if FRegras.GravaItens(dm.conexaoBanco) then
         begin
-          //insere na wms_mvto e atualiza a quantidade em estoque
           estoque.InsereWmsMvto(FRegras.DadosNota.cdsNfi.FieldByName('id_item').AsInteger,
                                 FRegras.DadosNota.cdsNfi.FieldByName('un_medida').AsString,
                                 FRegras.DadosNota.cdsNfi.FieldByName('qtd_estoque').AsFloat,
@@ -862,7 +859,7 @@ begin
                       - edtValorDesconto.ValueCurrency
                       + edtValorAcrescimo.ValueCurrency
                       + edtValorOutrasDespesas.ValueCurrency) then
-    raise Exception.Create(' O valor total dos itens não fecha com o valor total da nota! Verifique');
+    raise Exception.Create(' O valor total dos itens não fecha com o valor total da nota! Verifique.');
 end;
 
 procedure TfrmLancamentoNotaEntrada.ValorTotalNota;

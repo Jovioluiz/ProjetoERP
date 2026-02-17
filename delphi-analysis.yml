@@ -1,0 +1,30 @@
+name: Delphi Code Quality (FixInsight)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    # Usa o runner que você configurou no Passo 1
+    runs-on: self-hosted 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
+      --min-severity=W
+
+      - name: Run FixInsight Analysis
+        shell: cmd
+        run: |
+          # Executa a análise e gera um arquivo XML de resultados
+          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "Projeto.dproj" --fixinsight-settings="Projeto.fixinsight" --output-format=sarif --output-file=results.sarif

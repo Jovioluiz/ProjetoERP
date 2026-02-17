@@ -70,22 +70,14 @@ begin
   qry.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(SQL);
-    qry.ParamByName('cd_forma_pag').AsInteger := StrToInt(edtCTA_FORMA_PGTOCODIGO.Text);
-    qry.Open();
+    qry.Open(SQL, [StrToInt(edtCTA_FORMA_PGTOCODIGO.Text)]);
 
     if qry.IsEmpty then
       Exit;
 
     edtCTA_FORMA_PGTODESCRICAO.Text := qry.FieldByName('nm_forma_pag').AsString;
     edtCTA_FORMA_PGTOFL_ATIVO.Checked := qry.FieldByName('fl_ativo').AsBoolean;
-
-    case qry.FieldByName('tp_classificacao').AsInteger of
-      0: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 0;
-      1: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 1;
-      2: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 2;
-      3: edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := 3;
-    end;
+    edtCTA_FORMA_PGTOCLASSIFICACAO.ItemIndex := qry.FieldByName('tp_classificacao').AsInteger;
   finally
     qry.Free;
   end;
