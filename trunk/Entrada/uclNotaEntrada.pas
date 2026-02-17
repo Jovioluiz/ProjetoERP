@@ -59,17 +59,17 @@ const
         ' where             '+
         '   cd_cliente = :cd_cliente';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.Open(sql, [CodCliente]);
+    consulta.Open(sql, [CodCliente]);
 
-    Result := not qry.IsEmpty;
+    Result := not consulta.IsEmpty;
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -109,20 +109,20 @@ function TNotaEntrada.GetIdItem(CdItem: string): Int64;
 const
   SQL = 'select id_item from produto where cd_produto = :cd_produto';
 var
-  qry: TFDQuery;
+  consulta: TFDQuery;
 begin
-  qry := TFDQuery.Create(nil);
-  qry.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    qry.SQL.Add(SQL);
-    qry.ParamByName('cd_produto').AsString := CdItem;
-    qry.Open();
+    consulta.SQL.Add(SQL);
+    consulta.ParamByName('cd_produto').AsString := CdItem;
+    consulta.Open();
 
-    Result := qry.FieldByName('id_item').AsLargeInt;
+    Result := consulta.FieldByName('id_item').AsLargeInt;
 
   finally
-    qry.Free;
+    consulta.Free;
   end;
 end;
 
@@ -130,20 +130,20 @@ function TNotaEntrada.GetSerieNfc(Serie: string): string;
 const
   SQL = 'select nr_serie from serie_nf where nr_serie = :nr_serie';
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
-  query := TFDQuery.Create(nil);
-  query.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    query.Open(SQL, [Serie]);
+    consulta.Open(SQL, [Serie]);
 
-    if query.IsEmpty then
+    if consulta.IsEmpty then
       Exit('');
 
-    Result := query.FieldByName('nr_serie').AsString;
+    Result := consulta.FieldByName('nr_serie').AsString;
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
@@ -182,20 +182,20 @@ const
         'where                  '+
         'cd_produto = :cd_produto';
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
-  query := TFDQuery.Create(nil);
-  query.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    query.Open(SQL, [CodItem]);
+    consulta.Open(SQL, [CodItem]);
 
-    Result.CodItem := query.FieldByName('cd_produto').AsString;
-    Result.DescProduto := query.FieldByName('desc_produto').AsString;
-    Result.UnMedida := query.FieldByName('un_medida').AsString;
-    Result.FatorConversao := query.FieldByName('fator_conversao').AsInteger;
+    Result.CodItem := consulta.FieldByName('cd_produto').AsString;
+    Result.DescProduto := consulta.FieldByName('desc_produto').AsString;
+    Result.UnMedida := consulta.FieldByName('un_medida').AsString;
+    Result.FatorConversao := consulta.FieldByName('fator_conversao').AsInteger;
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
@@ -244,38 +244,38 @@ const
                 '    :valor_total)' ;
 {$ENDREGION}
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
-  query := TFDQuery.Create(nil);
-  query.Connection := Conexao;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := Conexao;
 
   try
-    query.SQL.Add(SQL_INSERT_NFC);
-    query.ParamByName('id_geral').AsLargeInt := DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
-    query.ParamByName('dcto_numero').AsInteger := DadosNota.cdsNfc.FieldByName('dcto_numero').AsInteger;
-    query.ParamByName('serie').AsString := DadosNota.cdsNfc.FieldByName('serie').AsString;
-    query.ParamByName('cd_fornecedor').AsInteger := DadosNota.cdsNfc.FieldByName('cd_fornecedor').AsInteger;
-    query.ParamByName('dt_emissao').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_emissao').AsDateTime;
-    query.ParamByName('dt_recebimento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_recebimento').AsDateTime;
-    query.ParamByName('dt_lancamento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_lancamento').AsDateTime;
-    query.ParamByName('cd_operacao').AsInteger := DadosNota.cdsNfc.FieldByName('cd_operacao').AsInteger;
-    query.ParamByName('cd_modelo').AsString := DadosNota.cdsNfc.FieldByName('cd_modelo').AsString;
-    query.ParamByName('valor_servico').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_servico').AsCurrency;
-    query.ParamByName('vl_base_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('vl_base_icms').AsCurrency;
-    query.ParamByName('valor_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_icms').AsCurrency;
-    query.ParamByName('valor_frete').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency;
-    query.ParamByName('valor_ipi').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_ipi').AsCurrency;
-    query.ParamByName('valor_iss').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_iss').AsCurrency;
-    query.ParamByName('valor_desconto').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency;
-    query.ParamByName('valor_acrescimo').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency;
-    query.ParamByName('valor_outras_despesas').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_outras_despesas').AsCurrency;
-    query.ParamByName('valor_total').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency;
+    consulta.SQL.Add(SQL_INSERT_NFC);
+    consulta.ParamByName('id_geral').AsLargeInt := DadosNota.cdsNfc.FieldByName('id_geral').AsLargeInt;
+    consulta.ParamByName('dcto_numero').AsInteger := DadosNota.cdsNfc.FieldByName('dcto_numero').AsInteger;
+    consulta.ParamByName('serie').AsString := DadosNota.cdsNfc.FieldByName('serie').AsString;
+    consulta.ParamByName('cd_fornecedor').AsInteger := DadosNota.cdsNfc.FieldByName('cd_fornecedor').AsInteger;
+    consulta.ParamByName('dt_emissao').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_emissao').AsDateTime;
+    consulta.ParamByName('dt_recebimento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_recebimento').AsDateTime;
+    consulta.ParamByName('dt_lancamento').AsDateTime := DadosNota.cdsNfc.FieldByName('dt_lancamento').AsDateTime;
+    consulta.ParamByName('cd_operacao').AsInteger := DadosNota.cdsNfc.FieldByName('cd_operacao').AsInteger;
+    consulta.ParamByName('cd_modelo').AsString := DadosNota.cdsNfc.FieldByName('cd_modelo').AsString;
+    consulta.ParamByName('valor_servico').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_servico').AsCurrency;
+    consulta.ParamByName('vl_base_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('vl_base_icms').AsCurrency;
+    consulta.ParamByName('valor_icms').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_icms').AsCurrency;
+    consulta.ParamByName('valor_frete').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_frete').AsCurrency;
+    consulta.ParamByName('valor_ipi').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_ipi').AsCurrency;
+    consulta.ParamByName('valor_iss').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_iss').AsCurrency;
+    consulta.ParamByName('valor_desconto').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_desconto').AsCurrency;
+    consulta.ParamByName('valor_acrescimo').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_acrescimo').AsCurrency;
+    consulta.ParamByName('valor_outras_despesas').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_outras_despesas').AsCurrency;
+    consulta.ParamByName('valor_total').AsCurrency := DadosNota.cdsNfc.FieldByName('valor_total').AsCurrency;
 
-    query.ExecSQL;
+    consulta.ExecSQL;
     Conexao.Commit;
     Result := True;
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
@@ -335,16 +335,16 @@ function TNotaEntrada.Pesquisar(CodItem: string): Boolean;
 const
   SQL = 'select 1 from produto where cd_produto = :cd_produto';
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
-  query := TFDQuery.Create(nil);
-  query.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    query.Open(SQL, [CodItem]);
-    Result := not query.IsEmpty;
+    consulta.Open(SQL, [CodItem]);
+    Result := not consulta.IsEmpty;
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
@@ -361,17 +361,17 @@ const
         ' and cd_fornecedor = :cd_fornecedor '+
         ' and serie = :serie';
 var
-  query: TFDQuery;
+  consulta: TFDQuery;
 begin
-  query := TFDQuery.Create(nil);
-  query.Connection := dm.conexaoBanco;
+  consulta := TFDQuery.Create(nil);
+  consulta.Connection := dm.conexaoBanco;
 
   try
-    query.Open(SQL, [Numero, CodFornecedor, Serie]);
-    Result := not query.IsEmpty;
+    consulta.Open(SQL, [Numero, CodFornecedor, Serie]);
+    Result := not consulta.IsEmpty;
 
   finally
-    query.Free;
+    consulta.Free;
   end;
 end;
 
