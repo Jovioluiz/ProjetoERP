@@ -414,14 +414,16 @@ begin
   begin
     ShowMessage('Valor de Serviço ou Produto não pode ser igual a zero!');
     edtVlServico.SetFocus;
+    Exit;
   end
   else if (edtVlServico.ValueCurrency > 0) and (edtVlProduto.ValueCurrency > 0) then
   begin
     ShowMessage('Não pode ser lançado valores de serviços e produtos na mesma nota!');
     edtVlServico.SetFocus;
-  end
-  else
-    ValorTotalNota;
+    Exit;
+  end;
+
+  ValorTotalNota;
 end;
 
 procedure TfrmLancamentoNotaEntrada.edtVlServicoExit(Sender: TObject);
@@ -852,8 +854,7 @@ begin
   procedure
   begin
     vlTotalItens := vlTotalItens + FRegras.DadosNota.cdsNfi.FieldByName('valor_total').AsCurrency;
-  end
-  );
+  end);
 
   if vlTotalItens <> (edtVlProduto.ValueCurrency
                       - edtValorDesconto.ValueCurrency
@@ -866,6 +867,8 @@ procedure TfrmLancamentoNotaEntrada.ValorTotalNota;
 var
   vlTotal: Currency;
 begin
+  vlTotal := 0;
+
   if edtVlServico.ValueCurrency > 0 then
     vlTotal := vlTotal + edtVlServico.ValueCurrency
   else if edtVlProduto.ValueCurrency > 0 then
