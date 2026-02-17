@@ -137,7 +137,7 @@ end;
 
 function TMovimentacaoEstoque.ValidaEstoque(const IdItem: Integer): Boolean;
 begin
-
+  Result := 1;
 end;
 
 end.
