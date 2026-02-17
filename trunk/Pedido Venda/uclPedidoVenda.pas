@@ -86,11 +86,7 @@ begin
   consulta.Connection := dm.conexaoBanco;
 
   try
-<<<<<<< HEAD
-    qry.Open(SQL_CLIENTE, [CdCliente]);
-=======
     consulta.Open(sql_cliente, [CdCliente]);
->>>>>>> 20cb16ff0807a0b61157254e5d072556df71761a
 
     Result := not consulta.IsEmpty;
   finally
@@ -137,13 +133,8 @@ begin
   consulta.Connection := dm.conexaoBanco;
 
   try
-<<<<<<< HEAD
-    qry.Open(SQL_CONDPGTO, [CdCond, CdForma]);
-    Result := not qry.IsEmpty;
-=======
     consulta.Open(sql_condPgto, [CdCond, CdForma]);
     Result := not consulta.IsEmpty;
->>>>>>> 20cb16ff0807a0b61157254e5d072556df71761a
   finally
     consulta.Free;
   end;
@@ -165,13 +156,8 @@ begin
   consulta.Connection := dm.conexaoBanco;
 
   try
-<<<<<<< HEAD
-    qry.Open(SQL_FORMA_PGTO, [CdFormaPgto]);
-    Result := not qry.IsEmpty;
-=======
     consulta.Open(sql_forma_pgto, [CdFormaPgto]);
     Result := not consulta.IsEmpty;
->>>>>>> 20cb16ff0807a0b61157254e5d072556df71761a
   finally
     consulta.Free;
   end;
@@ -226,8 +212,7 @@ begin
     consulta.ParamByName('codigo_barras').AsString := CodProduto;
     consulta.Open(SQL_BARRAS);
 
-    if not consulta.IsEmpty then
-      Exit(True);
+    Result := not consulta.IsEmpty;
 
   finally
     consulta.Free;
@@ -251,11 +236,7 @@ begin
   consulta.Connection := dm.conexaoBanco;
 
   try
-<<<<<<< HEAD
-    qry.Open(SQL, [CodCond, CodForma]);
-=======
-    consulta.Open(sql, [CodCond, CodForma]);
->>>>>>> 20cb16ff0807a0b61157254e5d072556df71761a
+    consulta.Open(SQL, [CodCond, CodForma]);
 
     Result := consulta.FieldByName('nm_cond_pag').AsString;
 
@@ -280,12 +261,7 @@ begin
   consulta.Connection := dm.conexaoBanco;
 
   try
-<<<<<<< HEAD
-    qry.Open(SQL, [CodForma]);
-=======
-    consulta.Open(sql, [CodForma]);
->>>>>>> 20cb16ff0807a0b61157254e5d072556df71761a
-
+    consulta.Open(SQL, [CodForma]);
     Result := consulta.FieldByName('nm_forma_pag').AsString;
   finally
     consulta.Free;
@@ -371,8 +347,8 @@ begin
 end;
 
 procedure TPedidoVenda.CalculaValorContabil;
-//var
-//  util: TUtil;
+var
+  util: TUtil;
 begin
 
   FDados.cdsPedidoVendaItem.Loop(
@@ -384,17 +360,7 @@ begin
                                                                        - FDados.cdsPedidoVendaItem.FieldByName('rateado_vl_desconto').AsCurrency;
     FDados.cdsPedidoVendaItem.Post;
   end);
-//  util := TUtil.Create;
-//
-//  var func := util.RetornaSoma;
-//  var func2 := util.RetornaSomaDoisCampos;
-//
-//  try
-//    var valor := func(FDados.cdsPedidoVendaItem, 'vl_total_item');
-//    var outroValor := func2(FDados.cdsPedidoVendaItem, 'vl_total_item', 'rateado_vl_acrescimo');
-//  finally
-//    util.Free;
-//  end;
+
 end;
 
 procedure TPedidoVenda.CalculaValoresRateados(Valor: Currency; TipoValor: string);
@@ -886,13 +852,8 @@ begin
   consulta.Connection := dm.conexaoBanco;
 
   try
-<<<<<<< HEAD
-    qry.Open(SQL, [CodTabela, CodProduto]);
-    Result := not qry.IsEmpty;
-=======
     consulta.Open(sql, [CodTabela, CodProduto]);
     Result := not consulta.IsEmpty;
->>>>>>> 20cb16ff0807a0b61157254e5d072556df71761a
   finally
     consulta.Free;
   end;
