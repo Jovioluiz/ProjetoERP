@@ -19,5 +19,4 @@ jobs:
         shell: cmd
         run: |
           # Executa a análise e gera um arquivo XML de resultados
-          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "Projeto.dproj" --fixinsight-settings="Projeto.fixinsight" --output-format=xml --output-file=fixinsight_results.xml
-        # Substitua "C:\Path\To\..." pelo caminho real do FixInsightCL.exe
+          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "Projeto.dproj" --fixinsight-settings="Projeto.fixinsight" --output-format=sarif --output-file=results.sarif
