@@ -30,7 +30,7 @@ jobs:
           :: O parâmetro --exit-code faz o GitHub entender que houve erro se houver avisos
           "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" ^
           "Projeto.dproj" ^
-          --fixinsight-settings="Projeto.fixinsight" ^
+          --fixinsight-settings="Projeto.ficfg" ^
 
       - name: Upload SARIF results
         uses: github/codeql-action/upload-sarif@v3
