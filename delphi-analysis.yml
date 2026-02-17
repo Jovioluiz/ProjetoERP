@@ -1,4 +1,7 @@
-name: Delphi Code Quality (FixInsight)
+name: "My workflow"
+permissions:
+  contents: read
+  pull-requests: write
 
 # Define quando o review automático será executado
 on:
