@@ -74,7 +74,7 @@ begin
 
     qry.ExecSQL;
   finally
-    qry.Free;
+
   end;
 end;
 
