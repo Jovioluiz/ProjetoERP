@@ -20,6 +20,7 @@ type TMovimentacaoEstoque = class
   public
     procedure InsereWmsMvto(IdItem: Integer; UnMedida: string; Qtdade: Double; EntSai: string);
     procedure AtualizaEstoque(IdItem: Integer; Qtdade: Double; EntradaSaida: string);
+    function ValidaEstoque(const IdItem: Integer): Boolean;
 
   property Conexao: TFDConnection read FConexao write FConexao;
 end;
@@ -132,6 +133,11 @@ begin
     qrySelect.Free;
     FreeAndNil(IdGeral);
   end;
+end;
+
+function TMovimentacaoEstoque.ValidaEstoque(const IdItem: Integer): Boolean;
+begin
+
 end;
 
 end.
