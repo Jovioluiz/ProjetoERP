@@ -129,9 +129,7 @@ begin
     qry.ExecSQL;
 
   finally
-    qry.Free;
-    qrySelect.Free;
-    FreeAndNil(IdGeral);
+
   end;
 end;
 
