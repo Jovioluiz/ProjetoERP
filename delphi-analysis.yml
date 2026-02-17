@@ -1,30 +1,47 @@
 name: Delphi Code Quality (FixInsight)
 
+# Define quando o review automático será executado
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main, master, develop ]
+  workflow_dispatch: # Permite rodar manualmente na aba Actions
 
 jobs:
-  analyze:
-    # Usa o runner que você configurou no Passo 1
+  fixinsight-analysis:
+    name: "TMS FixInsight Analysis"
+    # Opcional: define que deve rodar no seu runner Windows local
     runs-on: self-hosted 
 
     steps:
-      - name: Checkout Code
+      - name: 1. Checkout do Código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Garante que o histórico completo seja baixado
+
+      - name: 2. Executar TMS FixInsight
+        shell: cmd
+        run: |
+          :: NOTA: Ajuste o caminho abaixo para o local real do seu FixInsightCL.exe
+          :: O parâmetro --exit-code faz o GitHub entender que houve erro se houver avisos
+          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" ^
+          "Projeto.dproj" ^
+          --fixinsight-settings="Projeto.fixinsight" ^
 
       - name: Upload SARIF results
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
+          
+          --output-format=xml ^
+          --output-file=fixinsight_results.xml ^
+          --exit-code ^
+          --min-severity=W
 
-      --min-severity=W
-
-      - name: Run FixInsight Analysis
-        shell: cmd
-        run: |
-          # Executa a análise e gera um arquivo XML de resultados
-          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "Projeto.dproj" --fixinsight-settings="Projeto.fixinsight" --output-format=sarif --output-file=results.sarif
+      - name: 3. Upload dos Resultados (Opcional)
+        if: always() # Garante que o arquivo de log seja salvo mesmo se a análise falhar
+        uses: actions/upload-artifact@v4
+        with:
+          name: Relatorio-FixInsight
+          path: fixinsight_results.xml
