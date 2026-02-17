@@ -1,6 +1,6 @@
 name: "My workflow"
 permissions:
-  contents: read
+  contents: [read, write]
   pull-requests: write
 
 # Define quando o review automático será executado
