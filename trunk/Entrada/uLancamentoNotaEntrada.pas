@@ -199,9 +199,9 @@ begin
     Exit;
   end;
 
-  nota := TNotaEntrada.Create;
 
   try
+  nota := TNotaEntrada.Create;
     if not nota.BuscaClienteFornecedor(StrToInt(edtCdFornecedor.Text)) then
     begin
       if (Application.MessageBox('Fornecedor/Cliente não Encontrado', 'Atenção', MB_OK) = IDOK) then
@@ -211,7 +211,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(nota);
+
   end;
 end;
 
