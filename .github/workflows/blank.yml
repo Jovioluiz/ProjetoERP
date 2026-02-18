@@ -20,7 +20,7 @@ jobs:
       - name: Executar FixInsight
         shell: cmd
         run: |
-          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "Projeto.dproj" --exit-code
+          "C:\Program Files (x86)\FixInsight\FixInsightCL.exe" "Projeto.dproj" --platform=Win32 --config=Release --fixinsight-settings="Projeto.fixinsight" --output-format=xml --output-file=fixinsight_results.xml --exit-code --min-severity=W
 
       - name: Upload Relatorio
         if: always()
