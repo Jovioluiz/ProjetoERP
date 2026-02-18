@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <FixInsightSettings>
 	<Rules>
-		<Rule101 enabled="true">
+		<Rule101 enabled="true"> 
 			<Value>50</Value>
 		</Rule101>
 		<Rule102 enabled="true">
